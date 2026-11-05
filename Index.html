@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>League Stats | League of Extraordinary Sh!t Talkers - Fantasy Football Hall of Fame</title>
+    <title>League Mate | League of Extraordinary Sh!t Talkers - Official League Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,9 +11,10 @@
             theme: {
                 extend: {
                     colors: {
-                        espngreen: { 600: '#00b140', 700: '#008731' },
-                        gridiron: { 900: '#0b0f19', 950: '#05070a' },
-                        hofgold: { 400: '#fbbf24', 500: '#d97706', 600: '#b45309' }
+                        lmblue: { 400: '#3898ff', 500: '#0077ff', 600: '#005ce6' },
+                        lmred: { 400: '#e04055', 500: '#c8233c', 600: '#a3152b' },
+                        lmturf: { 500: '#4d8b31', 600: '#3b6e23' },
+                        lmnavy: { 800: '#111d3a', 900: '#0a1124', 950: '#050811' }
                     }
                 }
             }
@@ -21,21 +22,25 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .espn-ticker {
-            background: linear-gradient(90deg, #008731 0%, #00b140 50%, #008731 100%);
+        .lm-ticker {
+            background: linear-gradient(90deg, #005ce6 0%, #3b6e23 50%, #c8233c 100%);
         }
-        .hof-card {
-            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-            border: 1px solid rgba(217, 119, 65, 0.3);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(217, 119, 6, 0.1);
+        .lm-hero-card {
+            background: linear-gradient(135deg, #0a1124 0%, #111d3a 60%, #1a162b 100%);
+            border: 1px solid rgba(0, 119, 255, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 119, 255, 0.12);
         }
-        .gold-plate {
-            background: linear-gradient(135deg, #d97706 0%, #fbbf24 50%, #b45309 100%);
+        .lm-badge {
+            background: linear-gradient(135deg, #0077ff 0%, #005ce6 100%);
+        }
+        .lm-badge-red {
+            background: linear-gradient(135deg, #c8233c 0%, #a3152b 100%);
         }
         .player-card {
             background-image:
-                radial-gradient(ellipse at top right, rgba(212, 175, 55, 0.08), transparent 60%),
-                linear-gradient(to bottom right, #18181b, #09090b);
+                radial-gradient(ellipse at top right, rgba(0, 119, 255, 0.1), transparent 60%),
+                radial-gradient(ellipse at bottom left, rgba(200, 35, 60, 0.08), transparent 60%),
+                linear-gradient(to bottom right, #0a1124, #050811);
             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .player-card:hover {
@@ -47,7 +52,7 @@
             inset: 0;
             border-radius: inherit;
             pointer-events: none;
-            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.15);
+            box-shadow: inset 0 0 0 1px rgba(0, 119, 255, 0.3);
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -56,12 +61,12 @@
         }
     </style>
 </head>
-<body class="bg-gridiron-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-lmnavy-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
     
-    <!-- ESPN Top Live Ticker Bar -->
-    <div class="espn-ticker text-white text-xs font-bold py-1.5 px-4 overflow-hidden whitespace-nowrap flex items-center shadow-md">
-        <div class="bg-black/40 px-2 py-0.5 rounded uppercase tracking-wider text-[10px] mr-3 font-black text-amber-400 border border-amber-500/30 flex items-center">
-            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping mr-1.5"></span> LIVE HOF UPDATE
+    <!-- Top Live Ticker Bar -->
+    <div class="lm-ticker text-white text-xs font-bold py-1.5 px-4 overflow-hidden whitespace-nowrap flex items-center shadow-md">
+        <div class="bg-black/50 px-2.5 py-0.5 rounded uppercase tracking-wider text-[10px] mr-3 font-black text-lmblue-400 border border-lmblue-400/30 flex items-center">
+            <span class="w-2 h-2 rounded-full bg-lmred-500 animate-ping mr-1.5"></span> LEAGUE MATE WIRE
         </div>
         <div class="inline-block animate-marquee tracking-wide text-slate-100 space-x-8">
             <span>🏈 LEAGUE OF EXTRAORDINARY SH!T TALKERS • OFFICIAL ARCHIVES (2011–2025)</span> • 
@@ -71,20 +76,25 @@
         </div>
     </div>
 
-    <!-- Header / ESPN Studio Branding -->
-    <header class="bg-gridiron-900 border-b-4 border-espngreen-600 sticky top-0 z-50 shadow-2xl">
+    <!-- Header / League Mate Branding -->
+    <header class="bg-lmnavy-900 border-b-4 border-lmblue-500 sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3.5">
+                <!-- Make sure your attached logo is saved as 'logo.png' in the same folder -->
+                <img src="logo.png" alt="League Mate Logo" class="h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(0,119,255,0.4)]">
                 <div>
-                    <h1 class="text-lg sm:text-xl font-black tracking-tight text-white uppercase italic flex items-center">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-lmblue-500/20 text-lmblue-400 border border-lmblue-500/30">LEAGUE MATE</span>
+                        <span class="text-[11px] text-slate-400 font-semibold tracking-wider uppercase hidden sm:inline">• Est. 2011</span>
+                    </div>
+                    <h1 class="text-lg sm:text-xl font-black tracking-tight text-white uppercase italic mt-0.5">
                         League of Extraordinary Sh!t Talkers 
                     </h1>
-                    <p class="text-[11px] text-slate-400 font-semibold tracking-wider uppercase">Official Fantasy Football Hall of Fame • Est. 2011</p>
                 </div>
             </div>
             <!-- Navigation Tabs -->
-            <nav class="hidden md:flex space-x-1 bg-black p-1.5 rounded-xl border border-slate-800">
-                <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn px-4 py-2 rounded-lg text-sm font-black uppercase tracking-wider transition-all bg-espngreen-600 text-white shadow">Overview</button>
+            <nav class="hidden md:flex space-x-1 bg-lmnavy-950 p-1.5 rounded-xl border border-slate-800">
+                <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn px-4 py-2 rounded-lg text-sm font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow">Overview</button>
                 <button onclick="switchTab('records')" id="btn-records" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Team Records</button>
                 <button onclick="switchTab('players')" id="btn-players" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Player Records</button>
                 <button onclick="switchTab('h2h')" id="btn-h2h" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Head-to-Head</button>
@@ -93,8 +103,8 @@
             </nav>
         </div>
         <!-- Mobile Nav -->
-        <div class="md:hidden flex overflow-x-auto space-x-2 px-4 py-2 bg-black border-t border-slate-800 text-xs">
-            <button onclick="switchTab('overview')" id="m-btn-overview" class="whitespace-nowrap px-3 py-1.5 rounded font-black bg-espngreen-600 text-white">Overview</button>
+        <div class="md:hidden flex overflow-x-auto space-x-2 px-4 py-2 bg-lmnavy-950 border-t border-slate-800 text-xs">
+            <button onclick="switchTab('overview')" id="m-btn-overview" class="whitespace-nowrap px-3 py-1.5 rounded font-black bg-lmblue-500 text-white">Overview</button>
             <button onclick="switchTab('records')" id="m-btn-records" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Team Records</button>
             <button onclick="switchTab('players')" id="m-btn-players" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Player Records</button>
             <button onclick="switchTab('h2h')" id="m-btn-h2h" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Head-to-Head</button>
@@ -108,125 +118,125 @@
         
         <!-- TAB 1: OVERVIEW -->
         <section id="tab-overview" class="tab-content space-y-8">
-            <div class="relative overflow-hidden rounded-3xl hof-card p-8 sm:p-12 shadow-2xl border-l-8 border-amber-500">
-                <div class="absolute -right-10 -bottom-10 text-amber-500 opacity-10 text-9xl pointer-events-none">
-                    <i class="fa-solid fa-helmet-safety"></i>
-                </div>
+            <div class="relative overflow-hidden rounded-3xl lm-hero-card p-8 sm:p-12 shadow-2xl border-l-8 border-lmblue-500 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="relative z-10 max-w-2xl">
-                    <div class="flex items-center space-x-2 mb-3">
-                        <span class="gold-plate text-slate-950 text-xs font-black px-3 py-1 rounded uppercase tracking-widest shadow">HOF CLASS OF 2025</span>
-                        <span class="bg-espngreen-600 text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">15 Seasons Archived</span>
+                    <div class="flex flex-wrap items-center gap-2 mb-3">
+                        <span class="lm-badge text-white text-xs font-black px-3 py-1 rounded uppercase tracking-widest shadow">LEAGUE MATE HUB</span>
+                        <span class="bg-lmturf-500 text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">15 Seasons Archived</span>
+                        <span class="lm-badge-red text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">Est. 2011</span>
                     </div>
-                    <h2 class="text-3xl sm:text-5xl font-black text-white italic tracking-tight uppercase">FANTASY FOOTBALL HALL OF FAME</h2>
-                    <p class="text-slate-300 mt-3 text-sm sm:text-base leading-relaxed">Welcome to Canton, fantasy style.</p>
+                    <h2 class="text-3xl sm:text-5xl font-black text-white italic tracking-tight uppercase">OFFICIAL LEAGUE RECORD BOOK</h2>
+                    <p class="text-slate-300 mt-3 text-sm sm:text-base leading-relaxed">Every matchup, every trophy, and every historic stat across 15 seasons of the League of Extraordinary Sh!t Talkers.</p>
+                </div>
+                <div class="relative z-10 shrink-0 hidden sm:block">
+                    <img src="logo.png" alt="League Mate Crest" class="h-36 sm:h-44 w-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)]">
                 </div>
             </div>
 
             <!-- Complete List of Season Winners -->
-            <div class="bg-gridiron-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-trophy text-amber-500 mr-2"></i> Complete List of Season Champions (2011–2025)</h3>
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-trophy text-lmblue-400 mr-2"></i> Complete List of Season Champions (2011–2025)</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2025</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2025</div>
                         <div>
                             <div class="text-white font-bold text-sm">Texas Teabaggers</div>
                             <div class="text-slate-400 text-xs">(5th Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2024</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2024</div>
                         <div>
                             <div class="text-white font-bold text-sm">Fin It to win It</div>
                             <div class="text-slate-400 text-xs">(1st Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2023</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2023</div>
                         <div>
                             <div class="text-white font-bold text-sm">PACKER BACKERS</div>
                             <div class="text-slate-400 text-xs">(2nd Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2022</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2022</div>
                         <div>
                             <div class="text-white font-bold text-sm">Texas Teabaggers</div>
                             <div class="text-slate-400 text-xs">(4th Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2021</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2021</div>
                         <div>
                             <div class="text-white font-bold text-sm">SHHHHH THECHAMPISHERE</div>
                             <div class="text-slate-400 text-xs">(1st Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2020</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2020</div>
                         <div>
                             <div class="text-white font-bold text-sm">Texas Teabaggers</div>
                             <div class="text-slate-400 text-xs">(3rd Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2019</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2019</div>
                         <div>
                             <div class="text-white font-bold text-sm">Adrian Beat his son</div>
                             <div class="text-slate-400 text-xs">(1st Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2018</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2018</div>
                         <div>
                             <div class="text-white font-bold text-sm">PACKER BACKERS</div>
                             <div class="text-slate-400 text-xs">(1st Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2017</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2017</div>
                         <div>
                             <div class="text-white font-bold text-sm">Barely Gettin Bye</div>
                             <div class="text-slate-400 text-xs">(3rd Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2016</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2016</div>
                         <div>
                             <div class="text-white font-bold text-sm">Barely Gettin Bye</div>
                             <div class="text-slate-400 text-xs">(2nd Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2015</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2015</div>
                         <div>
                             <div class="text-white font-bold text-sm">Cruz Control</div>
                             <div class="text-slate-400 text-xs">(1st Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2014</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2014</div>
                         <div>
                             <div class="text-white font-bold text-sm">Sayre MustangGT5.0</div>
                             <div class="text-slate-400 text-xs">(1st Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2013</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2013</div>
                         <div>
                             <div class="text-white font-bold text-sm">Barely Gettin Bye</div>
                             <div class="text-slate-400 text-xs">(1st Title)</div>
                         </div>
                     </div>
-                    <!-- Fixed 2012 comma typo: border-slate-800 p-4 -->
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2012</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2012</div>
                         <div>
                             <div class="text-white font-bold text-sm">Texas Teabaggers</div>
                             <div class="text-slate-400 text-xs">(2nd Title)</div>
                         </div>
                     </div>
-                    <div class="bg-black border border-slate-800 p-4 rounded-xl flex items-center space-x-4">
-                        <div class="gold-plate text-slate-950 font-black px-3 py-2 rounded-lg text-sm shadow">2011</div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
+                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2011</div>
                         <div>
                             <div class="text-white font-bold text-sm">Texas Teabaggers</div>
                             <div class="text-slate-400 text-xs">(1st Title)</div>
@@ -236,23 +246,23 @@
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-gridiron-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-amber-500">
-                    <div class="text-amber-500 text-xl mb-2"><i class="fa-solid fa-crown"></i></div>
+                <div class="bg-lmnavy-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-lmblue-500">
+                    <div class="text-lmblue-400 text-xl mb-2"><i class="fa-solid fa-crown"></i></div>
                     <div class="text-2xl sm:text-3xl font-black text-white">5 Titles</div>
                     <div class="text-xs text-slate-400 font-medium mt-1">Most Championships (Texas Teabaggers)</div>
                 </div>
-                <div class="bg-gridiron-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-espngreen-600">
-                    <div class="text-espngreen-600 text-xl mb-2"><i class="fa-solid fa-bolt"></i></div>
+                <div class="bg-lmnavy-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-lmturf-500">
+                    <div class="text-lmturf-500 text-xl mb-2"><i class="fa-solid fa-bolt"></i></div>
                     <div class="text-2xl sm:text-3xl font-black text-white">213.62 pts</div>
                     <div class="text-xs text-slate-400 font-medium mt-1">Most Weekly Points (Zirk Squad, Wk 2 2022)</div>
                 </div>
-                <div class="bg-gridiron-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-amber-500">
-                    <div class="text-amber-500 text-xl mb-2"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="bg-lmnavy-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-lmred-500">
+                    <div class="text-lmred-400 text-xl mb-2"><i class="fa-solid fa-shield-halved"></i></div>
                     <div class="text-2xl sm:text-3xl font-black text-white">345.96 pts</div>
                     <div class="text-xs text-slate-400 font-medium mt-1">Most Playoff Points (Zirk Squad, '25)</div>
                 </div>
-                <div class="bg-gridiron-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-espngreen-600">
-                    <div class="text-espngreen-600 text-xl mb-2"><i class="fa-solid fa-fire"></i></div>
+                <div class="bg-lmnavy-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-lmblue-500">
+                    <div class="text-lmblue-400 text-xl mb-2"><i class="fa-solid fa-fire"></i></div>
                     <div class="text-2xl sm:text-3xl font-black text-white">10–2</div>
                     <div class="text-xs text-slate-400 font-medium mt-1">Best Regular Season (Texas Teabaggers, 2022)</div>
                 </div>
@@ -261,12 +271,12 @@
 
         <!-- TAB 2: TEAM RECORDS -->
         <section id="tab-records" class="tab-content hidden space-y-8">
-            <div class="bg-gridiron-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-medal text-amber-500 mr-2"></i> All-Time Franchise Records & Milestones</h3>
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-medal text-lmblue-400 mr-2"></i> All-Time Franchise Records & Milestones</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-black">
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
                                 <th class="py-3 px-4">Record Category</th>
                                 <th class="py-3 px-4">Manager</th>
                                 <th class="py-3 px-4 text-right">Stat</th>
@@ -274,52 +284,52 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800 text-sm">
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Most Championships</td>
                                 <td class="py-4 px-4 text-slate-300">Texas Teabaggers</td>
-                                <td class="py-4 px-4 text-right font-black text-amber-500">5 Titles</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">5 Titles</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2011, '12, '20, '22, '25</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Best Regular Season Record</td>
                                 <td class="py-4 px-4 text-slate-300">Texas Teabaggers</td>
-                                <td class="py-4 px-4 text-right font-black text-amber-500">10–2</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">10–2</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2022</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Worst Regular Season Record</td>
-                                <td class="py-4 px-4 text-slate-300">Japanese Ball Fondlers</td>
-                                <td class="py-4 px-4 text-right font-black text-red-500">2–10</td>
-                                <td class="py-4 px-4 text-center text-slate-400">2020</td>
+                                <td class="py-4 px-4 text-slate-300">Barely Gettin Bye</td>
+                                <td class="py-4 px-4 text-right font-black text-lmred-400">2–10</td>
+                                <td class="py-4 px-4 text-center text-slate-400">2022</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Most PF in a Season</td>
                                 <td class="py-4 px-4 text-slate-300">Fin It To Win It</td>
-                                <td class="py-4 px-4 text-right font-black text-amber-500">1,786.56 PF</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">1,786.56 PF</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2023</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Lowest PF in a Season</td>
                                 <td class="py-4 px-4 text-slate-300">Barely Gettin Bye</td>
-                                <td class="py-4 px-4 text-right font-black text-red-500">915.00 PF</td>
+                                <td class="py-4 px-4 text-right font-black text-lmred-400">915.00 PF</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2015</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Most PA in a Season</td>
                                 <td class="py-4 px-4 text-slate-300">Sayre MustangGT5.0</td>
-                                <td class="py-4 px-4 text-right font-black text-red-500">1,724.54 PA</td>
+                                <td class="py-4 px-4 text-right font-black text-lmred-400">1,724.54 PA</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2022</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Most Weekly Points</td>
                                 <td class="py-4 px-4 text-slate-300">Zirk Squad</td>
-                                <td class="py-4 px-4 text-right font-black text-amber-500">213.62 pts</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">213.62 pts</td>
                                 <td class="py-4 px-4 text-center text-slate-400">Week 2, 2022</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Most Playoff Matchup Points</td>
                                 <td class="py-4 px-4 text-slate-300">Zirk Squad</td>
-                                <td class="py-4 px-4 text-right font-black text-amber-500">345.96 pts</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">345.96 pts</td>
                                 <td class="py-4 px-4 text-center text-slate-400">Playoffs Round 1, 2025</td>
                             </tr>
                         </tbody>
@@ -328,13 +338,13 @@
             </div>
 
             <!-- All-Time Regular Season Manager Records Section -->
-            <div class="bg-gridiron-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-                <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-users text-amber-500 mr-2"></i> All-Time Regular Season Manager Records (2011–2025)</h3>
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-users text-lmblue-400 mr-2"></i> All-Time Regular Season Manager Records (2011–2025)</h3>
                 <p class="text-slate-400 text-sm mb-6">Comprehensive regular season performance metrics tracked across all active, former, and memorial league managers.</p>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-black">
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
                                 <th class="py-3 px-4">Name</th>
                                 <th class="py-3 px-4 text-center">W</th>
                                 <th class="py-3 px-4 text-center">L</th>
@@ -346,225 +356,225 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800 text-sm">
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Moore Nuts Allen Ya Mouth</td>
                                 <td class="py-3 px-4 text-center text-slate-300">5</td>
                                 <td class="py-3 px-4 text-center text-slate-300">2</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">7</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">71.4%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">71.4%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">952.62</td>
                                 <td class="py-3 px-4 text-right text-slate-300">913.40</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+39.22</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Knobgobblers</td>
                                 <td class="py-3 px-4 text-center text-slate-300">8</td>
                                 <td class="py-3 px-4 text-center text-slate-300">5</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">13</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">61.5%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">61.5%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1295.00</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1216.00</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+79.00</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Fin it to win it</td>
                                 <td class="py-3 px-4 text-center text-slate-300">31</td>
                                 <td class="py-3 px-4 text-center text-slate-300">20</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">51</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">60.8%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">60.8%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">6667.80</td>
                                 <td class="py-3 px-4 text-right text-slate-300">6351.02</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+316.78</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Skillz That Killz</td>
                                 <td class="py-3 px-4 text-center text-slate-300">19</td>
                                 <td class="py-3 px-4 text-center text-slate-300">14</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">33</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">57.6%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">57.6%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">3231.12</td>
                                 <td class="py-3 px-4 text-right text-slate-300">3009.46</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+221.66</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Texas Teabaggers</td>
                                 <td class="py-3 px-4 text-center text-slate-300">86</td>
                                 <td class="py-3 px-4 text-center text-slate-300">68</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">154</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">55.8%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">55.8%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">17390.16</td>
                                 <td class="py-3 px-4 text-right text-slate-300">16740.45</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+649.71</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">PACKER BACKERS</td>
                                 <td class="py-3 px-4 text-center text-slate-300">53</td>
                                 <td class="py-3 px-4 text-center text-slate-300">42</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">95</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">55.8%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">55.8%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">11514.54</td>
                                 <td class="py-3 px-4 text-right text-slate-300">10861.52</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+653.02</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">JOE BUCK YOURSELF</td>
                                 <td class="py-3 px-4 text-center text-slate-300">83</td>
                                 <td class="py-3 px-4 text-center text-slate-300">71</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">154</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">53.9%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.9%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">17178.50</td>
                                 <td class="py-3 px-4 text-right text-slate-300">17187.54</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-9.04</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-9.04</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Adrian Beat His son</td>
                                 <td class="py-3 px-4 text-center text-slate-300">41</td>
                                 <td class="py-3 px-4 text-center text-slate-300">36</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">77</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">53.2%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.2%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">8020.47</td>
                                 <td class="py-3 px-4 text-right text-slate-300">7765.27</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+255.20</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Zirk Squad</td>
                                 <td class="py-3 px-4 text-center text-slate-300">43</td>
                                 <td class="py-3 px-4 text-center text-slate-300">41</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">84</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">51.2%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">51.2%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">10178.96</td>
                                 <td class="py-3 px-4 text-right text-slate-300">9813.46</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+365.50</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">SHHHHH THECHAMPISHERE</td>
                                 <td class="py-3 px-4 text-center text-slate-300">64</td>
                                 <td class="py-3 px-4 text-center text-slate-300">64</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">128</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">50.0%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">50.0%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">14423.46</td>
                                 <td class="py-3 px-4 text-right text-slate-300">14259.22</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+164.24</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Barely Gettin Bye</td>
                                 <td class="py-3 px-4 text-center text-slate-300">73</td>
                                 <td class="py-3 px-4 text-center text-slate-300">74</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">147</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">49.7%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">49.7%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">15852.12</td>
                                 <td class="py-3 px-4 text-right text-slate-300">16181.44</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-329.32</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-329.32</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Jacksonville Jarheads</td>
                                 <td class="py-3 px-4 text-center text-slate-300">19</td>
                                 <td class="py-3 px-4 text-center text-slate-300">21</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">40</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">47.5%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">47.5%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">4587.80</td>
                                 <td class="py-3 px-4 text-right text-slate-300">4646.64</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-58.84</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-58.84</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Men In Black</td>
                                 <td class="py-3 px-4 text-center text-slate-300">6</td>
                                 <td class="py-3 px-4 text-center text-slate-300">7</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">13</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">46.2%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">46.2%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1257.00</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1233.00</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+24.00</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Cruz Control</td>
                                 <td class="py-3 px-4 text-center text-slate-300">25</td>
                                 <td class="py-3 px-4 text-center text-slate-300">30</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">55</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">45.5%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">45.5%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">5594.17</td>
                                 <td class="py-3 px-4 text-right text-slate-300">5514.70</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+79.47</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">TX Refried BNRS BNR BOB</td>
                                 <td class="py-3 px-4 text-center text-slate-300">5</td>
                                 <td class="py-3 px-4 text-center text-slate-300">6</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">11</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">45.5%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">45.5%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1123.42</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1210.70</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-87.28</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-87.28</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">One GIANT Step</td>
                                 <td class="py-3 px-4 text-center text-slate-300">66</td>
                                 <td class="py-3 px-4 text-center text-slate-300">81</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">147</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">44.9%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">44.9%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">15609.38</td>
                                 <td class="py-3 px-4 text-right text-slate-300">16082.84</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-473.46</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-473.46</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Cowboys and Illegal Aliens</td>
                                 <td class="py-3 px-4 text-center text-slate-300">66</td>
                                 <td class="py-3 px-4 text-center text-slate-300">88</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">154</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">42.9%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">42.9%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">16197.58</td>
                                 <td class="py-3 px-4 text-right text-slate-300">17474.48</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-1276.90</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-1276.90</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">It's Shough Time</td>
                                 <td class="py-3 px-4 text-center text-slate-300">3</td>
                                 <td class="py-3 px-4 text-center text-slate-300">4</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">7</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">42.9%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">42.9%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">908.50</td>
                                 <td class="py-3 px-4 text-right text-slate-300">965.74</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-57.24</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-57.24</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Sayre MustangGT5.0</td>
                                 <td class="py-3 px-4 text-center text-slate-300">23</td>
                                 <td class="py-3 px-4 text-center text-slate-300">32</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">55</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">41.8%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">41.8%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">5715.28</td>
                                 <td class="py-3 px-4 text-right text-slate-300">5989.78</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-274.50</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-274.50</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Secret Project #69</td>
                                 <td class="py-3 px-4 text-center text-slate-300">10</td>
                                 <td class="py-3 px-4 text-center text-slate-300">16</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">26</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">38.5%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">38.5%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">2729.00</td>
                                 <td class="py-3 px-4 text-right text-slate-300">2882.00</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-153.00</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-153.00</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Furious Hungry Cowboys</td>
                                 <td class="py-3 px-4 text-center text-slate-300">5</td>
                                 <td class="py-3 px-4 text-center text-slate-300">8</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">13</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">38.5%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">38.5%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1278.00</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1426.00</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-148.00</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-148.00</td>
                             </tr>
-                            <tr class="hover:bg-slate-850/50">
+                            <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-3 px-4 font-bold text-white">Japanese Ball Fondlers</td>
                                 <td class="py-3 px-4 text-center text-slate-300">2</td>
                                 <td class="py-3 px-4 text-center text-slate-300">9</td>
                                 <td class="py-3 px-4 text-center font-bold text-slate-200">11</td>
-                                <td class="py-3 px-4 text-center text-amber-400 font-bold">18.2%</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">18.2%</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1035.50</td>
                                 <td class="py-3 px-4 text-right text-slate-300">1345.72</td>
-                                <td class="py-3 px-4 text-right font-black text-red-400">-310.22</td>
+                                <td class="py-3 px-4 text-right font-black text-lmred-400">-310.22</td>
                             </tr>
                         </tbody>
                     </table>
@@ -574,8 +584,8 @@
 
         <!-- TAB 3: PLAYER RECORDS & STAT LEADERS -->
         <section id="tab-players" class="tab-content hidden space-y-6">
-            <div class="bg-gridiron-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-                <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-star text-amber-500 mr-2"></i> Player High Scores & Positional Records</h3>
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-star text-lmblue-400 mr-2"></i> Player High Scores & Positional Records</h3>
                 <p class="text-slate-400 text-sm mb-6">Historical single-game positional peaks and standout individual performances tracked across league history.</p>
                 
                 <!-- Responsive Grid Container populated by lightweight JS -->
@@ -587,33 +597,33 @@
 
         <!-- TAB 4: HEAD-TO-HEAD -->
         <section id="tab-h2h" class="tab-content hidden space-y-6">
-            <div class="bg-gridiron-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
                 <div>
-                    <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-handshake-angle text-amber-500 mr-2"></i> All-Time Head-to-Head Comparison Tool</h3>
+                    <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-handshake-angle text-lmblue-400 mr-2"></i> All-Time Head-to-Head Comparison Tool</h3>
                     <p class="text-slate-400 text-sm">Select any two managers below to instantly compare their lifetime regular season matchup record.</p>
                 </div>
 
                 <!-- Interactive Selector Tool -->
-                <div class="bg-black border border-slate-800 rounded-2xl p-6 shadow-inner grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow-inner grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Manager 1</label>
-                        <select id="mgr1-select" onchange="updateH2H()" class="w-full bg-gridiron-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-2">Manager 1 (Blue Corner)</label>
+                        <select id="mgr1-select" onchange="updateH2H()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-lmblue-500">
                             <option value="Adrian Beat His son">Adrian Beat His son</option><option value="Barely Gettin Bye">Barely Gettin Bye</option><option value="Cowboys and Illegal Aliens">Cowboys and Illegal Aliens</option><option value="Cruz Control">Cruz Control</option><option value="Fin it to win it">Fin it to win it</option><option value="Furious Hungry Cowboys">Furious Hungry Cowboys</option><option value="It's Shough Time">It's Shough Time</option><option value="JOE BUCK YOURSELF">JOE BUCK YOURSELF</option><option value="Jacksonville Jarheads">Jacksonville Jarheads</option><option value="Japanese Ball Fondlers">Japanese Ball Fondlers</option><option value="Knobgobblers">Knobgobblers</option><option value="Men In Black">Men In Black</option><option value="Moore Nuts Allen Ya Mouth">Moore Nuts Allen Ya Mouth</option><option value="One GIANT Step">One GIANT Step</option><option value="PACKER BACKERS">PACKER BACKERS</option><option value="SHHHHH THECHAMPISHERE">SHHHHH THECHAMPISHERE</option><option value="Sayre MustangGT5.0">Sayre MustangGT5.0</option><option value="Secret Project #69">Secret Project #69</option><option value="Skillz That Killz">Skillz That Killz</option><option value="TX Refried BNRS BNR BOB">TX Refried BNRS BNR BOB</option><option value="Team Beat Dat Ass">Team Beat Dat Ass</option><option value="Texas Teabaggers">Texas Teabaggers</option><option value="Zirk Squad">Zirk Squad</option>
                         </select>
                     </div>
-                    <div class="text-center font-black text-amber-500 uppercase italic text-lg py-2 sm:py-0">
-                        VS
+                    <div class="text-center font-black text-white uppercase italic text-lg py-2 sm:py-0">
+                        <span class="px-3 py-1 rounded-full bg-gradient-to-r from-lmblue-500 to-lmred-500 text-xs tracking-widest shadow">VS</span>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Manager 2</label>
-                        <select id="mgr2-select" onchange="updateH2H()" class="w-full bg-gridiron-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                        <label class="block text-xs font-bold uppercase text-lmred-400 mb-2">Manager 2 (Red Corner)</label>
+                        <select id="mgr2-select" onchange="updateH2H()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-lmred-500">
                             <option value="Adrian Beat His son">Adrian Beat His son</option><option value="Barely Gettin Bye">Barely Gettin Bye</option><option value="Cowboys and Illegal Aliens">Cowboys and Illegal Aliens</option><option value="Cruz Control">Cruz Control</option><option value="Fin it to win it">Fin it to win it</option><option value="Furious Hungry Cowboys">Furious Hungry Cowboys</option><option value="It's Shough Time">It's Shough Time</option><option value="JOE BUCK YOURSELF">JOE BUCK YOURSELF</option><option value="Jacksonville Jarheads">Jacksonville Jarheads</option><option value="Japanese Ball Fondlers">Japanese Ball Fondlers</option><option value="Knobgobblers">Knobgobblers</option><option value="Men In Black">Men In Black</option><option value="Moore Nuts Allen Ya Mouth">Moore Nuts Allen Ya Mouth</option><option value="One GIANT Step">One GIANT Step</option><option value="PACKER BACKERS">PACKER BACKERS</option><option value="SHHHHH THECHAMPISHERE">SHHHHH THECHAMPISHERE</option><option value="Sayre MustangGT5.0">Sayre MustangGT5.0</option><option value="Secret Project #69">Secret Project #69</option><option value="Skillz That Killz">Skillz That Killz</option><option value="TX Refried BNRS BNR BOB">TX Refried BNRS BNR BOB</option><option value="Team Beat Dat Ass">Team Beat Dat Ass</option><option value="Texas Teabaggers">Texas Teabaggers</option><option value="Zirk Squad">Zirk Squad</option>
                         </select>
                     </div>
                 </div>
 
                 <!-- Comparison Result Card -->
-                <div class="bg-gradient-to-r from-espngreen-700/20 to-amber-500/10 border border-espngreen-600/40 rounded-2xl p-6 text-center shadow-lg">
+                <div class="bg-gradient-to-r from-lmblue-600/20 via-lmnavy-900 to-lmred-600/20 border border-lmblue-500/40 rounded-2xl p-6 text-center shadow-lg">
                     <div class="text-xs uppercase font-bold tracking-widest text-slate-400 mb-1">Lifetime Matchup Record</div>
                     <div id="h2h-score-display" class="text-4xl sm:text-5xl font-black text-white italic tracking-tight my-2">8–6</div>
                     <div id="h2h-note-display" class="text-xs text-slate-300 font-medium">Regular Season Battles Recorded Across League History</div>
@@ -623,48 +633,40 @@
 
         <!-- TAB 5: BYLAWS & UNIQUE RULES -->
         <section id="tab-bylaws" class="tab-content hidden space-y-6">
-            <div class="bg-gridiron-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-scale-balanced text-amber-500 mr-2"></i> Official League Bylaws & Special Rules</h3>
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-scale-balanced text-lmblue-400 mr-2"></i> Official League Bylaws & Special Rules</h3>
                 <div class="space-y-6 text-sm">
-                    <div class="bg-black border border-slate-800 rounded-2xl p-6 shadow">
-                        <h4 class="text-amber-500 font-extrabold text-base mb-3 uppercase tracking-wider">1. Draft Lottery & Scheduling Protocol</h4>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">1. Draft Lottery & Scheduling Protocol</h4>
                         <ul class="list-disc pl-5 space-y-2 text-slate-300">
-                            <li><strong>Lottery Timing:</strong> Draft Lottery takes place by Commissioner on the 1st Sunday of August each year.</li>
+                            <li><strong>Lottery Timing:</strong> Draft Lottery takes place by Commissioner Billy on the 1st Sunday of August each year.</li>
                             <li><strong>Inverse Draw Mechanics:</strong> Names are drawn by hand and in inverse order of draft picks. The 1st name drawn drafts 10th, down to the last name drawn who receives the #1 overall pick.</li>
                             <li><strong>Draft Date & Timer:</strong> The live draft is held the last Saturday before the start of the regular season at 7:00 PM EST. Pick timer is set to 1 minute.</li>
                             <li><strong>Pick Swapping:</strong> Team managers are officially permitted to swap draft positions.</li>
                         </ul>
                     </div>
-                    <div class="bg-black border border-slate-800 rounded-2xl p-6 shadow">
-                        <h4 class="text-amber-500 font-extrabold text-base mb-3 uppercase tracking-wider">2. Rule Changes & Last Place Penalties</h4>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">2. Rule Changes & Last Place Penalties</h4>
                         <ul class="list-disc pl-5 space-y-2 text-slate-300">
                             <li><strong>Nomination & Voting:</strong> All rule changes for the current season must be nominated during the live Lottery drawing. Managers vote on each nomination; once the voting window closes, rules are locked until the following year.</li>
                             <li><strong>Last Place Name Change Penalty:</strong> The last-place team from the previous regular season is subject to a mandatory team name change voted on during the live Lottery.</li>
                             <li><strong>Last Place Exemption:</strong> If the last-place team finished with more than 100 points higher than the 9th-place team, the 9th-place team is saddled with the team name change instead.</li>
                         </ul>
                     </div>
-                    <div class="bg-black border border-slate-800 rounded-2xl p-6 shadow">
-                        <h4 class="text-amber-500 font-extrabold text-base mb-3 uppercase tracking-wider">3. Scoring & Yardage Bonuses</h4>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">3. Scoring & Yardage Bonuses</h4>
                         <ul class="list-disc pl-5 space-y-2 text-slate-300">
                             <li><strong>Kicking:</strong> Scored by yards (0.1 points per yard on successful kicks). No penalty for missed kicks outside of 50 yards.</li>
-                            <li><strong>Receiving & Rushing Yardage Bonuses:</strong> +5 points if player eclipses 100 yards receiving or rushing but not a combination of both; an additional +5 points if they eclipse 200 yards (Max +10 bonus points for each).</li>
+                            <li><strong>WR / RB Yardage Bonuses:</strong> +5 points if a running back or wide receiver eclipses 100 yards; an additional +5 points if they eclipse 200 yards (Max +10 bonus points).</li>
                             <li><strong>Quarterback Bonuses:</strong> +5 points at 300 passing yards; an additional +5 points at 400 passing yards (Max +10 bonus points).</li>
                         </ul>
                     </div>
-                    <div class="bg-black border border-slate-800 rounded-2xl p-6 shadow">
-                        <h4 class="text-amber-500 font-extrabold text-base mb-3 uppercase tracking-wider">4. League Integrity & Etiquette</h4>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">4. League Integrity & Etiquette</h4>
                         <ul class="list-disc pl-5 space-y-2 text-slate-300">
                             <li><strong>Draft Attendance:</strong> Team managers will be removed from the league if they fail to show up to the draft and their team is auto-selected.</li>
                             <li><strong>Engagement Requirement:</strong> Team managers will be removed at the conclusion of the season if they do not engage with other league members (ensuring the right cultural fit).</li>
-                            <li><strong>Lineup Neglect Penalty:</strong> Any manager failing to set their lineup will be removed from the league. Co-Commissioners will manually set their lineup for the rest of the season based on projected points. No refund will be given to removed team manager.</li>
-                        </ul>
-                    </div>
-                        <div class="bg-black border border-slate-800 rounded-2xl p-6 shadow">
-                        <h4 class="text-amber-500 font-extrabold text-base mb-3 uppercase tracking-wider">5. Acquisitions & Trades</h4>
-                        <ul class="list-disc pl-5 space-y-2 text-slate-300">
-                            <li><strong> Acquisition Limits:</strong> Each team is allowed a maximum of 40 acquisitions per season.</li>
-                            <li><strong>Waiver Restriction:</strong> Once a team is mathematically eliminated from playoff contention, they are not permitted to submit waiver claims for the remainer of the season. Free Agent acquisitions are permitted once the waiver period has ended.</li>
-                            <li><strong>Trade Veto:</strong> All trades are subject to veto with 6 votes against the trade. If a trade has achieved the required number of votes to pass or veto, the trade will not be pushed through by a commissioner and must wait for system clearance.<lol/li>
+                            <li><strong>Lineup Neglect Penalty:</strong> Any manager failing to set their lineup will be removed from the league. Commissioners Billy and Thomas will manually set their lineup for the rest of the season based on projected points.</li>
                         </ul>
                     </div>
                 </div>
@@ -673,10 +675,10 @@
 
         <!-- TAB 6: PLAYOFF SCENARIO FINDER -->
         <section id="tab-playoffs" class="tab-content hidden space-y-8">
-            <div class="bg-slate-900/90 border border-amber-500/20 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-md space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-amber-500/30 pb-6">
+            <div class="bg-lmnavy-900 border border-lmblue-500/20 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-md space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-lmblue-500/30 pb-6">
                     <div>
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-amber-400 flex items-center gap-3">
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-lmblue-400 flex items-center gap-3">
                             <span>🏆</span> Team Playoff Paths & Magic Numbers
                         </h2>
                         <p class="text-slate-400 text-sm mt-1">Select any team below to see their playoff odds, required win record, and clean clinching paths for Weeks 9–11.</p>
@@ -684,9 +686,9 @@
                 </div>
 
                 <!-- Team Selector Dropdown -->
-                <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-6 shadow-inner space-y-4">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">Select Team to Analyze</label>
-                    <select id="team-scenario-select" onchange="analyzeTeamScenarios()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500 shadow-md">
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow-inner space-y-4">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-lmblue-400">Select Team to Analyze</label>
+                    <select id="team-scenario-select" onchange="analyzeTeamScenarios()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-lmblue-500 shadow-md">
                         <!-- Populated via JS -->
                     </select>
                 </div>
@@ -697,8 +699,8 @@
                 </div>
 
                 <!-- Clean Summary Paths List -->
-                <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-5 shadow-inner space-y-4">
-                    <h3 class="text-lg font-bold text-amber-300 flex items-center gap-2">
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-5 shadow-inner space-y-4">
+                    <h3 class="text-lg font-bold text-lmblue-400 flex items-center gap-2">
                         <span>📋</span> Required Paths & Clinching Scenarios
                     </h3>
                     <div id="scenarios-list-container" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
@@ -711,9 +713,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-black border-t border-slate-800 py-8 mt-12 text-center text-xs text-slate-500">
-        <p class="font-bold text-slate-400">© 2011–2026 League of Extraordinary Sh!t Talkers. All Rights Reserved.</p>
-        <p class="mt-1">Results Updated Weekly.(v67).</p>
+    <footer class="bg-lmnavy-950 border-t border-slate-800 py-8 mt-12 text-center text-xs text-slate-500">
+        <p class="font-bold text-slate-400">© 2011–2026 League of Extraordinary Sh!t Talkers • Powered by League Mate</p>
+        <p class="mt-1">Broadcast Live from Studio X • Powered by Stamina and Your Mom.(v67).</p>
     </footer>
 
     <!-- JavaScript Tab Switching -->
@@ -736,12 +738,12 @@
 
             const activeBtn = document.getElementById('btn-' + tabId);
             if (activeBtn) {
-                activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-black uppercase tracking-wider transition-all bg-espngreen-600 text-white shadow";
+                activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow";
             }
 
             const activeMBtn = document.getElementById('m-btn-' + tabId);
             if (activeMBtn) {
-                activeMBtn.className = "whitespace-nowrap px-3 py-1.5 rounded font-black bg-espngreen-600 text-white";
+                activeMBtn.className = "whitespace-nowrap px-3 py-1.5 rounded font-black bg-lmblue-500 text-white";
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1276,7 +1278,7 @@
                 note.innerText = "Cannot compare a manager against themselves.";
             } else if (h2hRecords[m1] && h2hRecords[m1][m2]) {
                 display.innerText = h2hRecords[m1][m2];
-                note.innerText = m1 + " vs " + m2 + " — Regular Season Battles. Are You The Bitch?";
+                note.innerText = m1 + " vs " + m2 + " — Regular Season & Postseason Battles";
             } else {
                 display.innerText = "0–0";
                 note.innerText = "No recorded head-to-head matchups between " + m1 + " and " + m2;
@@ -1400,43 +1402,42 @@
             if (!grid) return;
 
             grid.innerHTML = playerRecords.map(p => `
-                <article class="player-card group relative overflow-hidden rounded-xl border border-gold-500/30 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 shadow-xl shadow-black/40">
+                <article class="player-card group relative overflow-hidden rounded-xl border border-lmblue-500/30 shadow-xl shadow-black/40">
                     <!-- Top accent bar -->
-                    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-gold-400 to-transparent opacity-80"></div>
+                    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-lmblue-500 via-lmturf-500 to-lmred-500 opacity-90"></div>
 
                     <!-- Header / Photo area -->
                     <div class="relative flex items-start gap-4 p-4 pb-3">
                         <div class="relative shrink-0">
-                            <img src="${p.headshot}" alt="${p.name}" class="h-20 w-20 rounded-lg object-cover object-top ring-2 ring-gold-500/40 shadow-lg bg-zinc-800" loading="lazy" />
-                            
+                            <img src="${p.headshot}" alt="${p.name}" class="h-20 w-20 rounded-lg object-cover object-top ring-2 ring-lmblue-500/40 shadow-lg bg-lmnavy-800" loading="lazy" />
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                <h3 class="truncate text-lg font-bold tracking-tight text-white group-hover:text-gold-300 transition-colors">${p.name}</h3>
-                                <span class="shrink-0 rounded bg-gold-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold-400">${p.position}</span>
+                                <h3 class="truncate text-lg font-bold tracking-tight text-white group-hover:text-lmblue-400 transition-colors">${p.name}</h3>
+                                <span class="shrink-0 rounded bg-lmblue-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-lmblue-400 border border-lmblue-500/30">${p.position}</span>
                             </div>
-                            <p class="mt-0.5 text-sm text-zinc-400">${p.team} · ${p.number}</p>
+                            <p class="mt-0.5 text-sm text-slate-400">${p.team} · ${p.number}</p>
                             <div class="mt-2 flex flex-wrap gap-1.5">
-                                <span class="rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">${p.week}</span>
-                                <span class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-400">${p.fpts}</span>
+                                <span class="rounded-full bg-lmnavy-800 border border-slate-700 px-2 py-0.5 text-xs text-slate-300">${p.week}</span>
+                                <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-xs font-medium text-emerald-400">${p.fpts}</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Stats grid -->
-                    <div class="grid grid-cols-4 gap-px border-t border-zinc-800 bg-zinc-800/50">
+                    <div class="grid grid-cols-4 gap-px border-t border-slate-800 bg-slate-800/50">
                         ${p.stats.map(s => `
-                            <div class="bg-zinc-900/80 px-2 py-2.5 text-center">
-                                <div class="text-[10px] uppercase tracking-wider text-zinc-500 truncate">${s.label}</div>
+                            <div class="bg-lmnavy-900/90 px-2 py-2.5 text-center">
+                                <div class="text-[10px] uppercase tracking-wider text-slate-400 truncate">${s.label}</div>
                                 <div class="mt-0.5 text-sm font-semibold text-white">${s.value}</div>
                             </div>
                         `).join('')}
                     </div>
 
                     <!-- Footer -->
-                    <div class="flex items-center justify-between border-t border-zinc-800 px-4 py-2.5">
-                        <span class="text-xs text-zinc-500">Manager: <span class="text-zinc-300 font-medium">${p.owner}</span></span>
-                        <span class="text-xs font-medium text-gold-400 hover:text-gold-300 transition-colors cursor-pointer">Official Record ✓</span>
+                    <div class="flex items-center justify-between border-t border-slate-800 px-4 py-2.5 bg-lmnavy-950/60">
+                        <span class="text-xs text-slate-400">Manager: <span class="text-slate-200 font-medium">${p.owner}</span></span>
+                        <span class="text-xs font-medium text-lmblue-400 hover:text-lmblue-300 transition-colors cursor-pointer">League Record ✓</span>
                     </div>
                 </article>
             `).join('');
@@ -1486,7 +1487,7 @@
                 const opt = document.createElement('option');
                 opt.value = t.id;
                 opt.textContent = `${t.name} (${t.wins}-${t.losses})`;
-                opt.style.backgroundColor = '#0b0f19';
+                opt.style.backgroundColor = '#0a1124';
                 opt.style.color = '#ffffff';
                 select.appendChild(opt);
             });
@@ -1552,17 +1553,17 @@
             const summaryContainer = document.getElementById('scenario-summary');
             if (summaryContainer) {
                 summaryContainer.innerHTML = `
-                    <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
                         <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Playoff Probability</div>
                         <div class="text-3xl font-black text-emerald-400 mt-1">${playoffPct}%</div>
                         <div class="text-[11px] text-slate-500 mt-0.5">Top 6 Qualification</div>
                     </div>
-                    <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
                         <div class="text-xs font-bold uppercase tracking-wider text-slate-400">First-Round Bye Odds</div>
-                        <div class="text-3xl font-black text-amber-400 mt-1">${byePct}%</div>
+                        <div class="text-3xl font-black text-lmblue-400 mt-1">${byePct}%</div>
                         <div class="text-[11px] text-slate-500 mt-0.5">Top 2 Seed Finish</div>
                     </div>
-                    <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
                         <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Record</div>
                         <div class="text-3xl font-black text-white mt-1">${targetTeamObj.wins}-${targetTeamObj.losses}</div>
                         <div class="text-[11px] text-slate-500 mt-0.5">PF: ${targetTeamObj.pf.toFixed(1)}</div>
@@ -1589,14 +1590,14 @@
                     `;
                 } else if (playoffPct > "50.0") {
                     htmlContent += `
-                        <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-amber-300 text-xs space-y-1">
-                            <div class="font-bold flex items-center gap-2"><span>🟡</span> STRONG PLAYOFF POSITION (${playoffPct}% Odds)</div>
+                        <div class="bg-lmblue-500/10 border border-lmblue-500/30 rounded-xl p-4 text-lmblue-400 text-xs space-y-1">
+                            <div class="font-bold flex items-center gap-2"><span>🔵</span> STRONG PLAYOFF POSITION (${playoffPct}% Odds)</div>
                             <div>Finishing strong secures a playoff spot across the vast majority of tie-breaker scenarios.</div>
                         </div>
                     `;
                 } else {
                     htmlContent += `
-                        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-300 text-xs space-y-1">
+                        <div class="bg-lmred-500/10 border border-lmred-500/30 rounded-xl p-4 text-lmred-400 text-xs space-y-1">
                             <div class="font-bold flex items-center gap-2"><span>🔴</span> BUBBLE / NEEDS HELP (${playoffPct}% Odds)</div>
                             <div>Needs to win out and receive help from rival losses to sneak into the top 6.</div>
                         </div>
@@ -1615,9 +1616,9 @@
                     else pathDescription = "Finishes winless (0–3) but still squeaks in via tie-breakers";
 
                     htmlContent += `
-                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div class="bg-lmnavy-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                             <div class="space-y-1">
-                                <div class="font-bold text-amber-300 text-sm flex items-center gap-2">
+                                <div class="font-bold text-lmblue-400 text-sm flex items-center gap-2">
                                     <span>🎯 Finishes ${rec}:</span> 
                                     <span class="text-slate-200 text-xs font-normal">${pathDescription}</span>
                                 </div>
