@@ -11,6 +11,7 @@
             theme: {
                 extend: {
                     colors: {
+                        espngreen: { 600: '#00b140', 700: '#008731' },
                         lmblue: { 400: '#3898ff', 500: '#0077ff', 600: '#005ce6' },
                         lmred: { 400: '#e04055', 500: '#c8233c', 600: '#a3152b' },
                         lmturf: { 500: '#4d8b31', 600: '#3b6e23' },
@@ -22,8 +23,9 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .lm-ticker {
-            background: linear-gradient(90deg, #005ce6 0%, #3b6e23 50%, #c8233c 100%);
+        /* Classic ESPN Green Ticker Bar */
+        .espn-ticker {
+            background: linear-gradient(90deg, #008731 0%, #00b140 50%, #008731 100%);
         }
         .lm-hero-card {
             background: linear-gradient(135deg, #0a1124 0%, #111d3a 60%, #1a162b 100%);
@@ -63,10 +65,10 @@
 </head>
 <body class="bg-lmnavy-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
     
-    <!-- Top Live Ticker Bar -->
-    <div class="lm-ticker text-white text-xs font-bold py-1.5 px-4 overflow-hidden whitespace-nowrap flex items-center shadow-md">
-        <div class="bg-black/50 px-2.5 py-0.5 rounded uppercase tracking-wider text-[10px] mr-3 font-black text-lmblue-400 border border-lmblue-400/30 flex items-center">
-            <span class="w-2 h-2 rounded-full bg-lmred-500 animate-ping mr-1.5"></span> LEAGUE MATE WIRE
+    <!-- ESPN Green Top Live Ticker Bar -->
+    <div class="espn-ticker text-white text-xs font-bold py-1.5 px-4 overflow-hidden whitespace-nowrap flex items-center shadow-md">
+        <div class="bg-black/40 px-2.5 py-0.5 rounded uppercase tracking-wider text-[10px] mr-3 font-black text-white border border-white/20 flex items-center">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping mr-1.5"></span> LEAGUE MATE WIRE
         </div>
         <div class="inline-block animate-marquee tracking-wide text-slate-100 space-x-8">
             <span>🏈 LEAGUE OF EXTRAORDINARY SH!T TALKERS • OFFICIAL ARCHIVES (2011–2025)</span> • 
@@ -81,7 +83,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3.5">
                 <!-- Make sure your attached logo is saved as 'logo.png' in the same folder -->
-                <img src="logo.png" alt="League Mate Logo" class="h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(0,119,255,0.4)]">
+                <img src="logo.png" alt="League Mate Logo" 
+                     onerror="if(!this.dataset.try){this.dataset.try=1;this.src='logo.jpg';}else if(this.dataset.try==1){this.dataset.try=2;this.src='Logo.png';}else if(this.dataset.try==2){this.dataset.try=3;this.src='23013.jpg';}"
+                     class="h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(0,119,255,0.4)]">
                 <div>
                     <div class="flex items-center space-x-2">
                         <span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-lmblue-500/20 text-lmblue-400 border border-lmblue-500/30">LEAGUE MATE</span>
@@ -129,7 +133,9 @@
                     <p class="text-slate-300 mt-3 text-sm sm:text-base leading-relaxed">Every matchup, every trophy, and every historic stat across 15 seasons of the League of Extraordinary Sh!t Talkers.</p>
                 </div>
                 <div class="relative z-10 shrink-0 hidden sm:block">
-                    <img src="logo.png" alt="League Mate Crest" class="h-36 sm:h-44 w-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)]">
+                    <img src="logo.png" alt="League Mate Crest" 
+                         onerror="if(!this.dataset.try){this.dataset.try=1;this.src='logo.jpg';}else if(this.dataset.try==1){this.dataset.try=2;this.src='Logo.png';}else if(this.dataset.try==2){this.dataset.try=3;this.src='23013.jpg';}"
+                         class="h-36 sm:h-44 w-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)]">
                 </div>
             </div>
 
@@ -298,9 +304,9 @@
                             </tr>
                             <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Worst Regular Season Record</td>
-                                <td class="py-4 px-4 text-slate-300">Barely Gettin Bye</td>
+                                <td class="py-4 px-4 text-slate-300">Japanese Ball Foundlers</td>
                                 <td class="py-4 px-4 text-right font-black text-lmred-400">2–10</td>
-                                <td class="py-4 px-4 text-center text-slate-400">2022</td>
+                                <td class="py-4 px-4 text-center text-slate-400">2020</td>
                             </tr>
                             <tr class="hover:bg-lmnavy-800/50">
                                 <td class="py-4 px-4 font-bold text-white">Most PF in a Season</td>
@@ -656,7 +662,7 @@
                     <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
                         <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">3. Scoring & Yardage Bonuses</h4>
                         <ul class="list-disc pl-5 space-y-2 text-slate-300">
-                            <<li><strong>Kicking:</strong> Scored by yards (0.1 points per yard on successful kicks). No penalty for missed kicks outside of 50 yards.</li>
+                            <li><strong>Kicking:</strong> Scored by yards (0.1 points per yard on successful kicks). No penalty for missed kicks outside of 50 yards.</li>
                             <li><strong>Receiving & Rushing Yardage Bonuses:</strong> +5 points if player eclipses 100 yards receiving or rushing but not a combination of both; an additional +5 points if they eclipse 200 yards (Max +10 bonus points for each).</li>
                             <li><strong>Quarterback Bonuses:</strong> +5 points at 300 passing yards; an additional +5 points at 400 passing yards (Max +10 bonus points).</li>
                         </ul>
@@ -669,14 +675,14 @@
                             <li><strong>Lineup Neglect Penalty:</strong> Any manager failing to set their lineup will be removed from the league. Co-Commissioners will manually set their lineup for the rest of the season based on projected points. No refund will be given to removed team manager.</li>
                         </ul>
                     </div>
-                        <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
-                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider"">5. Acquisitions & Trades</h4>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">5. Acquisitions & Trades</h4>
                         <ul class="list-disc pl-5 space-y-2 text-slate-300">
-                            <li><strong> Acquisition Limits:</strong> Each team is allowed a maximum of 40 acquisitions per season.</li>
-                            <li><strong>Waiver Restriction:</strong> Once a team is mathematically eliminated from playoff contention, they are not permitted to submit waiver claims for the remainer of the season. Free Agent acquisitions are permitted once the waiver period has ended.</li>
-                            <li><strong>Trade Veto:</strong> All trades are subject to veto with 6 votes against the trade. If a trade has achieved the required number of votes to pass or veto, the trade will not be pushed through by a commissioner and must wait for system clearance.<lol/li>
+                            <li><strong>Acquisition Limits:</strong> Each team is allowed a maximum of 40 acquisitions per season.</li>
+                            <li><strong>Waiver Restriction:</strong> Once a team is mathematically eliminated from playoff contention, they are not permitted to submit waiver claims for the remainder of the season. Free Agent acquisitions are permitted once the waiver period has ended.</li>
+                            <li><strong>Trade Veto:</strong> All trades are subject to veto with 6 votes against the trade. If a trade has achieved the required number of votes to pass or veto, the trade will not be pushed through by a commissioner and must wait for system clearance.</li>
                         </ul>
-                     </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1286,7 +1292,7 @@
                 note.innerText = "Cannot compare a manager against themselves.";
             } else if (h2hRecords[m1] && h2hRecords[m1][m2]) {
                 display.innerText = h2hRecords[m1][m2];
-                note.innerText = m1 + " vs " + m2 + " — Regular Season & Postseason Battles";
+                note.innerText = m1 + " vs " + m2 + " — Regular Season & Battles. Are You The Bitch?";
             } else {
                 display.innerText = "0–0";
                 note.innerText = "No recorded head-to-head matchups between " + m1 + " and " + m2;
