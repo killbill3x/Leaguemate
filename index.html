@@ -82,6 +82,7 @@
     <header class="bg-lmnavy-900 border-b-4 border-lmblue-500 sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3.5">
+                <!-- Make sure your attached logo is saved as 'logo.png' in the same folder -->
                 <img src="logo.png" alt="League Mate Logo" 
                      onerror="if(!this.dataset.try){this.dataset.try=1;this.src='logo.jpg';}else if(this.dataset.try==1){this.dataset.try=2;this.src='Logo.png';}else if(this.dataset.try==2){this.dataset.try=3;this.src='23013.jpg';}"
                      class="h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(0,119,255,0.4)]">
@@ -101,7 +102,6 @@
                 <button onclick="switchTab('records')" id="btn-records" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Team Records</button>
                 <button onclick="switchTab('players')" id="btn-players" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Player Records</button>
                 <button onclick="switchTab('h2h')" id="btn-h2h" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Head-to-Head</button>
-                <button onclick="switchTab('drafts')" id="btn-drafts" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Draft History</button>
                 <button onclick="switchTab('bylaws')" id="btn-bylaws" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Bylaws & Rules</button>
                 <button onclick="switchTab('playoffs')" id="btn-playoffs" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Playoff Calculator</button>
             </nav>
@@ -112,7 +112,6 @@
             <button onclick="switchTab('records')" id="m-btn-records" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Team Records</button>
             <button onclick="switchTab('players')" id="m-btn-players" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Player Records</button>
             <button onclick="switchTab('h2h')" id="m-btn-h2h" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Head-to-Head</button>
-            <button onclick="switchTab('drafts')" id="m-btn-drafts" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Drafts</button>
             <button onclick="switchTab('bylaws')" id="m-btn-bylaws" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Bylaws</button>
             <button onclick="switchTab('playoffs')" id="m-btn-playoffs" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Playoffs</button>
         </div>
@@ -633,100 +632,12 @@
                 <div class="bg-gradient-to-r from-lmblue-600/20 via-lmnavy-900 to-lmred-600/20 border border-lmblue-500/40 rounded-2xl p-6 text-center shadow-lg">
                     <div class="text-xs uppercase font-bold tracking-widest text-slate-400 mb-1">Lifetime Matchup Record</div>
                     <div id="h2h-score-display" class="text-4xl sm:text-5xl font-black text-white italic tracking-tight my-2">8–6</div>
-                    <div id="h2h-note-display" class="text-xs text-slate-300 font-medium">Regular Season Battles. Are You The Bitch?</div>
+                    <div id="h2h-note-display" class="text-xs text-slate-300 font-medium">Regular Season Battles Recorded Across League History</div>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 5: DRAFT HISTORY -->
-        <section id="tab-drafts" class="tab-content hidden space-y-6">
-            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
-                <div>
-                    <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center">
-                        <i class="fa-solid fa-clipboard-list text-lmblue-400 mr-2"></i> Official League Draft Vault (2011–2026)
-                    </h3>
-                    <p class="text-slate-400 text-sm">Search all 2,464 historical draft picks by season, franchise, round, or player name.</p>
-                </div>
-
-                <!-- Filter Controls -->
-                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Season</label>
-                        <select id="draft-year-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
-                            <option value="ALL">All Seasons (2011–2026)</option>
-                            <option value="2026" selected>2026 Season</option>
-                            <option value="2025">2025 Season</option>
-                            <option value="2024">2024 Season</option>
-                            <option value="2023">2023 Season</option>
-                            <option value="2022">2022 Season</option>
-                            <option value="2021">2021 Season</option>
-                            <option value="2020">2020 Season</option>
-                            <option value="2019">2019 Season</option>
-                            <option value="2018">2018 Season</option>
-                            <option value="2017">2017 Season</option>
-                            <option value="2016">2016 Season</option>
-                            <option value="2015">2015 Season</option>
-                            <option value="2014">2014 Season</option>
-                            <option value="2013">2013 Season</option>
-                            <option value="2012">2012 Season</option>
-                            <option value="2011">2011 Season</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Team / Manager</label>
-                        <select id="draft-team-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
-                            <option value="ALL">All Teams</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Round</label>
-                        <select id="draft-round-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
-                            <option value="ALL">All Rounds</option>
-                            <option value="1">Round 1</option>
-                            <option value="2">Round 2</option>
-                            <option value="3">Round 3</option>
-                            <option value="4">Round 4</option>
-                            <option value="5">Round 5</option>
-                            <option value="6">Round 6</option>
-                            <option value="7">Round 7</option>
-                            <option value="8">Round 8</option>
-                            <option value="9">Round 9</option>
-                            <option value="10">Round 10</option>
-                            <option value="11">Round 11</option>
-                            <option value="12">Round 12</option>
-                            <option value="13">Round 13</option>
-                            <option value="14">Round 14</option>
-                            <option value="15">Round 15</option>
-                            <option value="16">Round 16</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Search Player</label>
-                        <input type="text" id="draft-player-search" oninput="renderDraftTable()" placeholder="e.g. McCaffrey, Allen..." class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-lmblue-500">
-                    </div>
-                </div>
-
-                <!-- Draft Results Table -->
-                <div class="overflow-x-auto rounded-2xl border border-slate-800">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
-                                <th class="py-3 px-4">Year</th>
-                                <th class="py-3 px-4">Round</th>
-                                <th class="py-3 px-4 text-center">Pick #</th>
-                                <th class="py-3 px-4">Player</th>
-                                <th class="py-3 px-4">Drafted By</th>
-                            </tr>
-                        </thead>
-                        <tbody id="draft-table-body" class="divide-y divide-slate-800">
-                            <!-- Populated via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 6: BYLAWS & UNIQUE RULES -->
+        <!-- TAB 5: BYLAWS & UNIQUE RULES -->
         <section id="tab-bylaws" class="tab-content hidden space-y-6">
             <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
                 <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-scale-balanced text-lmblue-400 mr-2"></i> Official League Bylaws & Special Rules</h3>
@@ -776,7 +687,7 @@
             </div>
         </section>
 
-        <!-- TAB 7: PLAYOFF SCENARIO FINDER -->
+        <!-- TAB 6: PLAYOFF SCENARIO FINDER -->
         <section id="tab-playoffs" class="tab-content hidden space-y-8">
             <div class="bg-lmnavy-900 border border-lmblue-500/20 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-md space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-lmblue-500/30 pb-6">
@@ -830,8 +741,6 @@
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             if (tabId === 'playoffs') {
                 initScenarioDropdown();
-            } else if (tabId === 'drafts') {
-                initDraftVault();
             }
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1393,110 +1302,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             updateH2H();
         });
-    </script>
-
-    <!-- Draft History Data & Script -->
-    <script>
-        const draftHistoryData = {
-            <?php 
-               // PHP/JS embedded complete draft dataset
-            ?>
-            "2026": [
-                {"round": "Round 1", "pick": 1, "player": "Jahmyr Gibbs DET, RB", "team": "Jacksonville Jarheads"},
-                {"round": "Round 1", "pick": 2, "player": "Bijan Robinson ATL, RB", "team": "SHHHHHH THECHAMPISHERE"},
-                {"round": "Round 1", "pick": 3, "player": "Ja'Marr Chase CIN, WR", "team": "Moore Nuts Allen Ya Mouth"},
-                {"round": "Round 1", "pick": 4, "player": "Christian McCaffrey SF, RB", "team": "Texas Teabaggers"},
-                {"round": "Round 1", "pick": 5, "player": "Jonathan Taylor IND, RB", "team": "JOE BUCK YOURSELF"},
-                {"round": "Round 1", "pick": 6, "player": "CeeDee Lamb DAL, WR", "team": "Zirk Squad"},
-                {"round": "Round 1", "pick": 7, "player": "Saquon Barkley PHI, RB", "team": "PACKER BACKERS"},
-                {"round": "Round 1", "pick": 8, "player": "Justin Jefferson MIN, WR", "team": "Fin it to win it"},
-                {"round": "Round 1", "pick": 9, "player": "Amon-Ra St. Brown DET, WR", "team": "Cowboys and Illegal Aliens"},
-                {"round": "Round 1", "pick": 10, "player": "Breece Hall NYJ, RB", "team": "It's Shough Time"},
-                {"round": "Round 2", "pick": 11, "player": "Ashton Jeanty BOIS, RB", "team": "It's Shough Time"},
-                {"round": "Round 2", "pick": 12, "player": "Kyren Williams LAR, RB", "team": "Cowboys and Illegal Aliens"},
-                {"round": "Round 2", "pick": 13, "player": "Nico Collins HOU, WR", "team": "Fin it to win it"},
-                {"round": "Round 2", "pick": 14, "player": "Malik Nabers NYG, WR", "team": "PACKER BACKERS"},
-                {"round": "Round 2", "pick": 15, "player": "Drake London ATL, WR", "team": "Zirk Squad"},
-                {"round": "Round 2", "pick": 16, "player": "Marvin Harrison Jr. ARI, WR", "team": "JOE BUCK YOURSELF"},
-                {"round": "Round 2", "pick": 17, "player": "TreVeyon Henderson OSU, RB", "team": "Texas Teabaggers"},
-                {"round": "Round 2", "pick": 18, "player": "Omarion Hampton UNC, RB", "team": "Moore Nuts Allen Ya Mouth"},
-                {"round": "Round 2", "pick": 19, "player": "Puka Nacua LAR, WR", "team": "SHHHHHH THECHAMPISHERE"},
-                {"round": "Round 2", "pick": 20, "player": "Garrett Wilson NYJ, WR", "team": "Jacksonville Jarheads"}
-            ],
-            "2025": [
-                {"round": "Round 1", "pick": 1, "player": "Ja'Marr Chase Cin, WR", "team": "PACKER BACKERS"},
-                {"round": "Round 1", "pick": 2, "player": "Justin Jefferson Min, WR", "team": "SHHHHHH THECHAMPISHERE"},
-                {"round": "Round 1", "pick": 3, "player": "Bijan Robinson Atl, RB", "team": "Texas Teabaggers"},
-                {"round": "Round 1", "pick": 4, "player": "CeeDee Lamb Dal, WR", "team": "JOE BUCK YOURSELF"},
-                {"round": "Round 1", "pick": 5, "player": "Jahmyr Gibbs Det, RB", "team": "Zirk Squad"},
-                {"round": "Round 1", "pick": 6, "player": "Amon-Ra St. Brown Det, WR", "team": "Fin it to win it"},
-                {"round": "Round 1", "pick": 7, "player": "Christian McCaffrey SF, RB", "team": "Jacksonville Jarheads"},
-                {"round": "Round 1", "pick": 8, "player": "Malik Nabers NYG, WR", "team": "Barely Getting Bye"},
-                {"round": "Round 1", "pick": 9, "player": "Breece Hall NYJ, RB", "team": "Cowboys and Illegal Aliens"},
-                {"round": "Round 1", "pick": 10, "player": "Saquon Barkley Phi, RB", "team": "It's Shough Time"}
-            ]
-        };
-
-        // Note: For the full production site, all 2464 records across 2011-2026 are included in the compiled asset dataset.
-        // Let's add full sample loader or complete dataset mechanism:
-        function initDraftVault() {
-            // Populate team dropdown dynamically from loaded draft records
-            const teamSelect = document.getElementById('draft-team-select');
-            if (teamSelect && teamSelect.options.length <= 1) {
-                // Collect all unique teams
-                let teams = new Set();
-                Object.values(draftHistoryData).forEach(seasonList => {
-                    seasonList.forEach(p => teams.add(p.team));
-                });
-                Array.from(teams).sort().forEach(t => {
-                    const opt = document.createElement('option');
-                    opt.value = t;
-                    opt.textContent = t;
-                    teamSelect.appendChild(opt);
-                });
-            }
-            renderDraftTable();
-        }
-
-        function renderDraftTable() {
-            const yearVal = document.getElementById('draft-year-select').value;
-            const teamVal = document.getElementById('draft-team-select').value;
-            const roundVal = document.getElementById('draft-round-select').value;
-            const searchVal = document.getElementById('draft-player-search').value.toLowerCase().trim();
-
-            const tbody = document.getElementById('draft-table-body');
-            if (!tbody) return;
-
-            let matches = [];
-            const yearsToQuery = yearVal === 'ALL' ? Object.keys(draftHistoryData).sort((a,b)=>b-a) : [yearVal];
-
-            yearsToQuery.forEach(y => {
-                if (draftHistoryData[y]) {
-                    draftHistoryData[y].forEach(p => {
-                        // Check filters
-                        if (teamVal !== 'ALL' && p.team !== teamVal) return;
-                        if (roundVal !== 'ALL' && !p.round.includes(roundVal)) return;
-                        if (searchVal !== '' && !p.player.toLowerCase().includes(searchVal)) return;
-                        matches.push({...p, year: y});
-                    });
-                }
-            });
-
-            if (matches.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-6 px-4 text-center text-slate-400 text-sm">No draft picks found matching your filters.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = matches.slice(0, 100).map(m => `
-                <tr class="hover:bg-lmnavy-800/50 transition-colors">
-                    <td class="py-3 px-4 font-bold text-amber-400">${m.year}</td>
-                    <td class="py-3 px-4 text-slate-300">${m.round}</td>
-                    <td class="py-3 px-4 text-center font-black text-white">#${m.pick}</td>
-                    <td class="py-3 px-4 font-bold text-white">${m.player}</td>
-                    <td class="py-3 px-4 text-slate-300">${m.team}</td>
-                </tr>
-            `).join('') + (matches.length > 100 ? `<tr><td colspan="5" class="py-3 px-4 text-center text-xs text-slate-500 italic">Showing first 100 matches of ${matches.length}. Refine search to see specific picks.</td></tr>` : '');
-        }
     </script>
 
     <!-- Data-Driven Player Cards Script -->
