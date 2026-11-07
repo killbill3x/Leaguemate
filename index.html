@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS to read your Draft History Excel File dynamically -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- html2canvas for Shareable Brag Cards -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -186,56 +188,56 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800 text-sm">
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Most Championships</td>
+                            <tr onclick="openBragCard({name: 'Texas Teabaggers', franchise: 'All-Time Franchise Record', metricLabel: 'Most Championships', score: '5 Titles', context: '2011, 2012, 2020, 2022, 2025', year: '2011–2025', badge: 'Dynasty Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Most Championships <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Texas Teabaggers</td>
                                 <td class="py-4 px-4 text-right font-black text-lmblue-400">5 Titles</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2011, '12, '20, '22, '25</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Best Regular Season Record</td>
+                            <tr onclick="openBragCard({name: 'Texas Teabaggers', franchise: 'All-Time Franchise Record', metricLabel: 'Best Regular Season Record', score: '10–2', context: '83.3% Win Percentage', year: '2022 Season', badge: 'Regular Season Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Best Regular Season Record <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Texas Teabaggers</td>
                                 <td class="py-4 px-4 text-right font-black text-lmblue-400">10–2</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2022</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Worst Regular Season Record</td>
+                            <tr onclick="openBragCard({name: 'Japanese Ball Fondlers', franchise: 'All-Time Franchise Record', metricLabel: 'Worst Regular Season Record', score: '2–9', context: '18.2% Win Percentage', year: '2020 Season', badge: 'Hall of Shame'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmred-400 transition-colors">Worst Regular Season Record <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmred-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Japanese Ball Fondlers</td>
                                 <td class="py-4 px-4 text-right font-black text-lmred-400">2–9</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2020</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Most PF in a Season</td>
+                            <tr onclick="openBragCard({name: 'Fin It To Win It', franchise: 'All-Time Franchise Record', metricLabel: 'Most PF in a Season', score: '1,786.56 PF', context: 'All-Time Scoring Juggernaut', year: '2023 Season', badge: 'Season Points Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Most PF in a Season <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Fin It To Win It</td>
                                 <td class="py-4 px-4 text-right font-black text-lmblue-400">1,786.56 PF</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2023</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Lowest PF in a Season</td>
+                            <tr onclick="openBragCard({name: 'Barely Gettin Bye', franchise: 'All-Time Franchise Record', metricLabel: 'Lowest PF in a Season', score: '915.00 PF', context: 'All-Time Season Low', year: '2015 Season', badge: 'Hall of Shame'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmred-400 transition-colors">Lowest PF in a Season <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmred-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Barely Gettin Bye</td>
                                 <td class="py-4 px-4 text-right font-black text-lmred-400">915.00 PF</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2015</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Most PA in a Season</td>
+                            <tr onclick="openBragCard({name: 'Sayre MustangGT5.0', franchise: 'All-Time Franchise Record', metricLabel: 'Most PA in a Season', score: '1,724.54 PA', context: 'Toughest Schedule in History', year: '2022 Season', badge: 'Bad Luck Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmred-400 transition-colors">Most PA in a Season <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmred-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Sayre MustangGT5.0</td>
                                 <td class="py-4 px-4 text-right font-black text-lmred-400">1,724.54 PA</td>
                                 <td class="py-4 px-4 text-center text-slate-400">2022</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Most Weekly Points</td>
+                            <tr onclick="openBragCard({name: 'Zirk Squad', franchise: 'All-Time Franchise Record', metricLabel: 'Most Weekly Points', score: '213.62 pts', context: 'Week 2, 2022', year: '2022 Season', badge: 'Single-Week Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Most Weekly Points <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Zirk Squad</td>
                                 <td class="py-4 px-4 text-right font-black text-lmblue-400">213.62 pts</td>
                                 <td class="py-4 px-4 text-center text-slate-400">Week 2, 2022</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Lowest Weekly Points</td>
+                            <tr onclick="openBragCard({name: 'Barely Gettin Bye', franchise: 'All-Time Franchise Record', metricLabel: 'Lowest Weekly Points', score: '38.62 pts', context: 'Week 7, 2018', year: '2018 Season', badge: 'Hall of Shame'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmred-400 transition-colors">Lowest Weekly Points <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmred-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Barely Gettin Bye</td>
                                 <td class="py-4 px-4 text-right font-black text-lmred-400">38.62 pts</td>
                                 <td class="py-4 px-4 text-center text-slate-400">Week 7, 2018</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-4 px-4 font-bold text-white">Most Playoff Matchup Points</td>
+                            <tr onclick="openBragCard({name: 'Zirk Squad', franchise: 'All-Time Franchise Record', metricLabel: 'Most Playoff Matchup Points', score: '345.96 pts', context: 'Playoffs Round 1, 2025', year: '2025 Season', badge: 'Playoff Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Most Playoff Matchup Points <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
                                 <td class="py-4 px-4 text-slate-300">Zirk Squad</td>
                                 <td class="py-4 px-4 text-right font-black text-lmblue-400">345.96 pts</td>
                                 <td class="py-4 px-4 text-center text-slate-400">Playoffs Round 1, 2025</td>
@@ -526,6 +528,69 @@
         <p class="font-bold text-slate-400">© 2011–2026 League of Extraordinary Sh!t Talkers • Powered by LeagueMate</p>
     </footer>
 
+    <!-- Brag Card Modal Overlay -->
+    <div id="bragCardModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="relative flex flex-col items-center max-w-sm w-full">
+            <!-- Close Button -->
+            <button onclick="closeBragModal()" class="absolute -top-10 right-0 text-slate-400 hover:text-white text-sm font-bold flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-xmark"></i> Close
+            </button>
+
+            <!-- RENDER TARGET: The Brag Card -->
+            <div id="bragCardTarget" class="w-full bg-gradient-to-b from-lmnavy-800 via-lmnavy-900 to-lmnavy-950 border-2 border-lmblue-500/60 rounded-2xl p-6 shadow-2xl relative overflow-hidden text-slate-100 font-sans">
+                <!-- Top Accent Bar -->
+                <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-lmblue-500 via-lmturf-500 to-lmred-500"></div>
+                
+                <!-- Decorative Glows -->
+                <div class="absolute -top-16 -right-16 w-36 h-36 bg-lmblue-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-lmred-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+                <!-- Card Header -->
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4 mt-1">
+                    <div>
+                        <span class="text-[10px] tracking-widest uppercase font-black text-lmblue-400 block">LeagueMate Record</span>
+                        <span id="cardSeasonYear" class="text-xs text-slate-400 font-semibold">Historic Record</span>
+                    </div>
+                    <span id="cardBadge" class="text-[10px] font-black uppercase tracking-wider bg-lmblue-500/20 text-lmblue-400 border border-lmblue-500/40 px-2.5 py-0.5 rounded-full">
+                        League Record
+                    </span>
+                </div>
+
+                <!-- Hero Visual -->
+                <div class="flex flex-col items-center my-4">
+                    <div class="w-24 h-24 rounded-full border-2 border-lmblue-400/80 p-1 bg-lmnavy-950 shadow-inner flex items-center justify-center relative overflow-hidden">
+                        <img id="cardImage" src="logo.png" alt="Record Holder" 
+                             onerror="if(!this.dataset.try){this.dataset.try=1;this.src='logo.jpg';}else if(this.dataset.try==1){this.dataset.try=2;this.src='Logo.png';}else if(this.dataset.try==2){this.dataset.try=3;this.src='23013.jpg';}"
+                             class="w-full h-full object-cover rounded-full bg-lmnavy-800" />
+                    </div>
+                    <h3 id="cardEntityName" class="text-xl font-black text-white mt-3 text-center tracking-tight uppercase italic">Player / Team</h3>
+                    <p id="cardFranchise" class="text-xs text-lmblue-400 font-bold tracking-wide mt-0.5">Franchise Name</p>
+                </div>
+
+                <!-- Main Metric Box -->
+                <div class="bg-lmnavy-950/90 border border-slate-800 rounded-xl p-4 text-center my-4 shadow-inner">
+                    <div class="text-[10px] uppercase tracking-widest text-slate-400 font-bold" id="cardMetricLabel">Record Stat</div>
+                    <div class="text-3xl sm:text-4xl font-black text-white my-1 tracking-tight" id="cardMetricValue">0.00</div>
+                    <div class="text-xs text-emerald-400 font-semibold" id="cardSubContext">Context</div>
+                </div>
+
+                <!-- Optional Stat Breakdown Grid (Populated for Players) -->
+                <div id="cardStatsGrid" class="hidden grid-cols-4 gap-1 mb-4"></div>
+
+                <!-- Card Footer -->
+                <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-[10px] text-slate-400">
+                    <span class="font-bold uppercase tracking-wider text-slate-500">League of Extraordinary Sh!t Talkers</span>
+                    <span class="font-black text-lmblue-400">leaguemate.org</span>
+                </div>
+            </div>
+
+            <!-- Export Button -->
+            <button id="downloadCardBtn" onclick="exportBragCard()" class="mt-5 w-full py-3 px-4 rounded-xl font-black uppercase tracking-wider text-xs bg-lmblue-500 hover:bg-lmblue-600 text-white shadow-lg shadow-lmblue-500/30 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-download"></i> Save Image to Share
+            </button>
+        </div>
+    </div>
+
     <!-- JS EXTERNAL DATA IMPORT -->
     <script src="league-data.js"></script>
 
@@ -585,7 +650,7 @@
             const grid = document.getElementById('player-records-grid');
             if (!grid || typeof playerRecords === 'undefined') return;
 
-            grid.innerHTML = playerRecords.map(p => `
+            grid.innerHTML = playerRecords.map((p, idx) => `
                 <article class="player-card group relative overflow-hidden rounded-xl border border-lmblue-500/30 shadow-xl shadow-black/40">
                     <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-lmblue-500 via-lmturf-500 to-lmred-500 opacity-90"></div>
                     <div class="relative flex items-start gap-4 p-4 pb-3">
@@ -607,10 +672,97 @@
                     </div>
                     <div class="flex items-center justify-between border-t border-slate-800 px-4 py-2.5 bg-lmnavy-950/60">
                         <span class="text-xs text-slate-400">Manager: <span class="text-slate-200 font-medium">${p.owner}</span></span>
-                        <span class="text-xs font-medium text-lmblue-400 hover:text-lmblue-300 cursor-pointer">League Record ✓</span>
+                        <span onclick="openPlayerBragCard(${idx})" class="text-xs font-medium text-lmblue-400 hover:text-lmblue-300 cursor-pointer flex items-center gap-1" title="Generate Shareable Brag Card">League Record ✓ <i class="fa-solid fa-share-nodes text-[10px]"></i></span>
                     </div>
                 </article>
             `).join('');
+        }
+
+        // BRAG CARD MODAL & EXPORT LOGIC
+        function openPlayerBragCard(index) {
+            if (typeof playerRecords === 'undefined' || !playerRecords[index]) return;
+            const p = playerRecords[index];
+            openBragCard({
+                name: p.name,
+                franchise: 'Manager: ' + p.owner,
+                metricLabel: p.position + ' Single-Game Record',
+                score: p.fpts,
+                context: p.team + ' · ' + p.number,
+                year: p.week,
+                badge: p.position + ' Record',
+                imgUrl: p.headshot,
+                stats: p.stats
+            });
+        }
+
+        function openBragCard(data) {
+            document.getElementById('cardSeasonYear').textContent = data.year || 'Historic Record';
+            document.getElementById('cardBadge').textContent = data.badge || 'League Record';
+            document.getElementById('cardEntityName').textContent = data.name || 'Record Holder';
+            document.getElementById('cardFranchise').textContent = data.franchise || 'League Franchise';
+            document.getElementById('cardMetricLabel').textContent = data.metricLabel || 'Fantasy Points';
+            document.getElementById('cardMetricValue').textContent = data.score || '0.00';
+            document.getElementById('cardSubContext').textContent = data.context || '';
+
+            const imgElement = document.getElementById('cardImage');
+            delete imgElement.dataset.try;
+            imgElement.src = data.imgUrl || 'logo.png';
+
+            const statsGrid = document.getElementById('cardStatsGrid');
+            if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
+                statsGrid.innerHTML = data.stats.map(s => `
+                    <div class="bg-lmnavy-950/80 border border-slate-800 rounded-lg p-1.5 text-center">
+                        <div class="text-[9px] uppercase text-slate-400 truncate">${s.label}</div>
+                        <div class="text-xs font-bold text-white mt-0.5">${s.value}</div>
+                    </div>
+                `).join('');
+                statsGrid.classList.remove('hidden');
+                statsGrid.classList.add('grid');
+            } else {
+                statsGrid.innerHTML = '';
+                statsGrid.classList.add('hidden');
+                statsGrid.classList.remove('grid');
+            }
+
+            document.getElementById('bragCardModal').classList.remove('hidden');
+        }
+
+        function closeBragModal() {
+            document.getElementById('bragCardModal').classList.add('hidden');
+        }
+
+        function exportBragCard() {
+            const cardElement = document.getElementById('bragCardTarget');
+            const btn = document.getElementById('downloadCardBtn');
+            const originalHTML = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating Image...';
+            btn.disabled = true;
+
+            html2canvas(cardElement, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#050811'
+            }).then((canvas) => {
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                const rawName = document.getElementById('cardEntityName').textContent || 'record';
+                const filename = `leaguemate-${rawName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-card.png`;
+
+                link.download = filename;
+                link.href = image;
+                link.click();
+
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }).catch((err) => {
+                console.error('Failed to generate brag card:', err);
+                btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Export Failed';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }, 2000);
+            });
         }
 
         // DRAFT VAULT LOGIC (Directly Reads the Excel File!)
