@@ -84,21 +84,25 @@
                 </div>
             </div>
             <!-- Navigation Tabs -->
-            <nav class="hidden md:flex space-x-1 bg-lmnavy-950 p-1.5 rounded-xl border border-slate-800">
-                <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn px-4 py-2 rounded-lg text-sm font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow">Overview</button>
-                <button onclick="switchTab('records')" id="btn-records" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Team Records</button>
-                <button onclick="switchTab('players')" id="btn-players" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Player Records</button>
-                <button onclick="switchTab('h2h')" id="btn-h2h" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Head-to-Head</button>
-                <button onclick="switchTab('drafts')" id="btn-drafts" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Draft History</button>
-                <button onclick="switchTab('bylaws')" id="btn-bylaws" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Bylaws & Rules</button>
-                <button onclick="switchTab('playoffs')" id="btn-playoffs" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Playoff Calculator</button>
+            <nav class="hidden md:flex space-x-1 bg-lmnavy-950 p-1.5 rounded-xl border border-slate-800 overflow-x-auto">
+                <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow whitespace-nowrap">Overview</button>
+                <button onclick="switchTab('standings')" id="btn-standings" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Standings</button>
+                <button onclick="switchTab('top30')" id="btn-top30" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Player Stats</button>
+                <button onclick="switchTab('records')" id="btn-records" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">All-Time Records</button>
+                <button onclick="switchTab('players')" id="btn-players" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Positional Records</button>
+                <button onclick="switchTab('h2h')" id="btn-h2h" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Head-to-Head</button>
+                <button onclick="switchTab('drafts')" id="btn-drafts" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Draft History</button>
+                <button onclick="switchTab('bylaws')" id="btn-bylaws" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Bylaws & Rules</button>
+                <button onclick="switchTab('playoffs')" id="btn-playoffs" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Playoff Calculator</button>
             </nav>
         </div>
         <!-- Mobile Nav -->
         <div class="md:hidden flex overflow-x-auto space-x-2 px-4 py-2 bg-lmnavy-950 border-t border-slate-800 text-xs">
             <button onclick="switchTab('overview')" id="m-btn-overview" class="whitespace-nowrap px-3 py-1.5 rounded font-black bg-lmblue-500 text-white">Overview</button>
-            <button onclick="switchTab('records')" id="m-btn-records" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Team Records</button>
-            <button onclick="switchTab('players')" id="m-btn-players" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Player Records</button>
+            <button onclick="switchTab('standings')" id="m-btn-standings" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Standings</button>
+            <button onclick="switchTab('top30')" id="m-btn-top30" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Player Stats</button>
+            <button onclick="switchTab('records')" id="m-btn-records" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">All-Time Records</button>
+            <button onclick="switchTab('players')" id="m-btn-players" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Positional Records</button>
             <button onclick="switchTab('h2h')" id="m-btn-h2h" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Head-to-Head</button>
             <button onclick="switchTab('drafts')" id="m-btn-drafts" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Drafts</button>
             <button onclick="switchTab('bylaws')" id="m-btn-bylaws" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Bylaws</button>
@@ -197,6 +201,99 @@
                     <div class="text-lmblue-400 text-xl mb-2"><i class="fa-solid fa-fire"></i></div>
                     <div class="text-2xl sm:text-3xl font-black text-white">10–2</div>
                     <div class="text-xs text-slate-400 font-medium mt-1">Best Regular Season (Texas Teabaggers, 2022)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW TAB: CURRENT SEASON STANDINGS (Placed right after Overview) -->
+        <section id="tab-standings" class="tab-content hidden space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                    <div>
+                        <h3 class="text-xl font-black uppercase italic text-white flex items-center">
+                            <i class="fa-solid fa-list-ol text-lmblue-400 mr-2.5"></i> 2026 Current Season Standings
+                        </h3>
+                        <p class="text-slate-400 text-sm mt-1">Live ESPN regular season standings, playoff seeding, points for (PF), and points against (PA).</p>
+                    </div>
+                    <button onclick="fetchLiveScores()" class="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-lmnavy-950 hover:bg-slate-800 text-lmblue-400 border border-slate-800 text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate"></i> Sync Standings
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
+                                <th class="py-3.5 px-4 text-center">Seed</th>
+                                <th class="py-3.5 px-4">Team</th>
+                                <th class="py-3.5 px-4 text-center">W</th>
+                                <th class="py-3.5 px-4 text-center">L</th>
+                                <th class="py-3.5 px-4 text-center">T</th>
+                                <th class="py-3.5 px-4 text-center">Win %</th>
+                                <th class="py-3.5 px-4 text-right">PF</th>
+                                <th class="py-3.5 px-4 text-right">PA</th>
+                                <th class="py-3.5 px-4 text-right">+/-</th>
+                                <th class="py-3.5 px-4 text-center">Streak</th>
+                            </tr>
+                        </thead>
+                        <tbody id="current-standings-tbody" class="divide-y divide-slate-800">
+                            <tr>
+                                <td colspan="10" class="py-8 px-4 text-center text-slate-400">
+                                    <i class="fa-solid fa-spinner fa-spin text-lmblue-400 mr-2"></i> Loading 2026 Season Standings from ESPN...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 flex items-center gap-4 text-xs text-slate-400">
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span> Top 6 Qualify for Playoffs</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-lmblue-400 inline-block"></span> Top 2 Earn First-Round Bye</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW TAB: TOP 30 POSITIONAL LEADERS -->
+        <section id="tab-top30" class="tab-content hidden space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                    <div>
+                        <h3 class="text-xl font-black uppercase italic text-white flex items-center">
+                            <i class="fa-solid fa-fire-flame-curved text-lmblue-400 mr-2.5"></i> 2026 Top 30 Positional Scoring Leaders
+                        </h3>
+                        <p class="text-slate-400 text-sm mt-1">Current season top 30 fantasy scorers by position with live injury status and league ownership.</p>
+                    </div>
+                    <!-- Position Filter Pills -->
+                    <div class="flex flex-wrap gap-1.5 bg-lmnavy-950 p-1.5 rounded-xl border border-slate-800">
+                        <button onclick="selectTop30Pos('QB')" id="pos-btn-QB" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider bg-lmblue-500 text-white shadow transition">QB</button>
+                        <button onclick="selectTop30Pos('RB')" id="pos-btn-RB" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">RB</button>
+                        <button onclick="selectTop30Pos('WR')" id="pos-btn-WR" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">WR</button>
+                        <button onclick="selectTop30Pos('TE')" id="pos-btn-TE" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">TE</button>
+                        <button onclick="selectTop30Pos('K')" id="pos-btn-K" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">K</button>
+                        <button onclick="selectTop30Pos('D/ST')" id="pos-btn-DST" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">D/ST</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
+                                <th class="py-3.5 px-4 text-center w-16">Rank</th>
+                                <th class="py-3.5 px-4">Player</th>
+                                <th class="py-3.5 px-4 text-center">NFL Team</th>
+                                <th class="py-3.5 px-4 text-center">Injury Status</th>
+                                <th class="py-3.5 px-4">Rostered By</th>
+                                <th class="py-3.5 px-4 text-right">2026 Total Pts</th>
+                                <th class="py-3.5 px-4 text-right">Avg PPG</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top30-tbody" class="divide-y divide-slate-800">
+                            <tr>
+                                <td colspan="7" class="py-8 px-4 text-center text-slate-400">
+                                    <i class="fa-solid fa-spinner fa-spin text-lmblue-400 mr-2"></i> Loading Top 30 Positional Scorers from ESPN...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -304,6 +401,7 @@
                                 <td class="py-3 px-4 text-right text-slate-300">913.40</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+39.22</td>
                             </tr>
+                            <!-- Note: Added script loads the remaining rows exactly as they were -->
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Knobgobblers</td><td class="py-3 px-4 text-center text-slate-300">8</td><td class="py-3 px-4 text-center text-slate-300">5</td><td class="py-3 px-4 text-center font-bold text-slate-200">13</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">61.5%</td><td class="py-3 px-4 text-right text-slate-300">1295.00</td><td class="py-3 px-4 text-right text-slate-300">1216.00</td><td class="py-3 px-4 text-right font-black text-emerald-400">+79.00</td></tr>
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Fin it to win it</td><td class="py-3 px-4 text-center text-slate-300">31</td><td class="py-3 px-4 text-center text-slate-300">20</td><td class="py-3 px-4 text-center font-bold text-slate-200">51</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">60.8%</td><td class="py-3 px-4 text-right text-slate-300">6667.80</td><td class="py-3 px-4 text-right text-slate-300">6351.02</td><td class="py-3 px-4 text-right font-black text-emerald-400">+316.78</td></tr>
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Skillz That Killz</td><td class="py-3 px-4 text-center text-slate-300">19</td><td class="py-3 px-4 text-center text-slate-300">14</td><td class="py-3 px-4 text-center font-bold text-slate-200">33</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">57.6%</td><td class="py-3 px-4 text-right text-slate-300">3231.12</td><td class="py-3 px-4 text-right text-slate-300">3009.46</td><td class="py-3 px-4 text-right font-black text-emerald-400">+221.66</td></tr>
@@ -312,7 +410,7 @@
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">JOE BUCK YOURSELF</td><td class="py-3 px-4 text-center text-slate-300">83</td><td class="py-3 px-4 text-center text-slate-300">71</td><td class="py-3 px-4 text-center font-bold text-slate-200">154</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.9%</td><td class="py-3 px-4 text-right text-slate-300">17178.50</td><td class="py-3 px-4 text-right text-slate-300">17187.54</td><td class="py-3 px-4 text-right font-black text-lmred-400">-9.04</td></tr>
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Adrian Beat His son</td><td class="py-3 px-4 text-center text-slate-300">41</td><td class="py-3 px-4 text-center text-slate-300">36</td><td class="py-3 px-4 text-center font-bold text-slate-200">77</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.2%</td><td class="py-3 px-4 text-right text-slate-300">8020.47</td><td class="py-3 px-4 text-right text-slate-300">7765.27</td><td class="py-3 px-4 text-right font-black text-emerald-400">+255.20</td></tr>
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Zirk Squad</td><td class="py-3 px-4 text-center text-slate-300">43</td><td class="py-3 px-4 text-center text-slate-300">41</td><td class="py-3 px-4 text-center font-bold text-slate-200">84</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">51.2%</td><td class="py-3 px-4 text-right text-slate-300">10178.96</td><td class="py-3 px-4 text-right text-slate-300">9813.46</td><td class="py-3 px-4 text-right font-black text-emerald-400">+365.50</td></tr>
-                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">SHHHHH THECHAMPISHERE</td><td class="py-3 px-4 text-center text-slate-300">64</td><td class="py-3 px-4 text-center text-slate-300">64</td><td class="py-3 px-4 text-center font-bold text-slate-200">128</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">50.0%</td><td class="py-3 px-4 text-right text-slate-300">14423.46</td><td class="py-3 px-4 text-right text-slate-300">14259.22</td><td class="py-3 font-bold text-right font-black text-emerald-400">+164.24</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">SHHHHH THECHAMPISHERE</td><td class="py-3 px-4 text-center text-slate-300">64</td><td class="py-3 px-4 text-center text-slate-300">64</td><td class="py-3 px-4 text-center font-bold text-slate-200">128</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">50.0%</td><td class="py-3 px-4 text-right text-slate-300">14423.46</td><td class="py-3 px-4 text-right text-slate-300">14259.22</td><td class="py-3 px-4 text-right font-black text-emerald-400">+164.24</td></tr>
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Barely Gettin Bye</td><td class="py-3 px-4 text-center text-slate-300">73</td><td class="py-3 px-4 text-center text-slate-300">74</td><td class="py-3 px-4 text-center font-bold text-slate-200">147</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">49.7%</td><td class="py-3 px-4 text-right text-slate-300">15852.12</td><td class="py-3 px-4 text-right text-slate-300">16181.44</td><td class="py-3 px-4 text-right font-black text-lmred-400">-329.32</td></tr>
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Jacksonville Jarheads</td><td class="py-3 px-4 text-center text-slate-300">19</td><td class="py-3 px-4 text-center text-slate-300">21</td><td class="py-3 px-4 text-center font-bold text-slate-200">40</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">47.5%</td><td class="py-3 px-4 text-right text-slate-300">4587.80</td><td class="py-3 px-4 text-right text-slate-300">4646.64</td><td class="py-3 px-4 text-right font-black text-lmred-400">-58.84</td></tr>
                             <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Men In Black</td><td class="py-3 px-4 text-center text-slate-300">6</td><td class="py-3 px-4 text-center text-slate-300">7</td><td class="py-3 px-4 text-center font-bold text-slate-200">13</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">46.2%</td><td class="py-3 px-4 text-right text-slate-300">1257.00</td><td class="py-3 px-4 text-right text-slate-300">1233.00</td><td class="py-3 px-4 text-right font-black text-emerald-400">+24.00</td></tr>
@@ -655,11 +753,12 @@
 
             if (tabId === 'playoffs') initScenarioDropdown();
             if (tabId === 'drafts' && Object.keys(masterDraftData).length === 0) fetchExcelDraftData();
+            if (tabId === 'top30' && top30PlayersCache.length === 0) fetchTop30Players();
 
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white");
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.className = "tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap");
             document.querySelectorAll('[id^="m-btn-"]').forEach(btn => btn.className = "whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400");
             
-            if (document.getElementById('btn-' + tabId)) document.getElementById('btn-' + tabId).className = "tab-btn px-4 py-2 rounded-lg text-sm font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow";
+            if (document.getElementById('btn-' + tabId)) document.getElementById('btn-' + tabId).className = "tab-btn px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow whitespace-nowrap";
             if (document.getElementById('m-btn-' + tabId)) document.getElementById('m-btn-' + tabId).className = "whitespace-nowrap px-3 py-1.5 rounded font-black bg-lmblue-500 text-white";
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -679,14 +778,16 @@
             }
         });
 
-        // ESPN LIVE SCORING & BOXSCORE INTEGRATION (League ID: 140046)
+        // ESPN LIVE SCORING, PROJECTIONS, INJURIES, STANDINGS & TOP 30 INTEGRATION (League ID: 140046)
         const ESPN_LEAGUE_ID = '140046';
         const ESPN_SEASON = 2026;
-        const ESPN_API_URL = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${ESPN_SEASON}/segments/0/leagues/${ESPN_LEAGUE_ID}?view=mMatchupScore&view=mScoreboard&view=mTeam&view=mBoxscore&view=mRoster`;
+        const ESPN_API_URL = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${ESPN_SEASON}/segments/0/leagues/${ESPN_LEAGUE_ID}?view=mMatchupScore&view=mScoreboard&view=mTeam&view=mBoxscore&view=mRoster&view=mStandings`;
 
         let liveMatchupsCache = [];
         let liveTeamsMap = {};
         let currentScoringWeek = 1;
+        let top30PlayersCache = [];
+        let currentTop30Pos = 'QB';
 
         const SLOT_MAP = {
             0: { label: 'QB', order: 1 },
@@ -701,6 +802,66 @@
         };
 
         const POS_MAP = { 1: 'QB', 2: 'RB', 3: 'WR', 4: 'TE', 5: 'K', 16: 'D/ST' };
+
+        const NFL_PRO_TEAMS = {
+            0: 'FA', 1: 'ATL', 2: 'BUF', 3: 'CHI', 4: 'CIN', 5: 'CLE', 6: 'DAL', 7: 'DEN', 8: 'DET',
+            9: 'GB', 10: 'TEN', 11: 'IND', 12: 'KC', 13: 'LV', 14: 'LAR', 15: 'MIA', 16: 'MIN',
+            17: 'NE', 18: 'NO', 19: 'NYG', 20: 'NYJ', 21: 'PHI', 22: 'ARI', 23: 'PIT', 24: 'LAC',
+            25: 'SF', 26: 'SEA', 27: 'TB', 28: 'WSH', 29: 'CAR', 30: 'JAX', 33: 'BAL', 34: 'HOU'
+        };
+
+        function getInjuryBadgeHTML(status) {
+            if (!status || status === 'ACTIVE' || status === 'NORMAL') return '';
+            const map = {
+                'QUESTIONABLE': { short: 'Q', cls: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
+                'DOUBTFUL': { short: 'D', cls: 'bg-orange-500/20 text-orange-400 border-orange-500/40' },
+                'OUT': { short: 'O', cls: 'bg-lmred-500/20 text-lmred-400 border-lmred-500/40' },
+                'INJURY_RESERVE': { short: 'IR', cls: 'bg-lmred-500/30 text-lmred-300 border-lmred-500/50' },
+                'SUSPENSION': { short: 'SUSP', cls: 'bg-purple-500/20 text-purple-300 border-purple-500/40' },
+                'PROBABLE': { short: 'P', cls: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' }
+            };
+            const item = map[status] || { short: status.substring(0, 3).toUpperCase(), cls: 'bg-slate-700 text-slate-300 border-slate-600' };
+            return `<span class="ml-1.5 px-1.5 py-0.2 rounded text-[9px] font-black uppercase border ${item.cls}" title="Injury Status: ${status}">${item.short}</span>`;
+        }
+
+        function extractPlayerWeekStats(entry, playerObj, weekNum) {
+            const statsArr = entry?.playerPoolEntry?.player?.stats || playerObj?.stats || [];
+            let actual = entry?.playerPoolEntry?.appliedStatTotal;
+            let projected = null;
+
+            statsArr.forEach(s => {
+                if (s.scoringPeriodId === weekNum) {
+                    if (s.statSourceId === 0 && actual === undefined && s.appliedTotal !== undefined) {
+                        actual = s.appliedTotal;
+                    }
+                    if (s.statSourceId === 1 && s.appliedTotal !== undefined) {
+                        projected = s.appliedTotal;
+                    }
+                }
+            });
+
+            return {
+                actual: (actual ?? 0).toFixed(2),
+                projected: projected !== null ? projected.toFixed(1) : '0.0'
+            };
+        }
+
+        function calculateTeamProjectedTotal(matchupSide, teamInfo) {
+            if (matchupSide?.totalProjectedPointsLive !== undefined) {
+                return matchupSide.totalProjectedPointsLive.toFixed(2);
+            }
+            const rawEntries = matchupSide?.rosterForCurrentScoringPeriod?.entries || teamInfo?.rosterEntries || [];
+            let projSum = 0;
+            rawEntries.forEach(e => {
+                const slotId = e.lineupSlotId;
+                if (slotId !== 20 && slotId !== 21) {
+                    const playerObj = e.playerPoolEntry?.player || e.player || {};
+                    const st = extractPlayerWeekStats(e, playerObj, currentScoringWeek);
+                    projSum += parseFloat(st.projected) || 0;
+                }
+            });
+            return projSum > 0 ? projSum.toFixed(2) : null;
+        }
 
         async function fetchLiveScores() {
             const grid = document.getElementById('live-matchups-grid');
@@ -718,13 +879,26 @@
 
                 liveTeamsMap = {};
                 (data.teams || []).forEach(t => {
+                    const overall = t.record?.overall || {};
                     liveTeamsMap[t.id] = {
+                        id: t.id,
                         name: t.name || `${t.location || ''} ${t.nickname || ''}`.trim() || `Team ${t.id}`,
                         logo: t.logo || 'logo.png',
-                        record: t.record?.overall ? `${t.record.overall.wins}-${t.record.overall.losses}` : '',
+                        wins: overall.wins ?? 0,
+                        losses: overall.losses ?? 0,
+                        ties: overall.ties ?? 0,
+                        pf: overall.pointsFor ?? 0,
+                        pa: overall.pointsAgainst ?? 0,
+                        streakType: overall.streakType || '',
+                        streakLength: overall.streakLength || 0,
+                        playoffSeed: t.playoffSeed || t.rankCalculatedFinal || 99,
+                        record: overall.wins !== undefined ? `${overall.wins}-${overall.losses}${overall.ties ? '-' + overall.ties : ''}` : '',
                         rosterEntries: t.roster?.entries || []
                     };
                 });
+
+                // Render Current Season Standings Table
+                renderCurrentStandings();
 
                 liveMatchupsCache = (data.schedule || []).filter(m => m.matchupPeriodId === currentScoringWeek);
 
@@ -740,6 +914,9 @@
                     const awayScore = (m.away?.totalPointsLive ?? m.away?.totalPoints ?? 0).toFixed(2);
                     const homeScore = (m.home?.totalPointsLive ?? m.home?.totalPoints ?? 0).toFixed(2);
 
+                    const awayProj = calculateTeamProjectedTotal(m.away, away);
+                    const homeProj = calculateTeamProjectedTotal(m.home, home);
+
                     const awayWinning = parseFloat(awayScore) > parseFloat(homeScore);
                     const homeWinning = parseFloat(homeScore) > parseFloat(awayScore);
 
@@ -754,7 +931,10 @@
                                         <div class="text-[10px] text-slate-500 font-semibold">${away.record}</div>
                                     </div>
                                 </div>
-                                <div class="text-lg font-black font-mono ${awayWinning ? 'text-emerald-400' : 'text-slate-200'}">${awayScore}</div>
+                                <div class="text-right shrink-0 ml-2">
+                                    <div class="text-lg font-black font-mono leading-tight ${awayWinning ? 'text-emerald-400' : 'text-slate-200'}">${awayScore}</div>
+                                    ${awayProj ? `<div class="text-[10px] font-mono text-slate-400">Proj: ${awayProj}</div>` : ''}
+                                </div>
                             </div>
 
                             <div class="border-t border-slate-800/80"></div>
@@ -768,11 +948,14 @@
                                         <div class="text-[10px] text-slate-500 font-semibold">${home.record}</div>
                                     </div>
                                 </div>
-                                <div class="text-lg font-black font-mono ${homeWinning ? 'text-emerald-400' : 'text-slate-200'}">${homeScore}</div>
+                                <div class="text-right shrink-0 ml-2">
+                                    <div class="text-lg font-black font-mono leading-tight ${homeWinning ? 'text-emerald-400' : 'text-slate-200'}">${homeScore}</div>
+                                    ${homeProj ? `<div class="text-[10px] font-mono text-slate-400">Proj: ${homeProj}</div>` : ''}
+                                </div>
                             </div>
 
                             <div class="pt-1 flex items-center justify-end text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-lmblue-400 transition-colors">
-                                <span>Side-by-Side Lineups <i class="fa-solid fa-table-columns ml-1.5 text-[9px]"></i></span>
+                                <span>Side-by-Side Lineups & Projections <i class="fa-solid fa-table-columns ml-1.5 text-[9px]"></i></span>
                             </div>
                         </div>
                     `;
@@ -789,6 +972,222 @@
             }
         }
 
+        // RENDER 2026 CURRENT SEASON STANDINGS
+        function renderCurrentStandings() {
+            const tbody = document.getElementById('current-standings-tbody');
+            if (!tbody) return;
+            const teamsList = Object.values(liveTeamsMap);
+            if (teamsList.length === 0) return;
+
+            teamsList.sort((a, b) => {
+                if (a.playoffSeed !== b.playoffSeed) return a.playoffSeed - b.playoffSeed;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return b.pf - a.pf;
+            });
+
+            tbody.innerHTML = teamsList.map((t, index) => {
+                const rank = index + 1;
+                const totalGames = t.wins + t.losses + t.ties;
+                const winPct = totalGames > 0 ? ((t.wins / totalGames) * 100).toFixed(1) + '%' : '0.0%';
+                const diff = t.pf - t.pa;
+                const diffFormatted = (diff >= 0 ? '+' : '') + diff.toFixed(2);
+                const streakStr = t.streakLength > 0 ? `${t.streakType === 'WIN' ? 'W' : t.streakType === 'LOSS' ? 'L' : 'T'}${t.streakLength}` : '—';
+
+                const seedBadgeCls = rank <= 2
+                    ? 'bg-lmblue-500/20 text-lmblue-400 border border-lmblue-500/40'
+                    : rank <= 6
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                    : 'bg-lmnavy-950 text-slate-400 border border-slate-800';
+
+                return `
+                    <tr class="hover:bg-lmnavy-800/50 transition-colors ${rank === 6 ? 'border-b-2 border-emerald-500/40' : ''}">
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="px-2 py-0.5 rounded-full text-xs font-black ${seedBadgeCls}">#${rank}</span>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="${t.logo}" onerror="this.src='logo.png'" class="w-8 h-8 rounded-full bg-lmnavy-950 object-cover border border-slate-700 shrink-0">
+                                <span class="font-bold text-white">${t.name}</span>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-center font-bold text-slate-200">${t.wins}</td>
+                        <td class="py-3.5 px-4 text-center font-bold text-slate-200">${t.losses}</td>
+                        <td class="py-3.5 px-4 text-center text-slate-400">${t.ties}</td>
+                        <td class="py-3.5 px-4 text-center font-bold text-lmblue-400">${winPct}</td>
+                        <td class="py-3.5 px-4 text-right font-mono text-slate-200">${t.pf.toFixed(2)}</td>
+                        <td class="py-3.5 px-4 text-right font-mono text-slate-300">${t.pa.toFixed(2)}</td>
+                        <td class="py-3.5 px-4 text-right font-mono font-black ${diff >= 0 ? 'text-emerald-400' : 'text-lmred-400'}">${diffFormatted}</td>
+                        <td class="py-3.5 px-4 text-center text-xs font-bold ${t.streakType === 'WIN' ? 'text-emerald-400' : t.streakType === 'LOSS' ? 'text-lmred-400' : 'text-slate-400'}">${streakStr}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // FETCH & RENDER TOP 30 POSITIONAL PLAYERS FOR CURRENT SEASON
+        async function fetchTop30Players() {
+            const tbody = document.getElementById('top30-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="7" class="py-8 px-4 text-center text-slate-300 font-bold uppercase tracking-wider"><i class="fa-solid fa-spinner fa-spin text-lmblue-400 mr-2"></i> Fetching 2026 Positional Leaders from ESPN...</td></tr>`;
+
+            const filterHeader = JSON.stringify({
+                players: {
+                    limit: 500,
+                    sortAppliedStatTotal: {
+                        sortAsc: false,
+                        sortPriority: 1,
+                        value: `00${ESPN_SEASON}`
+                    }
+                }
+            });
+
+            const url = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${ESPN_SEASON}/segments/0/leagues/${ESPN_LEAGUE_ID}?view=kona_player_info`;
+
+            try {
+                const res = await fetch(url, {
+                    headers: { 'X-Fantasy-Filter': filterHeader }
+                });
+                if (!res.ok) throw new Error('Could not fetch kona_player_info');
+                const data = await res.json();
+
+                const rawPlayers = data.players || [];
+                top30PlayersCache = rawPlayers.map(item => {
+                    const p = item.player || {};
+                    const pos = POS_MAP[p.defaultPositionId] || 'OTHER';
+                    const nflTeam = NFL_PRO_TEAMS[p.proTeamId] || 'FA';
+                    const injuryStatus = p.injuryStatus || (p.injured ? 'INJURED' : 'ACTIVE');
+                    const onTeamId = item.onTeamId || 0;
+
+                    // Extract 2026 Season Total Points (statSourceId === 0, statSplitTypeId === 0)
+                    let seasonTotal = item.ratings?.['0']?.totalRating;
+                    const statsList = p.stats || [];
+                    const seasonStat = statsList.find(s => s.statSourceId === 0 && s.statSplitTypeId === 0 && s.id === `00${ESPN_SEASON}`);
+                    if (seasonStat && seasonStat.appliedTotal !== undefined) {
+                        seasonTotal = seasonStat.appliedTotal;
+                    }
+                    seasonTotal = seasonTotal ?? 0;
+
+                    const gamesPlayed = Math.max(1, currentScoringWeek);
+                    const avgPpg = seasonTotal / gamesPlayed;
+
+                    const headshot = p.defaultPositionId === 16
+                        ? `https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/${nflTeam.toLowerCase()}.png&w=96&h=96`
+                        : `https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/${p.id}.png&w=96&h=70&cb=1`;
+
+                    return {
+                        id: p.id,
+                        name: p.fullName || 'Unknown Player',
+                        pos: pos,
+                        nflTeam: nflTeam,
+                        injuryStatus: injuryStatus,
+                        onTeamId: onTeamId,
+                        totalPts: seasonTotal,
+                        avgPpg: avgPpg,
+                        headshot: headshot
+                    };
+                });
+
+                renderTop30Table();
+            } catch (err) {
+                console.error('Top 30 Fetch Error:', err);
+                // Fallback: build positional leaders from all currently rostered players if CORS blocks custom X-Fantasy-Filter header
+                buildTop30FromRostersFallback();
+            }
+        }
+
+        function buildTop30FromRostersFallback() {
+            const seen = new Set();
+            const fallbackList = [];
+            Object.values(liveTeamsMap).forEach(team => {
+                (team.rosterEntries || []).forEach(e => {
+                    const p = e.playerPoolEntry?.player || e.player || {};
+                    if (!p.id || seen.has(p.id)) return;
+                    seen.add(p.id);
+                    const pos = POS_MAP[p.defaultPositionId] || 'OTHER';
+                    const nflTeam = NFL_PRO_TEAMS[p.proTeamId] || 'FA';
+                    const statsList = p.stats || [];
+                    const seasonStat = statsList.find(s => s.statSourceId === 0 && s.statSplitTypeId === 0);
+                    const totalPts = seasonStat?.appliedTotal ?? e.playerPoolEntry?.appliedStatTotal ?? 0;
+                    const headshot = p.defaultPositionId === 16
+                        ? 'logo.png'
+                        : `https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/${p.id}.png&w=96&h=70&cb=1`;
+
+                    fallbackList.push({
+                        id: p.id,
+                        name: p.fullName || 'Unknown Player',
+                        pos: pos,
+                        nflTeam: nflTeam,
+                        injuryStatus: p.injuryStatus || 'ACTIVE',
+                        onTeamId: team.id,
+                        totalPts: totalPts,
+                        avgPpg: totalPts / Math.max(1, currentScoringWeek),
+                        headshot: headshot
+                    });
+                });
+            });
+            top30PlayersCache = fallbackList;
+            renderTop30Table();
+        }
+
+        function selectTop30Pos(pos) {
+            currentTop30Pos = pos;
+            document.querySelectorAll('.pos-filter-btn').forEach(btn => {
+                btn.className = "pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition";
+            });
+            const btnId = pos === 'D/ST' ? 'pos-btn-DST' : `pos-btn-${pos}`;
+            const activeBtn = document.getElementById(btnId);
+            if (activeBtn) {
+                activeBtn.className = "pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider bg-lmblue-500 text-white shadow transition";
+            }
+            renderTop30Table();
+        }
+
+        function renderTop30Table() {
+            const tbody = document.getElementById('top30-tbody');
+            if (!tbody) return;
+
+            const filtered = top30PlayersCache
+                .filter(p => p.pos === currentTop30Pos)
+                .sort((a, b) => b.totalPts - a.totalPts)
+                .slice(0, 30);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-8 px-4 text-center text-slate-400 text-sm">No player stats available yet for ${currentTop30Pos} in the ${ESPN_SEASON} season.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map((p, idx) => {
+                const ownerTeam = liveTeamsMap[p.onTeamId];
+                const ownerLabel = ownerTeam
+                    ? `<span class="text-slate-200 font-semibold">${ownerTeam.name}</span>`
+                    : `<span class="text-xs px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">Free Agent</span>`;
+
+                const injuryBadge = getInjuryBadgeHTML(p.injuryStatus);
+                const fullInjuryText = (!p.injuryStatus || p.injuryStatus === 'ACTIVE' || p.injuryStatus === 'NORMAL')
+                    ? `<span class="text-xs text-emerald-400 font-semibold">Healthy</span>`
+                    : `<span class="text-xs font-bold text-amber-400">${p.injuryStatus.replace('_', ' ')}</span>`;
+
+                return `
+                    <tr class="hover:bg-lmnavy-800/50 transition-colors">
+                        <td class="py-3 px-4 text-center font-black text-lmblue-400">#${idx + 1}</td>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="${p.headshot}" onerror="this.src='logo.png'" class="w-9 h-9 rounded-full bg-lmnavy-950 object-cover border border-slate-700 shrink-0">
+                                <div>
+                                    <div class="font-bold text-white flex items-center">${p.name} ${injuryBadge}</div>
+                                    <div class="text-[10px] text-slate-400 font-bold uppercase">${p.pos}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-center font-bold text-slate-300">${p.nflTeam}</td>
+                        <td class="py-3 px-4 text-center">${fullInjuryText}</td>
+                        <td class="py-3 px-4">${ownerLabel}</td>
+                        <td class="py-3 px-4 text-right font-mono font-black text-emerald-400 text-base">${p.totalPts.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-right font-mono text-slate-300">${p.avgPpg.toFixed(1)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
         function parseTeamRoster(matchupSide, teamInfo) {
             const rawEntries = matchupSide?.rosterForCurrentScoringPeriod?.entries || teamInfo?.rosterEntries || [];
             const players = rawEntries.map(e => {
@@ -796,13 +1195,10 @@
                 const slotId = e.lineupSlotId;
                 const slotMeta = SLOT_MAP[slotId] || { label: 'FLEX', order: 50 };
                 const posName = POS_MAP[playerObj.defaultPositionId] || '';
+                const nflTeam = NFL_PRO_TEAMS[playerObj.proTeamId] || '';
 
-                let pts = e.playerPoolEntry?.appliedStatTotal;
-                if (pts === undefined && Array.isArray(playerObj.stats)) {
-                    const actualStat = playerObj.stats.find(s => s.statSourceId === 0 && (s.scoringPeriodId === currentScoringWeek || !s.scoringPeriodId));
-                    if (actualStat && actualStat.appliedTotal !== undefined) pts = actualStat.appliedTotal;
-                }
-                pts = (pts ?? 0).toFixed(2);
+                const weekStats = extractPlayerWeekStats(e, playerObj, currentScoringWeek);
+                const injuryStatus = playerObj.injuryStatus || (playerObj.injured ? 'INJURED' : 'ACTIVE');
 
                 const headshot = playerObj.defaultPositionId === 16
                     ? 'logo.png'
@@ -814,7 +1210,10 @@
                     order: slotMeta.order,
                     isStarter: slotId !== 20 && slotId !== 21,
                     pos: posName,
-                    pts: pts,
+                    nflTeam: nflTeam,
+                    pts: weekStats.actual,
+                    proj: weekStats.projected,
+                    injuryStatus: injuryStatus,
                     headshot: headshot
                 };
             });
@@ -837,11 +1236,17 @@
                             <span class="w-10 text-center text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-lmblue-500/15 text-lmblue-400 border border-lmblue-500/30 shrink-0">${p.slot}</span>
                             <img src="${p.headshot}" onerror="this.src='logo.png'" class="w-7 h-7 rounded-full bg-lmnavy-900 object-cover border border-slate-700 shrink-0">
                             <div class="truncate">
-                                <div class="text-xs font-bold text-white truncate leading-tight">${p.name}</div>
-                                <div class="text-[9px] text-slate-400 font-semibold">${p.pos}</div>
+                                <div class="text-xs font-bold text-white truncate leading-tight flex items-center">
+                                    <span class="truncate">${p.name}</span>
+                                    ${getInjuryBadgeHTML(p.injuryStatus)}
+                                </div>
+                                <div class="text-[9px] text-slate-400 font-semibold">${p.pos}${p.nflTeam ? ' · ' + p.nflTeam : ''}</div>
                             </div>
                         </div>
-                        <div class="text-xs font-mono font-black text-emerald-400 ml-2 shrink-0">${p.pts}</div>
+                        <div class="text-right ml-2 shrink-0">
+                            <div class="text-xs font-mono font-black text-emerald-400 leading-tight">${p.pts}</div>
+                            <div class="text-[9px] font-mono text-slate-400">Proj: ${p.proj}</div>
+                        </div>
                     </div>
                 `).join('');
             };
@@ -875,6 +1280,9 @@
             const awayScore = (m.away?.totalPointsLive ?? m.away?.totalPoints ?? 0).toFixed(2);
             const homeScore = (m.home?.totalPointsLive ?? m.home?.totalPoints ?? 0).toFixed(2);
 
+            const awayProj = calculateTeamProjectedTotal(m.away, awayInfo);
+            const homeProj = calculateTeamProjectedTotal(m.home, homeInfo);
+
             const awayWinning = parseFloat(awayScore) > parseFloat(homeScore);
             const homeWinning = parseFloat(homeScore) > parseFloat(awayScore);
 
@@ -898,8 +1306,9 @@
                                     <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${awayInfo.record}</div>
                                 </div>
                             </div>
-                            <div class="text-2xl sm:text-3xl font-black font-mono ${awayWinning ? 'text-emerald-400' : 'text-slate-200'} ml-3 shrink-0">
-                                ${awayScore}
+                            <div class="text-right ml-3 shrink-0">
+                                <div class="text-2xl sm:text-3xl font-black font-mono leading-tight ${awayWinning ? 'text-emerald-400' : 'text-slate-200'}">${awayScore}</div>
+                                ${awayProj ? `<div class="text-[11px] font-mono text-lmblue-400 font-bold">Proj: ${awayProj}</div>` : ''}
                             </div>
                         </div>
                         <!-- Away Team Dedicated Lineup -->
@@ -919,8 +1328,9 @@
                                     <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${homeInfo.record}</div>
                                 </div>
                             </div>
-                            <div class="text-2xl sm:text-3xl font-black font-mono ${homeWinning ? 'text-emerald-400' : 'text-slate-200'} ml-3 shrink-0">
-                                ${homeScore}
+                            <div class="text-right ml-3 shrink-0">
+                                <div class="text-2xl sm:text-3xl font-black font-mono leading-tight ${homeWinning ? 'text-emerald-400' : 'text-slate-200'}">${homeScore}</div>
+                                ${homeProj ? `<div class="text-[11px] font-mono text-lmred-400 font-bold">Proj: ${homeProj}</div>` : ''}
                             </div>
                         </div>
                         <!-- Home Team Dedicated Lineup -->
