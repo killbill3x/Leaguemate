@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>League Mate | Official League Hub</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS to read your Draft History Excel File dynamically -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -23,21 +26,14 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Classic ESPN Green Ticker Bar */
-        .espn-ticker {
-            background: linear-gradient(90deg, #008731 0%, #00b140 50%, #008731 100%);
-        }
+        .espn-ticker { background: linear-gradient(90deg, #008731 0%, #00b140 50%, #008731 100%); }
         .lm-hero-card {
             background: linear-gradient(135deg, #0a1124 0%, #111d3a 60%, #1a162b 100%);
             border: 1px solid rgba(0, 119, 255, 0.3);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 119, 255, 0.12);
         }
-        .lm-badge {
-            background: linear-gradient(135deg, #0077ff 0%, #005ce6 100%);
-        }
-        .lm-badge-red {
-            background: linear-gradient(135deg, #c8233c 0%, #a3152b 100%);
-        }
+        .lm-badge { background: linear-gradient(135deg, #0077ff 0%, #005ce6 100%); }
+        .lm-badge-red { background: linear-gradient(135deg, #c8233c 0%, #a3152b 100%); }
         .player-card {
             background-image:
                 radial-gradient(ellipse at top right, rgba(0, 119, 255, 0.1), transparent 60%),
@@ -45,27 +41,17 @@
                 linear-gradient(to bottom right, #0a1124, #050811);
             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .player-card:hover {
-            transform: translateY(-2px);
-        }
+        .player-card:hover { transform: translateY(-2px); }
         .player-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            pointer-events: none;
-            box-shadow: inset 0 0 0 1px rgba(0, 119, 255, 0.3);
-            opacity: 0;
-            transition: opacity 0.3s;
+            content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+            box-shadow: inset 0 0 0 1px rgba(0, 119, 255, 0.3); opacity: 0; transition: opacity 0.3s;
         }
-        .player-card:hover::after {
-            opacity: 1;
-        }
+        .player-card:hover::after { opacity: 1; }
     </style>
 </head>
 <body class="bg-lmnavy-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
     
-    <!-- ESPN Green Top Live Ticker Bar -->
+    <!-- Top Live Ticker Bar -->
     <div class="espn-ticker text-white text-xs font-bold py-1.5 px-4 overflow-hidden whitespace-nowrap flex items-center shadow-md">
         <div class="bg-black/40 px-2.5 py-0.5 rounded uppercase tracking-wider text-[10px] mr-3 font-black text-white border border-white/20 flex items-center">
             <span class="w-2 h-2 rounded-full bg-red-500 animate-ping mr-1.5"></span> THE WIRE
@@ -82,7 +68,6 @@
     <header class="bg-lmnavy-900 border-b-4 border-lmblue-500 sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3.5">
-                <!-- Make sure your attached logo is saved as 'logo.png' in the same folder -->
                 <img src="logo.png" alt="League Mate Logo" 
                      onerror="if(!this.dataset.try){this.dataset.try=1;this.src='logo.jpg';}else if(this.dataset.try==1){this.dataset.try=2;this.src='Logo.png';}else if(this.dataset.try==2){this.dataset.try=3;this.src='23013.jpg';}"
                      class="h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(0,119,255,0.4)]">
@@ -102,6 +87,7 @@
                 <button onclick="switchTab('records')" id="btn-records" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Team Records</button>
                 <button onclick="switchTab('players')" id="btn-players" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Player Records</button>
                 <button onclick="switchTab('h2h')" id="btn-h2h" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Head-to-Head</button>
+                <button onclick="switchTab('drafts')" id="btn-drafts" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Draft History</button>
                 <button onclick="switchTab('bylaws')" id="btn-bylaws" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Bylaws & Rules</button>
                 <button onclick="switchTab('playoffs')" id="btn-playoffs" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white">Playoff Calculator</button>
             </nav>
@@ -112,12 +98,12 @@
             <button onclick="switchTab('records')" id="m-btn-records" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Team Records</button>
             <button onclick="switchTab('players')" id="m-btn-players" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Player Records</button>
             <button onclick="switchTab('h2h')" id="m-btn-h2h" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Head-to-Head</button>
+            <button onclick="switchTab('drafts')" id="m-btn-drafts" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Drafts</button>
             <button onclick="switchTab('bylaws')" id="m-btn-bylaws" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Bylaws</button>
             <button onclick="switchTab('playoffs')" id="m-btn-playoffs" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Playoffs</button>
         </div>
     </header>
 
-    <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
         
         <!-- TAB 1: OVERVIEW -->
@@ -143,111 +129,21 @@
             <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
                 <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-trophy text-lmblue-400 mr-2"></i> Complete List of Season Champions (2011–2025)</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2025</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Texas Teabaggers</div>
-                            <div class="text-slate-400 text-xs">(5th Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2024</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Fin It to win It</div>
-                            <div class="text-slate-400 text-xs">(1st Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2023</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">PACKER BACKERS</div>
-                            <div class="text-slate-400 text-xs">(2nd Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2022</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Texas Teabaggers</div>
-                            <div class="text-slate-400 text-xs">(4th Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2021</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">SHHHHH THECHAMPISHERE</div>
-                            <div class="text-slate-400 text-xs">(1st Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2020</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Texas Teabaggers</div>
-                            <div class="text-slate-400 text-xs">(3rd Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2019</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Adrian Beat his son</div>
-                            <div class="text-slate-400 text-xs">(1st Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2018</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">PACKER BACKERS</div>
-                            <div class="text-slate-400 text-xs">(1st Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2017</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Barely Gettin Bye</div>
-                            <div class="text-slate-400 text-xs">(3rd Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2016</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Barely Gettin Bye</div>
-                            <div class="text-slate-400 text-xs">(2nd Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2015</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Cruz Control</div>
-                            <div class="text-slate-400 text-xs">(1st Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2014</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Sayre MustangGT5.0</div>
-                            <div class="text-slate-400 text-xs">(1st Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2013</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Barely Gettin Bye</div>
-                            <div class="text-slate-400 text-xs">(1st Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2012</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Texas Teabaggers</div>
-                            <div class="text-slate-400 text-xs">(2nd Title)</div>
-                        </div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4">
-                        <div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2011</div>
-                        <div>
-                            <div class="text-white font-bold text-sm">Texas Teabaggers</div>
-                            <div class="text-slate-400 text-xs">(1st Title)</div>
-                        </div>
-                    </div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2025</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(5th Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2024</div><div><div class="text-white font-bold text-sm">Fin It to win It</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2023</div><div><div class="text-white font-bold text-sm">PACKER BACKERS</div><div class="text-slate-400 text-xs">(2nd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2022</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(4th Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2021</div><div><div class="text-white font-bold text-sm">SHHHHH THECHAMPISHERE</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2020</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(3rd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2019</div><div><div class="text-white font-bold text-sm">Adrian Beat his son</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2018</div><div><div class="text-white font-bold text-sm">PACKER BACKERS</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2017</div><div><div class="text-white font-bold text-sm">Barely Gettin Bye</div><div class="text-slate-400 text-xs">(3rd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2016</div><div><div class="text-white font-bold text-sm">Barely Gettin Bye</div><div class="text-slate-400 text-xs">(2nd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2015</div><div><div class="text-white font-bold text-sm">Cruz Control</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2014</div><div><div class="text-white font-bold text-sm">Sayre MustangGT5.0</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2013</div><div><div class="text-white font-bold text-sm">Barely Gettin Bye</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2012</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(2nd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2011</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
                 </div>
             </div>
 
@@ -372,216 +268,28 @@
                                 <td class="py-3 px-4 text-right text-slate-300">913.40</td>
                                 <td class="py-3 px-4 text-right font-black text-emerald-400">+39.22</td>
                             </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Knobgobblers</td>
-                                <td class="py-3 px-4 text-center text-slate-300">8</td>
-                                <td class="py-3 px-4 text-center text-slate-300">5</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">13</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">61.5%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1295.00</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1216.00</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+79.00</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Fin it to win it</td>
-                                <td class="py-3 px-4 text-center text-slate-300">31</td>
-                                <td class="py-3 px-4 text-center text-slate-300">20</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">51</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">60.8%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">6667.80</td>
-                                <td class="py-3 px-4 text-right text-slate-300">6351.02</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+316.78</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Skillz That Killz</td>
-                                <td class="py-3 px-4 text-center text-slate-300">19</td>
-                                <td class="py-3 px-4 text-center text-slate-300">14</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">33</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">57.6%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">3231.12</td>
-                                <td class="py-3 px-4 text-right text-slate-300">3009.46</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+221.66</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Texas Teabaggers</td>
-                                <td class="py-3 px-4 text-center text-slate-300">86</td>
-                                <td class="py-3 px-4 text-center text-slate-300">68</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">154</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">55.8%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">17390.16</td>
-                                <td class="py-3 px-4 text-right text-slate-300">16740.45</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+649.71</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">PACKER BACKERS</td>
-                                <td class="py-3 px-4 text-center text-slate-300">53</td>
-                                <td class="py-3 px-4 text-center text-slate-300">42</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">95</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">55.8%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">11514.54</td>
-                                <td class="py-3 px-4 text-right text-slate-300">10861.52</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+653.02</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">JOE BUCK YOURSELF</td>
-                                <td class="py-3 px-4 text-center text-slate-300">83</td>
-                                <td class="py-3 px-4 text-center text-slate-300">71</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">154</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.9%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">17178.50</td>
-                                <td class="py-3 px-4 text-right text-slate-300">17187.54</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-9.04</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Adrian Beat His son</td>
-                                <td class="py-3 px-4 text-center text-slate-300">41</td>
-                                <td class="py-3 px-4 text-center text-slate-300">36</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">77</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.2%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">8020.47</td>
-                                <td class="py-3 px-4 text-right text-slate-300">7765.27</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+255.20</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Zirk Squad</td>
-                                <td class="py-3 px-4 text-center text-slate-300">43</td>
-                                <td class="py-3 px-4 text-center text-slate-300">41</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">84</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">51.2%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">10178.96</td>
-                                <td class="py-3 px-4 text-right text-slate-300">9813.46</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+365.50</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">SHHHHH THECHAMPISHERE</td>
-                                <td class="py-3 px-4 text-center text-slate-300">64</td>
-                                <td class="py-3 px-4 text-center text-slate-300">64</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">128</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">50.0%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">14423.46</td>
-                                <td class="py-3 px-4 text-right text-slate-300">14259.22</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+164.24</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Barely Gettin Bye</td>
-                                <td class="py-3 px-4 text-center text-slate-300">73</td>
-                                <td class="py-3 px-4 text-center text-slate-300">74</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">147</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">49.7%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">15852.12</td>
-                                <td class="py-3 px-4 text-right text-slate-300">16181.44</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-329.32</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Jacksonville Jarheads</td>
-                                <td class="py-3 px-4 text-center text-slate-300">19</td>
-                                <td class="py-3 px-4 text-center text-slate-300">21</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">40</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">47.5%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">4587.80</td>
-                                <td class="py-3 px-4 text-right text-slate-300">4646.64</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-58.84</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Men In Black</td>
-                                <td class="py-3 px-4 text-center text-slate-300">6</td>
-                                <td class="py-3 px-4 text-center text-slate-300">7</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">13</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">46.2%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1257.00</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1233.00</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+24.00</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Cruz Control</td>
-                                <td class="py-3 px-4 text-center text-slate-300">25</td>
-                                <td class="py-3 px-4 text-center text-slate-300">30</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">55</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">45.5%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">5594.17</td>
-                                <td class="py-3 px-4 text-right text-slate-300">5514.70</td>
-                                <td class="py-3 px-4 text-right font-black text-emerald-400">+79.47</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">TX Refried BNRS BNR BOB</td>
-                                <td class="py-3 px-4 text-center text-slate-300">5</td>
-                                <td class="py-3 px-4 text-center text-slate-300">6</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">11</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">45.5%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1123.42</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1210.70</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-87.28</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">One GIANT Step</td>
-                                <td class="py-3 px-4 text-center text-slate-300">66</td>
-                                <td class="py-3 px-4 text-center text-slate-300">81</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">147</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">44.9%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">15609.38</td>
-                                <td class="py-3 px-4 text-right text-slate-300">16082.84</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-473.46</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Cowboys and Illegal Aliens</td>
-                                <td class="py-3 px-4 text-center text-slate-300">66</td>
-                                <td class="py-3 px-4 text-center text-slate-300">88</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">154</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">42.9%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">16197.58</td>
-                                <td class="py-3 px-4 text-right text-slate-300">17474.48</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-1276.90</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">It's Shough Time</td>
-                                <td class="py-3 px-4 text-center text-slate-300">3</td>
-                                <td class="py-3 px-4 text-center text-slate-300">4</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">7</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">42.9%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">908.50</td>
-                                <td class="py-3 px-4 text-right text-slate-300">965.74</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-57.24</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Sayre MustangGT5.0</td>
-                                <td class="py-3 px-4 text-center text-slate-300">23</td>
-                                <td class="py-3 px-4 text-center text-slate-300">32</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">55</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">41.8%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">5715.28</td>
-                                <td class="py-3 px-4 text-right text-slate-300">5989.78</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-274.50</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Secret Project #69</td>
-                                <td class="py-3 px-4 text-center text-slate-300">10</td>
-                                <td class="py-3 px-4 text-center text-slate-300">16</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">26</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">38.5%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">2729.00</td>
-                                <td class="py-3 px-4 text-right text-slate-300">2882.00</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-153.00</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Furious Hungry Cowboys</td>
-                                <td class="py-3 px-4 text-center text-slate-300">5</td>
-                                <td class="py-3 px-4 text-center text-slate-300">8</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">13</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">38.5%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1278.00</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1426.00</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-148.00</td>
-                            </tr>
-                            <tr class="hover:bg-lmnavy-800/50">
-                                <td class="py-3 px-4 font-bold text-white">Japanese Ball Fondlers</td>
-                                <td class="py-3 px-4 text-center text-slate-300">2</td>
-                                <td class="py-3 px-4 text-center text-slate-300">9</td>
-                                <td class="py-3 px-4 text-center font-bold text-slate-200">11</td>
-                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">18.2%</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1035.50</td>
-                                <td class="py-3 px-4 text-right text-slate-300">1345.72</td>
-                                <td class="py-3 px-4 text-right font-black text-lmred-400">-310.22</td>
-                            </tr>
+                            <!-- Note: Added script loads the remaining rows exactly as they were -->
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Knobgobblers</td><td class="py-3 px-4 text-center text-slate-300">8</td><td class="py-3 px-4 text-center text-slate-300">5</td><td class="py-3 px-4 text-center font-bold text-slate-200">13</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">61.5%</td><td class="py-3 px-4 text-right text-slate-300">1295.00</td><td class="py-3 px-4 text-right text-slate-300">1216.00</td><td class="py-3 px-4 text-right font-black text-emerald-400">+79.00</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Fin it to win it</td><td class="py-3 px-4 text-center text-slate-300">31</td><td class="py-3 px-4 text-center text-slate-300">20</td><td class="py-3 px-4 text-center font-bold text-slate-200">51</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">60.8%</td><td class="py-3 px-4 text-right text-slate-300">6667.80</td><td class="py-3 px-4 text-right text-slate-300">6351.02</td><td class="py-3 px-4 text-right font-black text-emerald-400">+316.78</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Skillz That Killz</td><td class="py-3 px-4 text-center text-slate-300">19</td><td class="py-3 px-4 text-center text-slate-300">14</td><td class="py-3 px-4 text-center font-bold text-slate-200">33</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">57.6%</td><td class="py-3 px-4 text-right text-slate-300">3231.12</td><td class="py-3 px-4 text-right text-slate-300">3009.46</td><td class="py-3 px-4 text-right font-black text-emerald-400">+221.66</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Texas Teabaggers</td><td class="py-3 px-4 text-center text-slate-300">86</td><td class="py-3 px-4 text-center text-slate-300">68</td><td class="py-3 px-4 text-center font-bold text-slate-200">154</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">55.8%</td><td class="py-3 px-4 text-right text-slate-300">17390.16</td><td class="py-3 px-4 text-right text-slate-300">16740.45</td><td class="py-3 px-4 text-right font-black text-emerald-400">+649.71</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">PACKER BACKERS</td><td class="py-3 px-4 text-center text-slate-300">53</td><td class="py-3 px-4 text-center text-slate-300">42</td><td class="py-3 px-4 text-center font-bold text-slate-200">95</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">55.8%</td><td class="py-3 px-4 text-right text-slate-300">11514.54</td><td class="py-3 px-4 text-right text-slate-300">10861.52</td><td class="py-3 px-4 text-right font-black text-emerald-400">+653.02</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">JOE BUCK YOURSELF</td><td class="py-3 px-4 text-center text-slate-300">83</td><td class="py-3 px-4 text-center text-slate-300">71</td><td class="py-3 px-4 text-center font-bold text-slate-200">154</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.9%</td><td class="py-3 px-4 text-right text-slate-300">17178.50</td><td class="py-3 px-4 text-right text-slate-300">17187.54</td><td class="py-3 px-4 text-right font-black text-lmred-400">-9.04</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Adrian Beat His son</td><td class="py-3 px-4 text-center text-slate-300">41</td><td class="py-3 px-4 text-center text-slate-300">36</td><td class="py-3 px-4 text-center font-bold text-slate-200">77</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.2%</td><td class="py-3 px-4 text-right text-slate-300">8020.47</td><td class="py-3 px-4 text-right text-slate-300">7765.27</td><td class="py-3 px-4 text-right font-black text-emerald-400">+255.20</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Zirk Squad</td><td class="py-3 px-4 text-center text-slate-300">43</td><td class="py-3 px-4 text-center text-slate-300">41</td><td class="py-3 px-4 text-center font-bold text-slate-200">84</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">51.2%</td><td class="py-3 px-4 text-right text-slate-300">10178.96</td><td class="py-3 px-4 text-right text-slate-300">9813.46</td><td class="py-3 px-4 text-right font-black text-emerald-400">+365.50</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">SHHHHH THECHAMPISHERE</td><td class="py-3 px-4 text-center text-slate-300">64</td><td class="py-3 px-4 text-center text-slate-300">64</td><td class="py-3 px-4 text-center font-bold text-slate-200">128</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">50.0%</td><td class="py-3 px-4 text-right text-slate-300">14423.46</td><td class="py-3 px-4 text-right text-slate-300">14259.22</td><td class="py-3 px-4 text-right font-black text-emerald-400">+164.24</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Barely Gettin Bye</td><td class="py-3 px-4 text-center text-slate-300">73</td><td class="py-3 px-4 text-center text-slate-300">74</td><td class="py-3 px-4 text-center font-bold text-slate-200">147</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">49.7%</td><td class="py-3 px-4 text-right text-slate-300">15852.12</td><td class="py-3 px-4 text-right text-slate-300">16181.44</td><td class="py-3 px-4 text-right font-black text-lmred-400">-329.32</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Jacksonville Jarheads</td><td class="py-3 px-4 text-center text-slate-300">19</td><td class="py-3 px-4 text-center text-slate-300">21</td><td class="py-3 px-4 text-center font-bold text-slate-200">40</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">47.5%</td><td class="py-3 px-4 text-right text-slate-300">4587.80</td><td class="py-3 px-4 text-right text-slate-300">4646.64</td><td class="py-3 px-4 text-right font-black text-lmred-400">-58.84</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Men In Black</td><td class="py-3 px-4 text-center text-slate-300">6</td><td class="py-3 px-4 text-center text-slate-300">7</td><td class="py-3 px-4 text-center font-bold text-slate-200">13</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">46.2%</td><td class="py-3 px-4 text-right text-slate-300">1257.00</td><td class="py-3 px-4 text-right text-slate-300">1233.00</td><td class="py-3 px-4 text-right font-black text-emerald-400">+24.00</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Cruz Control</td><td class="py-3 px-4 text-center text-slate-300">25</td><td class="py-3 px-4 text-center text-slate-300">30</td><td class="py-3 px-4 text-center font-bold text-slate-200">55</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">45.5%</td><td class="py-3 px-4 text-right text-slate-300">5594.17</td><td class="py-3 px-4 text-right text-slate-300">5514.70</td><td class="py-3 px-4 text-right font-black text-emerald-400">+79.47</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">TX Refried BNRS BNR BOB</td><td class="py-3 px-4 text-center text-slate-300">5</td><td class="py-3 px-4 text-center text-slate-300">6</td><td class="py-3 px-4 text-center font-bold text-slate-200">11</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">45.5%</td><td class="py-3 px-4 text-right text-slate-300">1123.42</td><td class="py-3 px-4 text-right text-slate-300">1210.70</td><td class="py-3 px-4 text-right font-black text-lmred-400">-87.28</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">One GIANT Step</td><td class="py-3 px-4 text-center text-slate-300">66</td><td class="py-3 px-4 text-center text-slate-300">81</td><td class="py-3 px-4 text-center font-bold text-slate-200">147</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">44.9%</td><td class="py-3 px-4 text-right text-slate-300">15609.38</td><td class="py-3 px-4 text-right text-slate-300">16082.84</td><td class="py-3 px-4 text-right font-black text-lmred-400">-473.46</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Cowboys and Illegal Aliens</td><td class="py-3 px-4 text-center text-slate-300">66</td><td class="py-3 px-4 text-center text-slate-300">88</td><td class="py-3 px-4 text-center font-bold text-slate-200">154</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">42.9%</td><td class="py-3 px-4 text-right text-slate-300">16197.58</td><td class="py-3 px-4 text-right text-slate-300">17474.48</td><td class="py-3 px-4 text-right font-black text-lmred-400">-1276.90</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">It's Shough Time</td><td class="py-3 px-4 text-center text-slate-300">3</td><td class="py-3 px-4 text-center text-slate-300">4</td><td class="py-3 px-4 text-center font-bold text-slate-200">7</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">42.9%</td><td class="py-3 px-4 text-right text-slate-300">908.50</td><td class="py-3 px-4 text-right text-slate-300">965.74</td><td class="py-3 px-4 text-right font-black text-lmred-400">-57.24</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Sayre MustangGT5.0</td><td class="py-3 px-4 text-center text-slate-300">23</td><td class="py-3 px-4 text-center text-slate-300">32</td><td class="py-3 px-4 text-center font-bold text-slate-200">55</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">41.8%</td><td class="py-3 px-4 text-right text-slate-300">5715.28</td><td class="py-3 px-4 text-right text-slate-300">5989.78</td><td class="py-3 px-4 text-right font-black text-lmred-400">-274.50</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Secret Project #69</td><td class="py-3 px-4 text-center text-slate-300">10</td><td class="py-3 px-4 text-center text-slate-300">16</td><td class="py-3 px-4 text-center font-bold text-slate-200">26</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">38.5%</td><td class="py-3 px-4 text-right text-slate-300">2729.00</td><td class="py-3 px-4 text-right text-slate-300">2882.00</td><td class="py-3 px-4 text-right font-black text-lmred-400">-153.00</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Furious Hungry Cowboys</td><td class="py-3 px-4 text-center text-slate-300">5</td><td class="py-3 px-4 text-center text-slate-300">8</td><td class="py-3 px-4 text-center font-bold text-slate-200">13</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">38.5%</td><td class="py-3 px-4 text-right text-slate-300">1278.00</td><td class="py-3 px-4 text-right text-slate-300">1426.00</td><td class="py-3 px-4 text-right font-black text-lmred-400">-148.00</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Japanese Ball Fondlers</td><td class="py-3 px-4 text-center text-slate-300">2</td><td class="py-3 px-4 text-center text-slate-300">9</td><td class="py-3 px-4 text-center font-bold text-slate-200">11</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">18.2%</td><td class="py-3 px-4 text-right text-slate-300">1035.50</td><td class="py-3 px-4 text-right text-slate-300">1345.72</td><td class="py-3 px-4 text-right font-black text-lmred-400">-310.22</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -593,8 +301,6 @@
             <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
                 <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-star text-lmblue-400 mr-2"></i> Player High Scores & Positional Records</h3>
                 <p class="text-slate-400 text-sm mb-6">Historical single-game positional peaks and standout individual performances tracked across league history.</p>
-                
-                <!-- Responsive Grid Container populated by lightweight JS -->
                 <div id="player-records-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     <!-- Cards injected via JavaScript -->
                 </div>
@@ -628,16 +334,103 @@
                     </div>
                 </div>
 
-                <!-- Comparison Result Card -->
                 <div class="bg-gradient-to-r from-lmblue-600/20 via-lmnavy-900 to-lmred-600/20 border border-lmblue-500/40 rounded-2xl p-6 text-center shadow-lg">
                     <div class="text-xs uppercase font-bold tracking-widest text-slate-400 mb-1">Lifetime Matchup Record</div>
                     <div id="h2h-score-display" class="text-4xl sm:text-5xl font-black text-white italic tracking-tight my-2">8–6</div>
-                    <div id="h2h-note-display" class="text-xs text-slate-300 font-medium">Regular Season Battles Recorded Across League History</div>
+                    <div id="h2h-note-display" class="text-xs text-slate-300 font-medium">Regular Season Battles. Are You The Bitch?</div>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 5: BYLAWS & UNIQUE RULES -->
+        <!-- TAB 5: DRAFT HISTORY -->
+        <section id="tab-drafts" class="tab-content hidden space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <div>
+                    <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center">
+                        <i class="fa-solid fa-clipboard-list text-lmblue-400 mr-2"></i> Official League Draft Vault (2011–2026)
+                    </h3>
+                    <p class="text-slate-400 text-sm">Search all 2,464 historical draft picks directly from the official league archive.</p>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Season</label>
+                        <select id="draft-year-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
+                            <option value="ALL">All Seasons</option>
+                            <option value="2026" selected>2026 Season</option>
+                            <option value="2025">2025 Season</option>
+                            <option value="2024">2024 Season</option>
+                            <option value="2023">2023 Season</option>
+                            <option value="2022">2022 Season</option>
+                            <option value="2021">2021 Season</option>
+                            <option value="2020">2020 Season</option>
+                            <option value="2019">2019 Season</option>
+                            <option value="2018">2018 Season</option>
+                            <option value="2017">2017 Season</option>
+                            <option value="2016">2016 Season</option>
+                            <option value="2015">2015 Season</option>
+                            <option value="2014">2014 Season</option>
+                            <option value="2013">2013 Season</option>
+                            <option value="2012">2012 Season</option>
+                            <option value="2011">2011 Season</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Team / Manager</label>
+                        <select id="draft-team-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
+                            <option value="ALL">All Teams</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Round</label>
+                        <select id="draft-round-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
+                            <option value="ALL">All Rounds</option>
+                            <option value="1">Round 1</option>
+                            <option value="2">Round 2</option>
+                            <option value="3">Round 3</option>
+                            <option value="4">Round 4</option>
+                            <option value="5">Round 5</option>
+                            <option value="6">Round 6</option>
+                            <option value="7">Round 7</option>
+                            <option value="8">Round 8</option>
+                            <option value="9">Round 9</option>
+                            <option value="10">Round 10</option>
+                            <option value="11">Round 11</option>
+                            <option value="12">Round 12</option>
+                            <option value="13">Round 13</option>
+                            <option value="14">Round 14</option>
+                            <option value="15">Round 15</option>
+                            <option value="16">Round 16</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Search Player</label>
+                        <input type="text" id="draft-player-search" oninput="renderDraftTable()" placeholder="e.g. McCaffrey, Allen..." class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-lmblue-500">
+                    </div>
+                </div>
+
+                <!-- Draft Results Table -->
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
+                                <th class="py-3 px-4">Year</th>
+                                <th class="py-3 px-4">Round</th>
+                                <th class="py-3 px-4 text-center">Pick #</th>
+                                <th class="py-3 px-4">Player</th>
+                                <th class="py-3 px-4">Drafted By</th>
+                            </tr>
+                        </thead>
+                        <tbody id="draft-table-body" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: BYLAWS & UNIQUE RULES -->
         <section id="tab-bylaws" class="tab-content hidden space-y-6">
             <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
                 <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-scale-balanced text-lmblue-400 mr-2"></i> Official League Bylaws & Special Rules</h3>
@@ -687,7 +480,7 @@
             </div>
         </section>
 
-        <!-- TAB 6: PLAYOFF SCENARIO FINDER -->
+        <!-- TAB 7: PLAYOFF SCENARIO FINDER -->
         <section id="tab-playoffs" class="tab-content hidden space-y-8">
             <div class="bg-lmnavy-900 border border-lmblue-500/20 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-md space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-lmblue-500/30 pb-6">
@@ -708,18 +501,14 @@
                 </div>
 
                 <!-- Summary Stats & Odds Cards -->
-                <div id="scenario-summary" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <!-- Populated via JS -->
-                </div>
+                <div id="scenario-summary" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
 
                 <!-- Clean Summary Paths List -->
                 <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-5 shadow-inner space-y-4">
                     <h3 class="text-lg font-bold text-lmblue-400 flex items-center gap-2">
                         <span>📋</span> Required Paths & Clinching Scenarios
                     </h3>
-                    <div id="scenarios-list-container" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
-                        <!-- Populated via JS -->
-                    </div>
+                    <div id="scenarios-list-container" class="space-y-3 max-h-[500px] overflow-y-auto pr-1"></div>
                 </div>
             </div>
         </section>
@@ -729,558 +518,47 @@
     <!-- Footer -->
     <footer class="bg-lmnavy-950 border-t border-slate-800 py-8 mt-12 text-center text-xs text-slate-500">
         <p class="font-bold text-slate-400">© 2011–2026 League of Extraordinary Sh!t Talkers • Powered by LeagueMate</p>
-        <p class="mt-1"></p>
     </footer>
 
-    <!-- JavaScript Tab Switching -->
+    <!-- JS EXTERNAL DATA IMPORT -->
+    <script src="league-data.js"></script>
+
+    <!-- UI Interaction Scripts -->
     <script>
+        // HASH ROUTING & TAB SWITCHING
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.add('hidden');
-            });
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            if (tabId === 'playoffs') {
-                initScenarioDropdown();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                window.location.hash = tabId; 
             }
 
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white";
-            });
-            document.querySelectorAll('[id^="m-btn-"]').forEach(btn => {
-                btn.className = "whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400";
-            });
+            if (tabId === 'playoffs') initScenarioDropdown();
+            if (tabId === 'drafts' && Object.keys(masterDraftData).length === 0) fetchExcelDraftData();
 
-            const activeBtn = document.getElementById('btn-' + tabId);
-            if (activeBtn) {
-                activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow";
-            }
-
-            const activeMBtn = document.getElementById('m-btn-' + tabId);
-            if (activeMBtn) {
-                activeMBtn.className = "whitespace-nowrap px-3 py-1.5 rounded font-black bg-lmblue-500 text-white";
-            }
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white");
+            document.querySelectorAll('[id^="m-btn-"]').forEach(btn => btn.className = "whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400");
+            
+            if (document.getElementById('btn-' + tabId)) document.getElementById('btn-' + tabId).className = "tab-btn px-4 py-2 rounded-lg text-sm font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow";
+            if (document.getElementById('m-btn-' + tabId)) document.getElementById('m-btn-' + tabId).className = "whitespace-nowrap px-3 py-1.5 rounded font-black bg-lmblue-500 text-white";
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-    </script>
 
-    <!-- H2H Records Script -->
-    <script>
-        const h2hRecords = {
-    "Adrian Beat His son": {
-        "Barely Gettin Bye": "4-5",
-        "Cowboys and Illegal Aliens": "6-4",
-        "Cruz Control": "4-1",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "3-4",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "1-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "6-6",
-        "PACKER BACKERS": "4-1",
-        "SHHHHH THECHAMPISHERE": "7-4",
-        "Sayre MustangGT5.0": "0-1",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "1-2",
-        "TX Refried BNRS BNR BOB": "0-1",
-        "Texas Teabaggers": "3-6",
-        "Zirk Squad": "2-1"
-    },
-    "Barely Gettin Bye": {
-        "Adrian Beat His son": "5-4",
-        "Cowboys and Illegal Aliens": "11-9",
-        "Cruz Control": "2-3",
-        "Fin it to win it": "0-5",
-        "Furious Hungry Cowboys": "1-1",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "10-8",
-        "Jacksonville Jarheads": "2-1",
-        "Japanese Ball Fondlers": "1-1",
-        "Knobgobblers": "2-0",
-        "Men In Black": "0-1",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "9-4",
-        "PACKER BACKERS": "4-6",
-        "SHHHHH THECHAMPISHERE": "8-8",
-        "Sayre MustangGT5.0": "1-4",
-        "Secret Project #69": "3-1",
-        "Skillz That Killz": "2-1",
-        "TX Refried BNRS BNR BOB": "0-1",
-        "Team Beat Dat Ass": "0-1",
-        "Texas Teabaggers": "8-12",
-        "Zirk Squad": "4-3"
-    },
-    "Cowboys and Illegal Aliens": {
-        "Adrian Beat His son": "4-6",
-        "Barely Gettin Bye": "9-11",
-        "Cruz Control": "3-7",
-        "Fin it to win it": "1-5",
-        "Furious Hungry Cowboys": "0-2",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "6-8",
-        "Jacksonville Jarheads": "1-4",
-        "Japanese Ball Fondlers": "1-0",
-        "Knobgobblers": "0-1",
-        "Men In Black": "1-1",
-        "Moore Nuts Allen Ya Mouth": "1-0",
-        "One GIANT Step": "8-8",
-        "PACKER BACKERS": "2-8",
-        "SHHHHH THECHAMPISHERE": "8-6",
-        "Sayre MustangGT5.0": "3-2",
-        "Secret Project #69": "3-1",
-        "Skillz That Killz": "2-1",
-        "TX Refried BNRS BNR BOB": "1-1",
-        "Team Beat Dat Ass": "1-1",
-        "Texas Teabaggers": "5-11",
-        "Zirk Squad": "6-4"
-    },
-    "Cruz Control": {
-        "Adrian Beat His son": "1-4",
-        "Barely Gettin Bye": "3-2",
-        "Cowboys and Illegal Aliens": "7-3",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "1-6",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "3-2",
-        "PACKER BACKERS": "0-2",
-        "SHHHHH THECHAMPISHERE": "1-1",
-        "Sayre MustangGT5.0": "2-5",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "2-1",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "5-3",
-        "Zirk Squad": "0-1"
-    },
-    "Fin it to win it": {
-        "Adrian Beat His son": "0-0",
-        "Barely Gettin Bye": "5-0",
-        "Cowboys and Illegal Aliens": "5-1",
-        "Cruz Control": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "4-2",
-        "Jacksonville Jarheads": "4-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-1",
-        "One GIANT Step": "3-4",
-        "PACKER BACKERS": "3-2",
-        "SHHHHH THECHAMPISHERE": "0-4",
-        "Sayre MustangGT5.0": "1-0",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Team Beat Dat Ass": "0-0",
-        "Texas Teabaggers": "3-2",
-        "Zirk Squad": "3-4"
-    },
-    "Furious Hungry Cowboys": {
-        "Adrian Beat His son": "0-0",
-        "Barely Gettin Bye": "1-1",
-        "Cowboys and Illegal Aliens": "2-0",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "1-1",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "0-1",
-        "PACKER BACKERS": "0-0",
-        "SHHHHH THECHAMPISHERE": "0-0",
-        "Sayre MustangGT5.0": "0-0",
-        "Secret Project #69": "0-2",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Team Beat Dat Ass": "1-1",
-        "Texas Teabaggers": "0-2",
-        "Zirk Squad": "0-0"
-    },
-    "It's Shough Time": {
-        "Adrian Beat His son": "0-0",
-        "Barely Gettin Bye": "0-0",
-        "Cowboys and Illegal Aliens": "0-0",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "JOE BUCK YOURSELF": "1-0",
-        "Jacksonville Jarheads": "0-1",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-1",
-        "One GIANT Step": "0-0",
-        "PACKER BACKERS": "1-0",
-        "SHHHHH THECHAMPISHERE": "0-1",
-        "Sayre MustangGT5.0": "0-0",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "0-1",
-        "Zirk Squad": "1-0"
-    },
-    "JOE BUCK YOURSELF": {
-        "Adrian Beat His son": "4-3",
-        "Barely Gettin Bye": "8-10",
-        "Cowboys and Illegal Aliens": "8-6",
-        "Cruz Control": "6-1",
-        "Fin it to win it": "2-4",
-        "Furious Hungry Cowboys": "1-1",
-        "It's Shough Time": "0-1",
-        "Jacksonville Jarheads": "1-3",
-        "Japanese Ball Fondlers": "1-1",
-        "Knobgobblers": "1-1",
-        "Men In Black": "1-1",
-        "Moore Nuts Allen Ya Mouth": "0-1",
-        "One GIANT Step": "10-8",
-        "PACKER BACKERS": "6-4",
-        "SHHHHH THECHAMPISHERE": "9-4",
-        "Sayre MustangGT5.0": "8-2",
-        "Secret Project #69": "2-1",
-        "Skillz That Killz": "2-1",
-        "TX Refried BNRS BNR BOB": "1-0",
-        "Team Beat Dat Ass": "1-1",
-        "Texas Teabaggers": "7-11",
-        "Zirk Squad": "4-6"
-    },
-    "Jacksonville Jarheads": {
-        "Adrian Beat His son": "0-0",
-        "Barely Gettin Bye": "1-2",
-        "Cowboys and Illegal Aliens": "4-1",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "0-4",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "1-0",
-        "JOE BUCK YOURSELF": "3-1",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "1-3",
-        "PACKER BACKERS": "3-1",
-        "SHHHHH THECHAMPISHERE": "3-3",
-        "Sayre MustangGT5.0": "0-0",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "3-3",
-        "Zirk Squad": "0-3"
-    },
-    "Japanese Ball Fondlers": {
-        "Adrian Beat His son": "0-1",
-        "Barely Gettin Bye": "1-1",
-        "Cowboys and Illegal Aliens": "0-1",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "1-1",
-        "Jacksonville Jarheads": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "0-1",
-        "PACKER BACKERS": "0-1",
-        "SHHHHH THECHAMPISHERE": "0-1",
-        "Sayre MustangGT5.0": "0-0",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "0-1",
-        "Zirk Squad": "0-1"
-    },
-    "Knobgobblers": {
-        "Adrian Beat His son": "0-0",
-        "Barely Gettin Bye": "0-2",
-        "Cowboys and Illegal Aliens": "1-0",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "1-1",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Men In Black": "2-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "1-1",
-        "PACKER BACKERS": "0-0",
-        "SHHHHH THECHAMPISHERE": "0-0",
-        "Sayre MustangGT5.0": "0-0",
-        "Secret Project #69": "2-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "1-1",
-        "Zirk Squad": "0-0"
-    },
-    "Men In Black": {
-        "Adrian Beat His son": "0-0",
-        "Barely Gettin Bye": "1-0",
-        "Cowboys and Illegal Aliens": "1-1",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "1-1",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-2",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "1-1",
-        "PACKER BACKERS": "0-0",
-        "SHHHHH THECHAMPISHERE": "0-0",
-        "Sayre MustangGT5.0": "0-0",
-        "Secret Project #69": "2-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "0-2",
-        "Zirk Squad": "0-0"
-    },
-    "Moore Nuts Allen Ya Mouth": {
-        "Adrian Beat His son": "0-0",
-        "Barely Gettin Bye": "0-0",
-        "Cowboys and Illegal Aliens": "0-1",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "1-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "1-0",
-        "JOE BUCK YOURSELF": "1-0",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "One GIANT Step": "0-0",
-        "PACKER BACKERS": "1-0",
-        "SHHHHH THECHAMPISHERE": "0-0",
-        "Sayre MustangGT5.0": "0-0",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "1-0",
-        "Zirk Squad": "0-1"
-    },
-    "One GIANT Step": {
-        "Adrian Beat His son": "6-6",
-        "Barely Gettin Bye": "4-9",
-        "Cowboys and Illegal Aliens": "8-8",
-        "Cruz Control": "2-3",
-        "Fin it to win it": "4-3",
-        "Furious Hungry Cowboys": "1-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "8-10",
-        "Jacksonville Jarheads": "3-1",
-        "Japanese Ball Fondlers": "1-0",
-        "Knobgobblers": "1-1",
-        "Men In Black": "1-1",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "PACKER BACKERS": "1-7",
-        "SHHHHH THECHAMPISHERE": "7-9",
-        "Sayre MustangGT5.0": "3-2",
-        "Secret Project #69": "2-2",
-        "Skillz That Killz": "2-4",
-        "TX Refried BNRS BNR BOB": "1-0",
-        "Texas Teabaggers": "7-8",
-        "Zirk Squad": "4-5"
-    },
-    "PACKER BACKERS": {
-        "Adrian Beat His son": "1-4",
-        "Barely Gettin Bye": "6-4",
-        "Cowboys and Illegal Aliens": "8-2",
-        "Cruz Control": "2-0",
-        "Fin it to win it": "2-3",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-1",
-        "JOE BUCK YOURSELF": "4-6",
-        "Jacksonville Jarheads": "1-3",
-        "Japanese Ball Fondlers": "1-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-1",
-        "One GIANT Step": "7-1",
-        "SHHHHH THECHAMPISHERE": "7-4",
-        "Sayre MustangGT5.0": "2-1",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "1-0",
-        "Texas Teabaggers": "5-8",
-        "Zirk Squad": "6-4"
-    },
-    "SHHHHH THECHAMPISHERE": {
-        "Adrian Beat His son": "4-7",
-        "Barely Gettin Bye": "8-8",
-        "Cowboys and Illegal Aliens": "6-8",
-        "Cruz Control": "1-1",
-        "Fin it to win it": "4-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "1-0",
-        "JOE BUCK YOURSELF": "4-9",
-        "Jacksonville Jarheads": "3-3",
-        "Japanese Ball Fondlers": "1-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "9-7",
-        "PACKER BACKERS": "4-7",
-        "Sayre MustangGT5.0": "4-1",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "3-3",
-        "TX Refried BNRS BNR BOB": "0-1",
-        "Texas Teabaggers": "7-6",
-        "Zirk Squad": "5-3"
-    },
-    "Sayre MustangGT5.0": {
-        "Adrian Beat His son": "1-0",
-        "Barely Gettin Bye": "4-1",
-        "Cowboys and Illegal Aliens": "2-3",
-        "Cruz Control": "5-2",
-        "Fin it to win it": "0-1",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "2-8",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "2-3",
-        "PACKER BACKERS": "1-2",
-        "SHHHHH THECHAMPISHERE": "1-4",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "1-5",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "3-2",
-        "Zirk Squad": "1-1"
-    },
-    "Secret Project #69": {
-        "Adrian Beat His son": "0-0",
-        "Barely Gettin Bye": "1-3",
-        "Cowboys and Illegal Aliens": "1-3",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "2-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "1-2",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-2",
-        "Men In Black": "0-2",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "2-2",
-        "PACKER BACKERS": "0-0",
-        "SHHHHH THECHAMPISHERE": "0-0",
-        "Sayre MustangGT5.0": "0-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "3-0",
-        "Zirk Squad": "0-0"
-    },
-    "Skillz That Killz": {
-        "Adrian Beat His son": "2-1",
-        "Barely Gettin Bye": "1-2",
-        "Cowboys and Illegal Aliens": "1-2",
-        "Cruz Control": "1-2",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "2-1",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "4-2",
-        "PACKER BACKERS": "0-0",
-        "SHHHHH THECHAMPISHERE": "3-3",
-        "Sayre MustangGT5.0": "5-1",
-        "Secret Project #69": "0-0",
-        "TX Refried BNRS BNR BOB": "0-0",
-        "Texas Teabaggers": "0-0",
-        "Zirk Squad": "0-0"
-    },
-    "TX Refried BNRS BNR BOB": {
-        "Adrian Beat His son": "1-0",
-        "Barely Gettin Bye": "1-0",
-        "Cowboys and Illegal Aliens": "1-1",
-        "Cruz Control": "0-0",
-        "Fin it to win it": "0-0",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-0",
-        "JOE BUCK YOURSELF": "0-1",
-        "Jacksonville Jarheads": "0-0",
-        "Japanese Ball Fondlers": "0-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "0-0",
-        "One GIANT Step": "0-1",
-        "PACKER BACKERS": "0-1",
-        "SHHHHH THECHAMPISHERE": "1-0",
-        "Sayre MustangGT5.0": "0-0",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "0-0",
-        "Texas Teabaggers": "1-1",
-        "Zirk Squad": "0-1"
-    },
-    "Texas Teabaggers": {
-        "Adrian Beat His son": "6-3",
-        "Barely Gettin Bye": "12-8",
-        "Cowboys and Illegal Aliens": "11-5",
-        "Cruz Control": "3-5",
-        "Fin it to win it": "2-3",
-        "Furious Hungry Cowboys": "2-0",
-        "It's Shough Time": "1-0",
-        "JOE BUCK YOURSELF": "11-7",
-        "Jacksonville Jarheads": "3-3",
-        "Japanese Ball Fondlers": "1-0",
-        "Knobgobblers": "1-1",
-        "Men In Black": "2-0",
-        "Moore Nuts Allen Ya Mouth": "0-1",
-        "One GIANT Step": "9-6",
-        "PACKER BACKERS": "8-5",
-        "SHHHHH THECHAMPISHERE": "6-7",
-        "Sayre MustangGT5.0": "2-3",
-        "Secret Project #69": "0-3",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "1-1",
-        "Team Beat Dat Ass": "0-2",
-        "Zirk Squad": "5-5"
-    },
-    "Zirk Squad": {
-        "Adrian Beat His son": "1-2",
-        "Barely Gettin Bye": "3-4",
-        "Cowboys and Illegal Aliens": "4-6",
-        "Cruz Control": "1-0",
-        "Fin it to win it": "4-3",
-        "Furious Hungry Cowboys": "0-0",
-        "It's Shough Time": "0-1",
-        "JOE BUCK YOURSELF": "6-4",
-        "Jacksonville Jarheads": "3-0",
-        "Japanese Ball Fondlers": "1-0",
-        "Knobgobblers": "0-0",
-        "Men In Black": "0-0",
-        "Moore Nuts Allen Ya Mouth": "1-0",
-        "One GIANT Step": "5-4",
-        "PACKER BACKERS": "4-6",
-        "SHHHHH THECHAMPISHERE": "3-5",
-        "Sayre MustangGT5.0": "1-1",
-        "Secret Project #69": "0-0",
-        "Skillz That Killz": "0-0",
-        "TX Refried BNRS BNR BOB": "1-0",
-        "Texas Teabaggers": "5-5"
-    }
-};
+        window.addEventListener('DOMContentLoaded', () => {
+            updateH2H();
+            initPlayerCards();
+            
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById('tab-' + hash)) {
+                switchTab(hash);
+            } else {
+                switchTab('overview');
+            }
+        });
 
+        // H2H LOGIC
         function updateH2H() {
             const m1 = document.getElementById('mgr1-select').value;
             const m2 = document.getElementById('mgr2-select').value;
@@ -1288,147 +566,28 @@
             const note = document.getElementById('h2h-note-display');
 
             if (m1 === m2) {
-                display.innerText = "—";
-                note.innerText = "Cannot compare a manager against themselves.";
-            } else if (h2hRecords[m1] && h2hRecords[m1][m2]) {
-                display.innerText = h2hRecords[m1][m2];
-                note.innerText = m1 + " vs " + m2 + " — Regular Season Battles. Are You The Bitch?";
+                display.innerText = "—"; note.innerText = "Cannot compare a manager against themselves.";
+            } else if (typeof h2hRecords !== 'undefined' && h2hRecords[m1] && h2hRecords[m1][m2]) {
+                display.innerText = h2hRecords[m1][m2]; note.innerText = m1 + " vs " + m2 + " — Regular Season Battles. Are You The Bitch?";
             } else {
-                display.innerText = "0–0";
-                note.innerText = "No recorded head-to-head matchups between " + m1 + " and " + m2;
+                display.innerText = "0–0"; note.innerText = "No recorded head-to-head matchups between " + m1 + " and " + m2;
             }
         }
-        
-        window.addEventListener('DOMContentLoaded', () => {
-            updateH2H();
-        });
-    </script>
 
-    <!-- Data-Driven Player Cards Script -->
-    <script>
-        const playerRecords = [
-            {
-                position: "QB",
-                name: "Josh Allen",
-                team: "Buffalo Bills",
-                number: "#17",
-                week: "Week 14, 2024",
-                fpts: "56.88 pts",
-                headshot: "https://a.espncdn.com/i/headshots/nfl/players/full/3918298.png",
-                teamLogo: "https://a.espncdn.com/i/teamlogos/nfl/50/buf.png",
-                owner: "Jacksonville Jarheads",
-                stats: [
-                    { label: "Pass Yds", value: "339" },
-                    { label: "Pass TD", value: "3" },
-                    { label: "Rush Yds", value: "82" },
-                    { label: "Rush TD", value: "2" }
-                ]
-            },
-            {
-                position: "RB",
-                name: "Jahmyr Gibbs",
-                team: "Detroit Lions",
-                number: "#26",
-                week: "Week 12, 2025",
-                fpts: "65.40 pts",
-                headshot: "https://a.espncdn.com/i/headshots/nfl/players/full/4429795.png",
-                teamLogo: "https://a.espncdn.com/i/teamlogos/nfl/50/det.png",
-                owner: "Zirk Squad",
-                stats: [
-                    { label: "Rush Yds", value: "152" },
-                    { label: "Rush TD", value: "3" },
-                    { label: "Rec Yds", value: "68" },
-                    { label: "Rec TD", value: "1" }
-                ]
-            },
-            {
-                position: "WR",
-                name: "Ja'Marr Chase",
-                team: "Cincinnati Bengals",
-                number: "#1",
-                week: "Week 10, 2024",
-                fpts: "65.40 pts",
-                headshot: "https://a.espncdn.com/i/headshots/nfl/players/full/4362628.png",
-                teamLogo: "https://a.espncdn.com/i/teamlogos/nfl/50/cin.png",
-                owner: "Zirk Squad",
-                stats: [
-                    { label: "Rec Yds", value: "264" },
-                    { label: "Rec TD", value: "3" },
-                    { label: "Receptions", value: "11" },
-                    { label: "Targets", value: "13" }
-                ]
-            },
-            {
-                position: "TE",
-                name: "Brock Bowers",
-                team: "Las Vegas Raiders",
-                number: "#89",
-                week: "Week 9, 2025",
-                fpts: "48.30 pts",
-                headshot: "https://a.espncdn.com/i/headshots/nfl/players/full/4432665.png",
-                teamLogo: "https://a.espncdn.com/i/teamlogos/nfl/50/lv.png",
-                owner: "PACKER BACKERS",
-                stats: [
-                    { label: "Rec Yds", value: "145" },
-                    { label: "Rec TD", value: "2" },
-                    { label: "Receptions", value: "10" },
-                    { label: "Targets", value: "12" }
-                ]
-            },
-            {
-                position: "K",
-                name: "Chris Boswell",
-                team: "Pittsburgh Steelers",
-                number: "#9",
-                week: "Week 1, 2024",
-                fpts: "27.30 pts",
-                headshot: "https://a.espncdn.com/i/headshots/nfl/players/full/17372.png",
-                teamLogo: "https://a.espncdn.com/i/teamlogos/nfl/50/pit.png",
-                owner: "Free Agent",
-                stats: [
-                    { label: "FG 50+", value: "3" },
-                    { label: "FG 40-49", value: "2" },
-                    { label: "Total FG", value: "6" },
-                    { label: "XP Made", value: "0" }
-                ]
-            },
-            {
-                position: "DEF",
-                name: "Dallas Cowboys",
-                team: "Dallas Cowboys D/ST",
-                number: "DEF",
-                week: "Week 1, 2023",
-                fpts: "35.00 pts",
-                headshot: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/dal.png",
-                teamLogo: "https://a.espncdn.com/i/teamlogos/nfl/50/dal.png",
-                owner: "Texas Teabaggers",
-                stats: [
-                    { label: "Sacks", value: "7" },
-                    { label: "Interceptions", value: "2" },
-                    { label: "Fum Rec", value: "1" },
-                    { label: "Def TD", value: "2" }
-                ]
-            }
-        ];
-
-        window.addEventListener('DOMContentLoaded', () => {
+        // PLAYER CARDS LOGIC
+        function initPlayerCards() {
             const grid = document.getElementById('player-records-grid');
-            if (!grid) return;
+            if (!grid || typeof playerRecords === 'undefined') return;
 
             grid.innerHTML = playerRecords.map(p => `
                 <article class="player-card group relative overflow-hidden rounded-xl border border-lmblue-500/30 shadow-xl shadow-black/40">
-                    <!-- Top accent bar -->
                     <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-lmblue-500 via-lmturf-500 to-lmred-500 opacity-90"></div>
-
-                    <!-- Header / Photo area -->
                     <div class="relative flex items-start gap-4 p-4 pb-3">
-                        <div class="relative shrink-0">
-                            <img src="${p.headshot}" alt="${p.name}" class="h-20 w-20 rounded-lg object-cover object-top ring-2 ring-lmblue-500/40 shadow-lg bg-lmnavy-800" loading="lazy" />
-                        </div>
+                        <div class="relative shrink-0"><img src="${p.headshot}" class="h-20 w-20 rounded-lg object-cover object-top ring-2 ring-lmblue-500/40 shadow-lg bg-lmnavy-800" loading="lazy" /></div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                <h3 class="truncate text-lg font-bold tracking-tight text-white group-hover:text-lmblue-400 transition-colors">${p.name}</h3>
-                                <span class="shrink-0 rounded bg-lmblue-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-lmblue-400 border border-lmblue-500/30">${p.position}</span>
+                                <h3 class="truncate text-lg font-bold tracking-tight text-white">${p.name}</h3>
+                                <span class="shrink-0 rounded bg-lmblue-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-lmblue-400 border border-lmblue-500/30">${p.position}</span>
                             </div>
                             <p class="mt-0.5 text-sm text-slate-400">${p.team} · ${p.number}</p>
                             <div class="mt-2 flex flex-wrap gap-1.5">
@@ -1437,72 +596,107 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Stats grid -->
                     <div class="grid grid-cols-4 gap-px border-t border-slate-800 bg-slate-800/50">
-                        ${p.stats.map(s => `
-                            <div class="bg-lmnavy-900/90 px-2 py-2.5 text-center">
-                                <div class="text-[10px] uppercase tracking-wider text-slate-400 truncate">${s.label}</div>
-                                <div class="mt-0.5 text-sm font-semibold text-white">${s.value}</div>
-                            </div>
-                        `).join('')}
+                        ${p.stats.map(s => `<div class="bg-lmnavy-900/90 px-2 py-2.5 text-center"><div class="text-[10px] uppercase text-slate-400 truncate">${s.label}</div><div class="mt-0.5 text-sm font-semibold text-white">${s.value}</div></div>`).join('')}
                     </div>
-
-                    <!-- Footer -->
                     <div class="flex items-center justify-between border-t border-slate-800 px-4 py-2.5 bg-lmnavy-950/60">
                         <span class="text-xs text-slate-400">Manager: <span class="text-slate-200 font-medium">${p.owner}</span></span>
-                        <span class="text-xs font-medium text-lmblue-400 hover:text-lmblue-300 transition-colors cursor-pointer">League Record ✓</span>
+                        <span class="text-xs font-medium text-lmblue-400 hover:text-lmblue-300 cursor-pointer">League Record ✓</span>
                     </div>
                 </article>
             `).join('');
-        });
-    </script>
+        }
 
-    <!-- Playoff Scenario Generator Logic -->
-    <script>
-        const baseTeams = [
-            { id: 1, name: "Moore Nuts Allen Ya Mouth", wins: 6, losses: 2, pf: 1115.72 },
-            { id: 2, name: "Jacksonville Jarheads", wins: 6, losses: 2, pf: 1014.72 },
-            { id: 3, name: "Zirk Squad", wins: 5, losses: 3, pf: 1091.36 },
-            { id: 4, name: "SHHHHH THECHAMPISHERE", wins: 5, losses: 3, pf: 1065.76 },
-            { id: 5, name: "Cowboys and Illegal Aliens", wins: 4, losses: 4, pf: 1054.50 },
-            { id: 6, name: "It's Shough Time", wins: 3, losses: 5, pf: 1025.58 },
-            { id: 7, name: "Fin it to win it", wins: 3, losses: 5, pf: 1021.00 },
-            { id: 8, name: "Texas Teabaggers", wins: 3, losses: 5, pf: 997.78 },
-            { id: 9, name: "Love's Kummy Dumpster", wins: 3, losses: 5, pf: 937.20 },
-            { id: 10, name: "JOE BUCK YOURSELF", wins: 2, losses: 6, pf: 1000.70 }
-        ];
+        // DRAFT VAULT LOGIC (Directly Reads the Excel File!)
+        let masterDraftData = {};
 
-        const remainingMatchups = [
-            { week: 9, awayId: 7, homeId: 6, awayName: "Fin it to win it", homeName: "It's Shough Time" },
-            { week: 9, awayId: 1, homeId: 4, awayName: "Moore Nuts Allen Ya Mouth", homeName: "SHHHHH THECHAMPISHERE" },
-            { week: 9, awayId: 8, homeId: 5, awayName: "Texas Teabaggers", homeName: "Cowboys and Illegal Aliens" },
-            { week: 9, awayId: 3, homeId: 2, awayName: "Zirk Squad", homeName: "Jacksonville Jarheads" },
-            { week: 9, awayId: 9, homeId: 10, awayName: "Love's Kummy Dumpster", homeName: "JOE BUCK YOURSELF" },
+        async function fetchExcelDraftData() {
+            const tbody = document.getElementById('draft-table-body');
+            tbody.innerHTML = `<tr><td colspan="5" class="py-8 px-4 text-center text-slate-300 font-bold tracking-widest uppercase"><i class="fa-solid fa-spinner fa-spin mr-3 text-lmblue-400"></i> Accessing League Archive Server...</td></tr>`;
+            
+            try {
+                const response = await fetch('Fantasy_Football_Draft_History_2026_2011_Updated.xlsx');
+                if (!response.ok) throw new Error("Excel file not found on server.");
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, {type: 'array'});
+                
+                workbook.SheetNames.forEach(sheetName => {
+                    const rowData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+                    masterDraftData[sheetName] = rowData.map(row => ({
+                        round: row['Round'] ? (String(row['Round']).startsWith('Round') ? String(row['Round']) : 'Round ' + row['Round']) : 'Unknown',
+                        pick: row['Pick No.'] || 0,
+                        player: row['Player'] || 'Unknown',
+                        team: row['Team'] || 'Unknown'
+                    }));
+                });
+                populateDraftDropdowns();
+                renderDraftTable();
+            } catch (error) {
+                console.error("Draft Load Error:", error);
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 px-4 text-center text-lmred-400">Error: Could not locate 'Fantasy_Football_Draft_History_2026_2011_Updated.xlsx'. Ensure it is uploaded to your GitHub repository.</td></tr>`;
+            }
+        }
 
-            { week: 10, awayId: 1, homeId: 7, awayName: "Moore Nuts Allen Ya Mouth", homeName: "Fin it to win it" },
-            { week: 10, awayId: 6, homeId: 8, awayName: "It's Shough Time", homeName: "Texas Teabaggers" },
-            { week: 10, awayId: 4, homeId: 3, awayName: "SHHHHH THECHAMPISHERE", homeName: "Zirk Squad" },
-            { week: 10, awayId: 5, homeId: 9, awayName: "Cowboys and Illegal Aliens", homeName: "Love's Kummy Dumpster" },
-            { week: 10, awayId: 2, homeId: 10, awayName: "Jacksonville Jarheads", homeName: "JOE BUCK YOURSELF" },
+        function populateDraftDropdowns() {
+            const teamSelect = document.getElementById('draft-team-select');
+            let teams = new Set();
+            Object.values(masterDraftData).forEach(seasonList => seasonList.forEach(p => teams.add(p.team)));
+            Array.from(teams).sort().forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t; opt.textContent = t; teamSelect.appendChild(opt);
+            });
+        }
 
-            { week: 11, awayId: 7, homeId: 8, awayName: "Fin it to win it", homeName: "Texas Teabaggers" },
-            { week: 11, awayId: 3, homeId: 1, awayName: "Zirk Squad", homeName: "Moore Nuts Allen Ya Mouth" },
-            { week: 11, awayId: 9, homeId: 6, awayName: "Love's Kummy Dumpster", homeName: "It's Shough Time" },
-            { week: 11, awayId: 10, homeId: 4, awayName: "JOE BUCK YOURSELF", homeName: "SHHHHH THECHAMPISHERE" },
-            { week: 11, awayId: 2, homeId: 5, awayName: "Jacksonville Jarheads", homeName: "Cowboys and Illegal Aliens" }
-        ];
+        function renderDraftTable() {
+            const yearVal = document.getElementById('draft-year-select').value;
+            const teamVal = document.getElementById('draft-team-select').value;
+            const roundVal = document.getElementById('draft-round-select').value;
+            const searchVal = document.getElementById('draft-player-search').value.toLowerCase().trim();
+            const tbody = document.getElementById('draft-table-body');
+            
+            if (!tbody || Object.keys(masterDraftData).length === 0) return;
 
+            let matches = [];
+            const yearsToQuery = yearVal === 'ALL' ? Object.keys(masterDraftData).sort((a,b)=>b-a) : [yearVal];
+
+            yearsToQuery.forEach(y => {
+                if (masterDraftData[y]) {
+                    masterDraftData[y].forEach(p => {
+                        if (teamVal !== 'ALL' && p.team !== teamVal) return;
+                        if (roundVal !== 'ALL' && p.round !== 'Round ' + roundVal) return;
+
+                        if (searchVal !== '' && !p.player.toLowerCase().includes(searchVal)) return;
+                        matches.push({...p, year: y});
+                    });
+                }
+            });
+
+            if (matches.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 px-4 text-center text-slate-400 text-sm">No draft picks found matching your filters.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = matches.slice(0, 100).map(m => `
+                <tr class="hover:bg-lmnavy-800/50 transition-colors">
+                    <td class="py-3 px-4 font-bold text-amber-400">${m.year}</td>
+                    <td class="py-3 px-4 text-slate-300">${m.round}</td>
+                    <td class="py-3 px-4 text-center font-black text-white">#${m.pick}</td>
+                    <td class="py-3 px-4 font-bold text-white">${m.player}</td>
+                    <td class="py-3 px-4 text-slate-300">${m.team}</td>
+                </tr>
+            `).join('') + (matches.length > 100 ? `<tr><td colspan="5" class="py-3 px-4 text-center text-xs text-slate-500 italic">Showing first 100 matches of ${matches.length}. Refine search to see specific picks.</td></tr>` : '');
+        }
+
+        // PLAYOFF SCENARIOS LOGIC
         function initScenarioDropdown() {
             const select = document.getElementById('team-scenario-select');
-            if (!select) return;
+            if (!select || typeof baseTeams === 'undefined') return;
             select.innerHTML = '';
             baseTeams.forEach(t => {
                 const opt = document.createElement('option');
-                opt.value = t.id;
-                opt.textContent = `${t.name} (${t.wins}-${t.losses})`;
-                opt.style.backgroundColor = '#0a1124';
-                opt.style.color = '#ffffff';
+                opt.value = t.id; opt.textContent = `${t.name} (${t.wins}-${t.losses})`;
+                opt.style.backgroundColor = '#0a1124'; opt.style.color = '#ffffff';
                 select.appendChild(opt);
             });
             analyzeTeamScenarios();
@@ -1510,145 +704,67 @@
 
         function analyzeTeamScenarios() {
             const select = document.getElementById('team-scenario-select');
-            if (!select) return;
+            if (!select || typeof baseTeams === 'undefined') return;
             const targetTeamId = parseInt(select.value);
             const targetTeamObj = baseTeams.find(t => t.id === targetTeamId);
-
             const totalScenarios = 1 << remainingMatchups.length;
-            let playoffCount = 0;
-            let byeCount = 0;
-            let recordGroups = {};
+            let playoffCount = 0, byeCount = 0, recordGroups = {};
 
             for (let i = 0; i < totalScenarios; i++) {
                 let simMap = {};
-                baseTeams.forEach(t => {
-                    simMap[t.id] = { wins: t.wins, losses: t.losses, pf: t.pf, name: t.name, id: t.id };
-                });
+                baseTeams.forEach(t => simMap[t.id] = { wins: t.wins, losses: t.losses, pf: t.pf, name: t.name, id: t.id });
 
                 let targetWinsAdded = 0;
                 for (let m = 0; m < remainingMatchups.length; m++) {
                     const match = remainingMatchups[m];
                     const winnerId = (i & (1 << m)) ? match.homeId : match.awayId;
                     simMap[winnerId].wins++;
-                    const loserId = (winnerId === match.homeId) ? match.awayId : match.homeId;
-                    simMap[loserId].losses++;
-
-                    if (match.awayId === targetTeamId || match.homeId === targetTeamId) {
-                        if (winnerId === targetTeamId) targetWinsAdded++;
-                    }
+                    simMap[(winnerId === match.homeId) ? match.awayId : match.homeId].losses++;
+                    if ((match.awayId === targetTeamId || match.homeId === targetTeamId) && winnerId === targetTeamId) targetWinsAdded++;
                 }
 
-                let standings = Object.values(simMap).sort((a, b) => {
-                    if (b.wins !== a.wins) return b.wins - a.wins;
-                    return b.pf - a.pf;
-                });
-
+                let standings = Object.values(simMap).sort((a, b) => b.wins !== a.wins ? b.wins - a.wins : b.pf - a.pf);
                 const rank = standings.findIndex(t => t.id === targetTeamId) + 1;
-                const madePlayoffs = rank <= 6;
-                const gotBye = rank <= 2;
-
-                if (madePlayoffs) playoffCount++;
-                if (gotBye) byeCount++;
-
-                if (madePlayoffs) {
+                
+                if (rank <= 6) {
+                    playoffCount++;
                     const finalRec = `${targetTeamObj.wins + targetWinsAdded}-${targetTeamObj.losses + (3 - targetWinsAdded)}`;
-                    if (!recordGroups[finalRec]) {
-                        recordGroups[finalRec] = { count: 0, winsNeeded: targetWinsAdded, minRank: rank, maxRank: rank };
-                    }
+                    if (!recordGroups[finalRec]) recordGroups[finalRec] = { count: 0, winsNeeded: targetWinsAdded, minRank: rank, maxRank: rank };
                     recordGroups[finalRec].count++;
                     recordGroups[finalRec].minRank = Math.min(recordGroups[finalRec].minRank, rank);
                     recordGroups[finalRec].maxRank = Math.max(recordGroups[finalRec].maxRank, rank);
                 }
+                if (rank <= 2) byeCount++;
             }
 
             const playoffPct = ((playoffCount / totalScenarios) * 100).toFixed(1);
-            const byePct = ((byeCount / totalScenarios) * 100).toFixed(1);
-
-            const summaryContainer = document.getElementById('scenario-summary');
-            if (summaryContainer) {
-                summaryContainer.innerHTML = `
-                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
-                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Playoff Probability</div>
-                        <div class="text-3xl font-black text-emerald-400 mt-1">${playoffPct}%</div>
-                        <div class="text-[11px] text-slate-500 mt-0.5">Top 6 Qualification</div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
-                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">First-Round Bye Odds</div>
-                        <div class="text-3xl font-black text-lmblue-400 mt-1">${byePct}%</div>
-                        <div class="text-[11px] text-slate-500 mt-0.5">Top 2 Seed Finish</div>
-                    </div>
-                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner">
-                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Record</div>
-                        <div class="text-3xl font-black text-white mt-1">${targetTeamObj.wins}-${targetTeamObj.losses}</div>
-                        <div class="text-[11px] text-slate-500 mt-0.5">PF: ${targetTeamObj.pf.toFixed(1)}</div>
-                    </div>
-                `;
-            }
+            document.getElementById('scenario-summary').innerHTML = `
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner"><div class="text-xs font-bold uppercase tracking-wider text-slate-400">Playoff Probability</div><div class="text-3xl font-black text-emerald-400 mt-1">${playoffPct}%</div><div class="text-[11px] text-slate-500 mt-0.5">Top 6 Qualification</div></div>
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner"><div class="text-xs font-bold uppercase tracking-wider text-slate-400">First-Round Bye Odds</div><div class="text-3xl font-black text-lmblue-400 mt-1">${((byeCount / totalScenarios) * 100).toFixed(1)}%</div><div class="text-[11px] text-slate-500 mt-0.5">Top 2 Seed Finish</div></div>
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner"><div class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Record</div><div class="text-3xl font-black text-white mt-1">${targetTeamObj.wins}-${targetTeamObj.losses}</div><div class="text-[11px] text-slate-500 mt-0.5">PF: ${targetTeamObj.pf.toFixed(1)}</div></div>
+            `;
 
             const listContainer = document.getElementById('scenarios-list-container');
-            if (listContainer) {
-                listContainer.innerHTML = '';
-
-                if (playoffCount === 0) {
-                    listContainer.innerHTML = `<div class="text-slate-400 text-xs p-4 text-center">Mathematically eliminated from top-6 playoff contention in remaining simulations.</div>`;
-                    return;
-                }
-
-                let htmlContent = '';
-                if (playoffPct == "100.0") {
-                    htmlContent += `
-                        <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-emerald-300 text-xs space-y-1">
-                            <div class="font-bold flex items-center gap-2"><span>🟢</span> CLINCHED / CONTROL OWN DESTINY (100% Odds)</div>
-                            <div>This team is projected to make the top 6 in all simulated outcomes due to their strong record and point differential tie-breakers.</div>
-                        </div>
-                    `;
-                } else if (playoffPct > "50.0") {
-                    htmlContent += `
-                        <div class="bg-lmblue-500/10 border border-lmblue-500/30 rounded-xl p-4 text-lmblue-400 text-xs space-y-1">
-                            <div class="font-bold flex items-center gap-2"><span>🔵</span> STRONG PLAYOFF POSITION (${playoffPct}% Odds)</div>
-                            <div>Finishing strong secures a playoff spot across the vast majority of tie-breaker scenarios.</div>
-                        </div>
-                    `;
-                } else {
-                    htmlContent += `
-                        <div class="bg-lmred-500/10 border border-lmred-500/30 rounded-xl p-4 text-lmred-400 text-xs space-y-1">
-                            <div class="font-bold flex items-center gap-2"><span>🔴</span> BUBBLE / NEEDS HELP (${playoffPct}% Odds)</div>
-                            <div>Needs to win out and receive help from rival losses to sneak into the top 6.</div>
-                        </div>
-                    `;
-                }
-
-                const sortedRecs = Object.keys(recordGroups).sort((a, b) => parseInt(b.split('-')[0]) - parseInt(a.split('-')[0]));
-
-                sortedRecs.forEach(rec => {
-                    const group = recordGroups[rec];
-                    const winsNeeded = group.winsNeeded;
-                    let pathDescription = "";
-                    if (winsNeeded === 3) pathDescription = "Needs to Win Out (3–0)";
-                    else if (winsNeeded === 2) pathDescription = "Needs 2 Wins and minimal help (2–1)";
-                    else if (winsNeeded === 1) pathDescription = "Needs 1 Win and significant help (1–2)";
-                    else pathDescription = "Finishes winless (0–3) but still squeaks in via tie-breakers";
-
-                    htmlContent += `
-                        <div class="bg-lmnavy-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                            <div class="space-y-1">
-                                <div class="font-bold text-lmblue-400 text-sm flex items-center gap-2">
-                                    <span>🎯 Finishes ${rec}:</span> 
-                                    <span class="text-slate-200 text-xs font-normal">${pathDescription}</span>
-                                </div>
-                                <div class="text-slate-400 text-xs">
-                                    Valid playoff path in <strong>${group.count}</strong> simulation outcomes (Projected Seed Range: #${group.minRank}–#${group.maxRank}).
-                                </div>
-                            </div>
-                            <span class="px-3 py-1 rounded-full text-[11px] font-bold border border-emerald-500/40 bg-emerald-500/15 text-emerald-400 uppercase tracking-wider shrink-0">
-                                Closes ${group.count} Scenarios
-                            </span>
-                        </div>
-                    `;
-                });
-
-                listContainer.innerHTML = htmlContent;
+            if (playoffCount === 0) {
+                listContainer.innerHTML = `<div class="text-slate-400 text-xs p-4 text-center">Mathematically eliminated from top-6 playoff contention in remaining simulations.</div>`; return;
             }
+
+            let html = playoffPct == "100.0" ? `<div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-emerald-300 text-xs space-y-1"><div class="font-bold flex items-center gap-2"><span>🟢</span> CLINCHED / CONTROL OWN DESTINY (100% Odds)</div></div>` :
+                       playoffPct > 50.0 ? `<div class="bg-lmblue-500/10 border border-lmblue-500/30 rounded-xl p-4 text-lmblue-400 text-xs space-y-1"><div class="font-bold flex items-center gap-2"><span>🔵</span> STRONG PLAYOFF POSITION (${playoffPct}% Odds)</div></div>` :
+                       `<div class="bg-lmred-500/10 border border-lmred-500/30 rounded-xl p-4 text-lmred-400 text-xs space-y-1"><div class="font-bold flex items-center gap-2"><span>🔴</span> BUBBLE / NEEDS HELP (${playoffPct}% Odds)</div></div>`;
+
+            Object.keys(recordGroups).sort((a, b) => parseInt(b.split('-')[0]) - parseInt(a.split('-')[0])).forEach(rec => {
+                const group = recordGroups[rec];
+                html += `
+                    <div class="bg-lmnavy-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-3">
+                        <div class="space-y-1">
+                            <div class="font-bold text-lmblue-400 text-sm"><span>🎯 Finishes ${rec}:</span> <span class="text-slate-200 text-xs font-normal">${group.winsNeeded === 3 ? "Needs to Win Out (3–0)" : group.winsNeeded === 2 ? "Needs 2 Wins (2–1)" : group.winsNeeded === 1 ? "Needs 1 Win (1–2)" : "Finishes winless (0–3)"}</span></div>
+                            <div class="text-slate-400 text-xs">Valid playoff path in <strong>${group.count}</strong> simulation outcomes (Projected Seed Range: #${group.minRank}–#${group.maxRank}).</div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-[11px] font-bold border border-emerald-500/40 bg-emerald-500/15 text-emerald-400 uppercase tracking-wider shrink-0">Closes ${group.count} Scenarios</span>
+                    </div>`;
+            });
+            listContainer.innerHTML = html;
         }
     </script>
 </body>
