@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League Mate | League Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS to read your Draft History Excel File dynamically -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- html2canvas for Shareable Brag Cards -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        espngreen: { 600: '#00b140', 700: '#008731' },
+                        lmblue: { 400: '#3898ff', 500: '#0077ff', 600: '#005ce6' },
+                        lmred: { 400: '#e04055', 500: '#c8233c', 600: '#a3152b' },
+                        lmturf: { 500: '#4d8b31', 600: '#3b6e23' },
+                        lmnavy: { 800: '#111d3a', 900: '#0a1124', 950: '#050811' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .espn-ticker { background: linear-gradient(90deg, #008731 0%, #00b140 50%, #008731 100%); }
+        .lm-hero-card {
+            background: linear-gradient(135deg, #0a1124 0%, #111d3a 60%, #1a162b 100%);
+            border: 1px solid rgba(0, 119, 255, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 119, 255, 0.12);
+        }
+        .lm-badge { background: linear-gradient(135deg, #0077ff 0%, #005ce6 100%); }
+        .lm-badge-red { background: linear-gradient(135deg, #c8233c 0%, #a3152b 100%); }
+        .player-card {
+            background-image:
+                radial-gradient(ellipse at top right, rgba(0, 119, 255, 0.1), transparent 60%),
+                radial-gradient(ellipse at bottom left, rgba(200, 35, 60, 0.08), transparent 60%),
+                linear-gradient(to bottom right, #0a1124, #050811);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .player-card:hover { transform: translateY(-2px); }
+        .player-card::after {
+            content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+            box-shadow: inset 0 0 0 1px rgba(0, 119, 255, 0.3); opacity: 0; transition: opacity 0.3s;
+        }
+        .player-card:hover::after { opacity: 1; }
+    </style>
+</head>
+<body class="bg-lmnavy-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+    
+    <!-- Top Live Ticker Bar -->
+    <div class="espn-ticker text-white text-xs font-bold py-1.5 px-4 overflow-hidden whitespace-nowrap flex items-center shadow-md">
+        <div class="bg-black/40 px-2.5 py-0.5 rounded uppercase tracking-wider text-[10px] mr-3 font-black text-white border border-white/20 flex items-center">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping mr-1.5"></span> LIVE
+        </div>
+        <div class="inline-block animate-marquee tracking-wide text-slate-100 space-x-8">
+            <span>🏈 FANTASY FOOTBALL • OFFICIAL ARCHIVES (2011–2025)</span> • 
+            <span>👑 TEXAS TEABAGGERS LEADS WITH 5 CHAMPIONSHIPS ('11, '12, '20, '22, '25)</span> • 
+            <span>⚡ ZIRK SQUAD HOLDS MOST WEEKLY POINTS (213.62 PTS, WK 2 2022)</span> • 
+            <span>🔥 ZIRK SQUAD SETS ALL-TIME PLAYOFF RECORD (345.96 PTS, 2025)</span>
+        </div>
+    </div>
+
+    <!-- Header / League Mate Branding -->
+    <header class="bg-lmnavy-900 border-b-4 border-lmblue-500 sticky top-0 z-50 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3.5">
+                <img src="logo.png" alt="League Mate Logo" 
+                     onerror="if(!this.dataset.try){this.dataset.try=1;this.src='logo.jpg';}else if(this.dataset.try==1){this.dataset.try=2;this.src='Logo.png';}else if(this.dataset.try==2){this.dataset.try=3;this.src='23013.jpg';}"
+                     class="h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(0,119,255,0.4)]">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-lmblue-500/20 text-lmblue-400 border border-lmblue-500/30">Reference Guide</span>
+                        <span class="text-[11px] text-slate-400 font-semibold tracking-wider uppercase hidden sm:inline">• Est. 2011</span>
+                    </div>
+                    <h1 class="text-lg sm:text-xl font-black tracking-tight text-white uppercase italic mt-0.5">
+                        League of Extraordinary Sh!t Talkers 
+                    </h1>
+                </div>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="hidden md:flex space-x-1 bg-lmnavy-950 p-1.5 rounded-xl border border-slate-800 overflow-x-auto">
+                <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow whitespace-nowrap">Overview</button>
+                <button onclick="switchTab('standings')" id="btn-standings" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Standings</button>
+                <button onclick="switchTab('top30')" id="btn-top30" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Player Stats</button>
+                <button onclick="switchTab('records')" id="btn-records" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">All-Time Records</button>
+                <button onclick="switchTab('h2h')" id="btn-h2h" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Head-to-Head</button>
+                <button onclick="switchTab('drafts')" id="btn-drafts" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Draft History</button>
+                <button onclick="switchTab('bylaws')" id="btn-bylaws" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Bylaws & Rules</button>
+                <button onclick="switchTab('playoffs')" id="btn-playoffs" class="tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap">Playoff Calculator</button>
+            </nav>
+        </div>
+        <!-- Mobile Nav -->
+        <div class="md:hidden flex overflow-x-auto space-x-2 px-4 py-2 bg-lmnavy-950 border-t border-slate-800 text-xs">
+            <button onclick="switchTab('overview')" id="m-btn-overview" class="whitespace-nowrap px-3 py-1.5 rounded font-black bg-lmblue-500 text-white">Overview</button>
+            <button onclick="switchTab('standings')" id="m-btn-standings" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Standings</button>
+            <button onclick="switchTab('top30')" id="m-btn-top30" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Player Stats</button>
+            <button onclick="switchTab('records')" id="m-btn-records" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">All-Time Records</button>
+            <button onclick="switchTab('h2h')" id="m-btn-h2h" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Head-to-Head</button>
+            <button onclick="switchTab('drafts')" id="m-btn-drafts" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Drafts</button>
+            <button onclick="switchTab('bylaws')" id="m-btn-bylaws" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Bylaws</button>
+            <button onclick="switchTab('playoffs')" id="m-btn-playoffs" class="whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400">Playoffs</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        
+        <!-- TAB 1: OVERVIEW -->
+        <section id="tab-overview" class="tab-content space-y-8">
+            <div class="relative overflow-hidden rounded-3xl lm-hero-card p-8 sm:p-12 shadow-2xl border-l-8 border-lmblue-500 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="relative z-10 max-w-2xl">
+                    <div class="flex flex-wrap items-center gap-2 mb-3">
+                        <span class="lm-badge text-white text-xs font-black px-3 py-1 rounded uppercase tracking-widest shadow">Verified</span>
+                        <span class="bg-lmturf-500 text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">15 Seasons Archived</span>
+                        <span class="lm-badge-red text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">Est. 2011</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-black text-white italic tracking-tight uppercase">LEAGUE RECORD BOOK</h2>
+                    <p class="text-slate-300 mt-3 text-sm sm:text-base leading-relaxed">Every matchup, every trophy, and every historic stat.</p>
+                </div>
+                <div class="relative z-10 shrink-0 hidden sm:block">
+                    <img src="logo.png" alt="League Mate Crest" 
+                         onerror="if(!this.dataset.try){this.dataset.try=1;this.src='logo.jpg';}else if(this.dataset.try==1){this.dataset.try=2;this.src='Logo.png';}else if(this.dataset.try==2){this.dataset.try=3;this.src='23013.jpg';}"
+                         class="h-36 sm:h-44 w-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)]">
+                </div>
+            </div>
+
+            <!-- LIVE SCORING SCOREBOARD MODULE -->
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <h3 class="text-xl font-black uppercase italic text-white flex items-center">
+                            <span class="w-2.5 h-2.5 rounded-full bg-espngreen-600 animate-ping mr-2.5"></span>
+                            Live ESPN Matchups
+                        </h3>
+                        <span id="live-week-badge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-lmblue-500/20 text-lmblue-400 border border-lmblue-500/30">
+                            Loading Week...
+                        </span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-xs text-slate-400">
+                        <span id="live-last-updated">Syncing with ESPN...</span>
+                        <button onclick="fetchLiveScores()" class="px-2.5 py-1 rounded-lg bg-lmnavy-950 hover:bg-slate-800 text-lmblue-400 border border-slate-800 font-bold transition">
+                            <i class="fa-solid fa-rotate"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Matchups Grid -->
+                <div id="live-matchups-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-full py-8 text-center text-slate-400 text-sm">
+                        <i class="fa-solid fa-spinner fa-spin text-lmblue-400 mr-2"></i> Connecting to ESPN Fantasy Live Feed...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complete List of Season Winners -->
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-trophy text-lmblue-400 mr-2"></i> Complete List of Season Champions (2011–2025)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2025</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(5th Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2024</div><div><div class="text-white font-bold text-sm">Fin It to win It</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2023</div><div><div class="text-white font-bold text-sm">PACKER BACKERS</div><div class="text-slate-400 text-xs">(2nd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2022</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(4th Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2021</div><div><div class="text-white font-bold text-sm">SHHHHH THECHAMPISHERE</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2020</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(3rd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2019</div><div><div class="text-white font-bold text-sm">Adrian Beat his son</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2018</div><div><div class="text-white font-bold text-sm">PACKER BACKERS</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2017</div><div><div class="text-white font-bold text-sm">Barely Gettin Bye</div><div class="text-slate-400 text-xs">(3rd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2016</div><div><div class="text-white font-bold text-sm">Barely Gettin Bye</div><div class="text-slate-400 text-xs">(2nd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2015</div><div><div class="text-white font-bold text-sm">Cruz Control</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2014</div><div><div class="text-white font-bold text-sm">Sayre MustangGT5.0</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2013</div><div><div class="text-white font-bold text-sm">Barely Gettin Bye</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2012</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(2nd Title)</div></div></div>
+                    <div class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/50 transition-colors p-4 rounded-xl flex items-center space-x-4"><div class="lm-badge text-white font-black px-3 py-2 rounded-lg text-sm shadow">2011</div><div><div class="text-white font-bold text-sm">Texas Teabaggers</div><div class="text-slate-400 text-xs">(1st Title)</div></div></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-lmnavy-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-lmblue-500">
+                    <div class="text-lmblue-400 text-xl mb-2"><i class="fa-solid fa-crown"></i></div>
+                    <div class="text-2xl sm:text-3xl font-black text-white">5 Titles</div>
+                    <div class="text-xs text-slate-400 font-medium mt-1">Most Championships (Texas Teabaggers)</div>
+                </div>
+                <div class="bg-lmnavy-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-lmturf-500">
+                    <div class="text-lmturf-500 text-xl mb-2"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="text-2xl sm:text-3xl font-black text-white">213.62 pts</div>
+                    <div class="text-xs text-slate-400 font-medium mt-1">Most Weekly Points (Zirk Squad, Wk 2 2022)</div>
+                </div>
+                <div class="bg-lmnavy-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-lmred-500">
+                    <div class="text-lmred-400 text-xl mb-2"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="text-2xl sm:text-3xl font-black text-white">345.96 pts</div>
+                    <div class="text-xs text-slate-400 font-medium mt-1">Most Playoff Points (Zirk Squad, '25)</div>
+                </div>
+                <div class="bg-lmnavy-900 border border-slate-800 p-6 rounded-2xl shadow-xl border-t-4 border-lmblue-500">
+                    <div class="text-lmblue-400 text-xl mb-2"><i class="fa-solid fa-fire"></i></div>
+                    <div class="text-2xl sm:text-3xl font-black text-white">10–2</div>
+                    <div class="text-xs text-slate-400 font-medium mt-1">Best Regular Season (Texas Teabaggers, 2022)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW TAB: CURRENT SEASON STANDINGS (Placed right after Overview) -->
+        <section id="tab-standings" class="tab-content hidden space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                    <div>
+                        <h3 class="text-xl font-black uppercase italic text-white flex items-center">
+                            <i class="fa-solid fa-list-ol text-lmblue-400 mr-2.5"></i> 2026 Current Season Standings
+                        </h3>
+                        <p class="text-slate-400 text-sm mt-1">Live ESPN regular season standings, playoff seeding, points for (PF), and points against (PA). Click any team to expand its roster and projections.</p>
+                    </div>
+                    <button onclick="fetchLiveScores()" class="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-lmnavy-950 hover:bg-slate-800 text-lmblue-400 border border-slate-800 text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate"></i> Sync Standings
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
+                                <th class="py-3.5 px-4 text-center">Seed</th>
+                                <th class="py-3.5 px-4">Team</th>
+                                <th class="py-3.5 px-4 text-center">W</th>
+                                <th class="py-3.5 px-4 text-center">L</th>
+                                <th class="py-3.5 px-4 text-center">T</th>
+                                <th class="py-3.5 px-4 text-center">Win %</th>
+                                <th class="py-3.5 px-4 text-right">PF</th>
+                                <th class="py-3.5 px-4 text-right">PA</th>
+                                <th class="py-3.5 px-4 text-right">+/-</th>
+                                <th class="py-3.5 px-4 text-center">Streak</th>
+                            </tr>
+                        </thead>
+                        <tbody id="current-standings-tbody" class="divide-y divide-slate-800">
+                            <tr>
+                                <td colspan="10" class="py-8 px-4 text-center text-slate-400">
+                                    <i class="fa-solid fa-spinner fa-spin text-lmblue-400 mr-2"></i> Loading 2026 Season Standings from ESPN...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 flex items-center gap-4 text-xs text-slate-400">
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span> Top 6 Qualify for Playoffs</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-lmblue-400 inline-block"></span> Top 2 Earn First-Round Bye</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW TAB: TOP 30 POSITIONAL LEADERS -->
+        <section id="tab-top30" class="tab-content hidden space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                    <div>
+                        <h3 class="text-xl font-black uppercase italic text-white flex items-center">
+                            <i class="fa-solid fa-fire-flame-curved text-lmblue-400 mr-2.5"></i> 2026 Top 30 Positional Scoring Leaders
+                        </h3>
+                        <p class="text-slate-400 text-sm mt-1">Current season top 30 fantasy scorers by position with live injury status and league ownership. Click any player to share a brag card.</p>
+                    </div>
+                    <!-- Position Filter Pills -->
+                    <div class="flex flex-wrap gap-1.5 bg-lmnavy-950 p-1.5 rounded-xl border border-slate-800">
+                        <button onclick="selectTop30Pos('QB')" id="pos-btn-QB" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider bg-lmblue-500 text-white shadow transition">QB</button>
+                        <button onclick="selectTop30Pos('RB')" id="pos-btn-RB" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">RB</button>
+                        <button onclick="selectTop30Pos('WR')" id="pos-btn-WR" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">WR</button>
+                        <button onclick="selectTop30Pos('TE')" id="pos-btn-TE" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">TE</button>
+                        <button onclick="selectTop30Pos('K')" id="pos-btn-K" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">K</button>
+                        <button onclick="selectTop30Pos('D/ST')" id="pos-btn-DST" class="pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">D/ST</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
+                                <th class="py-3.5 px-4 text-center w-16">Rank</th>
+                                <th class="py-3.5 px-4">Player</th>
+                                <th class="py-3.5 px-4 text-center">NFL Team</th>
+                                <th class="py-3.5 px-4 text-center">Injury Status</th>
+                                <th class="py-3.5 px-4">Rostered By</th>
+                                <th class="py-3.5 px-4 text-right">2026 Total Pts</th>
+                                <th class="py-3.5 px-4 text-right">Avg PPG</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top30-tbody" class="divide-y divide-slate-800">
+                            <tr>
+                                <td colspan="7" class="py-8 px-4 text-center text-slate-400">
+                                    <i class="fa-solid fa-spinner fa-spin text-lmblue-400 mr-2"></i> Loading Top 30 Positional Scorers from ESPN...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ALL-TIME RECORDS -->
+        <section id="tab-records" class="tab-content hidden space-y-8">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-star text-lmblue-400 mr-2"></i> Player High Scores & Positional Records</h3>
+                <p class="text-slate-400 text-sm mb-6">Historical single-game positional peaks and standout individual performances tracked across league history.</p>
+                <div id="player-records-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <!-- Cards injected via JavaScript -->
+                </div>
+            </div>
+
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-medal text-lmblue-400 mr-2"></i> All-Time Franchise Records & Milestones</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
+                                <th class="py-3 px-4">Record Category</th>
+                                <th class="py-3 px-4">Manager</th>
+                                <th class="py-3 px-4 text-right">Stat</th>
+                                <th class="py-3 px-4 text-center">Season</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-sm">
+                            <tr onclick="openBragCard({name: 'Texas Teabaggers', franchise: 'All-Time Franchise Record', metricLabel: 'Most Championships', score: '5 Titles', context: '2011, 2012, 2020, 2022, 2025', year: '2011–2025', badge: 'Dynasty Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Most Championships <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Texas Teabaggers</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">5 Titles</td>
+                                <td class="py-4 px-4 text-center text-slate-400">2011, '12, '20, '22, '25</td>
+                            </tr>
+                            <tr onclick="openBragCard({name: 'Texas Teabaggers', franchise: 'All-Time Franchise Record', metricLabel: 'Best Regular Season Record', score: '10–2', context: '83.3% Win Percentage', year: '2022 Season', badge: 'Regular Season Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Best Regular Season Record <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Texas Teabaggers</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">10–2</td>
+                                <td class="py-4 px-4 text-center text-slate-400">2022</td>
+                            </tr>
+                            <tr onclick="openBragCard({name: 'Japanese Ball Fondlers', franchise: 'All-Time Franchise Record', metricLabel: 'Worst Regular Season Record', score: '2–9', context: '18.2% Win Percentage', year: '2020 Season', badge: 'Hall of Shame'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmred-400 transition-colors">Worst Regular Season Record <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmred-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Japanese Ball Fondlers</td>
+                                <td class="py-4 px-4 text-right font-black text-lmred-400">2–9</td>
+                                <td class="py-4 px-4 text-center text-slate-400">2020</td>
+                            </tr>
+                            <tr onclick="openBragCard({name: 'Fin It To Win It', franchise: 'All-Time Franchise Record', metricLabel: 'Most PF in a Season', score: '1,786.56 PF', context: 'All-Time Scoring Juggernaut', year: '2023 Season', badge: 'Season Points Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Most PF in a Season <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Fin It To Win It</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">1,786.56 PF</td>
+                                <td class="py-4 px-4 text-center text-slate-400">2023</td>
+                            </tr>
+                            <tr onclick="openBragCard({name: 'Barely Gettin Bye', franchise: 'All-Time Franchise Record', metricLabel: 'Lowest PF in a Season', score: '915.00 PF', context: 'All-Time Season Low', year: '2015 Season', badge: 'Hall of Shame'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmred-400 transition-colors">Lowest PF in a Season <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmred-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Barely Gettin Bye</td>
+                                <td class="py-4 px-4 text-right font-black text-lmred-400">915.00 PF</td>
+                                <td class="py-4 px-4 text-center text-slate-400">2015</td>
+                            </tr>
+                            <tr onclick="openBragCard({name: 'Sayre MustangGT5.0', franchise: 'All-Time Franchise Record', metricLabel: 'Most PA in a Season', score: '1,724.54 PA', context: 'Toughest Schedule in History', year: '2022 Season', badge: 'Bad Luck Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmred-400 transition-colors">Most PA in a Season <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmred-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Sayre MustangGT5.0</td>
+                                <td class="py-4 px-4 text-right font-black text-lmred-400">1,724.54 PA</td>
+                                <td class="py-4 px-4 text-center text-slate-400">2022</td>
+                            </tr>
+                            <tr onclick="openBragCard({name: 'Zirk Squad', franchise: 'All-Time Franchise Record', metricLabel: 'Most Weekly Points', score: '213.62 pts', context: 'Week 2, 2022', year: '2022 Season', badge: 'Single-Week Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Most Weekly Points <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Zirk Squad</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">213.62 pts</td>
+                                <td class="py-4 px-4 text-center text-slate-400">Week 2, 2022</td>
+                            </tr>
+                            <tr onclick="openBragCard({name: 'Barely Gettin Bye', franchise: 'All-Time Franchise Record', metricLabel: 'Lowest Weekly Points', score: '38.62 pts', context: 'Week 7, 2018', year: '2018 Season', badge: 'Hall of Shame'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmred-400 transition-colors">Lowest Weekly Points <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmred-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Barely Gettin Bye</td>
+                                <td class="py-4 px-4 text-right font-black text-lmred-400">38.62 pts</td>
+                                <td class="py-4 px-4 text-center text-slate-400">Week 7, 2018</td>
+                            </tr>
+                            <tr onclick="openBragCard({name: 'Zirk Squad', franchise: 'All-Time Franchise Record', metricLabel: 'Most Playoff Matchup Points', score: '345.96 pts', context: 'Playoffs Round 1, 2025', year: '2025 Season', badge: 'Playoff Record'})" class="hover:bg-lmnavy-800/50 cursor-pointer group" title="Click to generate shareable brag card">
+                                <td class="py-4 px-4 font-bold text-white group-hover:text-lmblue-400 transition-colors">Most Playoff Matchup Points <i class="fa-solid fa-share-nodes text-xs text-slate-500 group-hover:text-lmblue-400 ml-1.5"></i></td>
+                                <td class="py-4 px-4 text-slate-300">Zirk Squad</td>
+                                <td class="py-4 px-4 text-right font-black text-lmblue-400">345.96 pts</td>
+                                <td class="py-4 px-4 text-center text-slate-400">Playoffs Round 1, 2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- All-Time Regular Season Manager Records Section -->
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-users text-lmblue-400 mr-2"></i> All-Time Regular Season Manager Records (2011–2025)</h3>
+                <p class="text-slate-400 text-sm mb-6">Comprehensive regular season performance metrics tracked across all active, former, and memorial league managers.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
+                                <th class="py-3 px-4">Name</th>
+                                <th class="py-3 px-4 text-center">W</th>
+                                <th class="py-3 px-4 text-center">L</th>
+                                <th class="py-3 px-4 text-center">Total</th>
+                                <th class="py-3 px-4 text-center">W %</th>
+                                <th class="py-3 px-4 text-right">PF</th>
+                                <th class="py-3 px-4 text-right">PA</th>
+                                <th class="py-3 px-4 text-right">+/-</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-sm">
+                            <tr class="hover:bg-lmnavy-800/50">
+                                <td class="py-3 px-4 font-bold text-white">Moore Nuts Allen Ya Mouth</td>
+                                <td class="py-3 px-4 text-center text-slate-300">5</td>
+                                <td class="py-3 px-4 text-center text-slate-300">2</td>
+                                <td class="py-3 px-4 text-center font-bold text-slate-200">7</td>
+                                <td class="py-3 px-4 text-center text-lmblue-400 font-bold">71.4%</td>
+                                <td class="py-3 px-4 text-right text-slate-300">952.62</td>
+                                <td class="py-3 px-4 text-right text-slate-300">913.40</td>
+                                <td class="py-3 px-4 text-right font-black text-emerald-400">+39.22</td>
+                            </tr>
+                            <!-- Note: Added script loads the remaining rows exactly as they were -->
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Knobgobblers</td><td class="py-3 px-4 text-center text-slate-300">8</td><td class="py-3 px-4 text-center text-slate-300">5</td><td class="py-3 px-4 text-center font-bold text-slate-200">13</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">61.5%</td><td class="py-3 px-4 text-right text-slate-300">1295.00</td><td class="py-3 px-4 text-right text-slate-300">1216.00</td><td class="py-3 px-4 text-right font-black text-emerald-400">+79.00</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Fin it to win it</td><td class="py-3 px-4 text-center text-slate-300">31</td><td class="py-3 px-4 text-center text-slate-300">20</td><td class="py-3 px-4 text-center font-bold text-slate-200">51</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">60.8%</td><td class="py-3 px-4 text-right text-slate-300">6667.80</td><td class="py-3 px-4 text-right text-slate-300">6351.02</td><td class="py-3 px-4 text-right font-black text-emerald-400">+316.78</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Skillz That Killz</td><td class="py-3 px-4 text-center text-slate-300">19</td><td class="py-3 px-4 text-center text-slate-300">14</td><td class="py-3 px-4 text-center font-bold text-slate-200">33</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">57.6%</td><td class="py-3 px-4 text-right text-slate-300">3231.12</td><td class="py-3 px-4 text-right text-slate-300">3009.46</td><td class="py-3 px-4 text-right font-black text-emerald-400">+221.66</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Texas Teabaggers</td><td class="py-3 px-4 text-center text-slate-300">86</td><td class="py-3 px-4 text-center text-slate-300">68</td><td class="py-3 px-4 text-center font-bold text-slate-200">154</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">55.8%</td><td class="py-3 px-4 text-right text-slate-300">17390.16</td><td class="py-3 px-4 text-right text-slate-300">16740.45</td><td class="py-3 px-4 text-right font-black text-emerald-400">+649.71</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">PACKER BACKERS</td><td class="py-3 px-4 text-center text-slate-300">53</td><td class="py-3 px-4 text-center text-slate-300">42</td><td class="py-3 px-4 text-center font-bold text-slate-200">95</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">55.8%</td><td class="py-3 px-4 text-right text-slate-300">11514.54</td><td class="py-3 px-4 text-right text-slate-300">10861.52</td><td class="py-3 px-4 text-right font-black text-emerald-400">+653.02</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">JOE BUCK YOURSELF</td><td class="py-3 px-4 text-center text-slate-300">83</td><td class="py-3 px-4 text-center text-slate-300">71</td><td class="py-3 px-4 text-center font-bold text-slate-200">154</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.9%</td><td class="py-3 px-4 text-right text-slate-300">17178.50</td><td class="py-3 px-4 text-right text-slate-300">17187.54</td><td class="py-3 px-4 text-right font-black text-lmred-400">-9.04</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Adrian Beat His son</td><td class="py-3 px-4 text-center text-slate-300">41</td><td class="py-3 px-4 text-center text-slate-300">36</td><td class="py-3 px-4 text-center font-bold text-slate-200">77</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">53.2%</td><td class="py-3 px-4 text-right text-slate-300">8020.47</td><td class="py-3 px-4 text-right text-slate-300">7765.27</td><td class="py-3 px-4 text-right font-black text-emerald-400">+255.20</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Zirk Squad</td><td class="py-3 px-4 text-center text-slate-300">43</td><td class="py-3 px-4 text-center text-slate-300">41</td><td class="py-3 px-4 text-center font-bold text-slate-200">84</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">51.2%</td><td class="py-3 px-4 text-right text-slate-300">10178.96</td><td class="py-3 px-4 text-right text-slate-300">9813.46</td><td class="py-3 px-4 text-right font-black text-emerald-400">+365.50</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">SHHHHH THECHAMPISHERE</td><td class="py-3 px-4 text-center text-slate-300">64</td><td class="py-3 px-4 text-center text-slate-300">64</td><td class="py-3 px-4 text-center font-bold text-slate-200">128</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">50.0%</td><td class="py-3 px-4 text-right text-slate-300">14423.46</td><td class="py-3 px-4 text-right text-slate-300">14259.22</td><td class="py-3 px-4 text-right font-black text-emerald-400">+164.24</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Barely Gettin Bye</td><td class="py-3 px-4 text-center text-slate-300">73</td><td class="py-3 px-4 text-center text-slate-300">74</td><td class="py-3 px-4 text-center font-bold text-slate-200">147</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">49.7%</td><td class="py-3 px-4 text-right text-slate-300">15852.12</td><td class="py-3 px-4 text-right text-slate-300">16181.44</td><td class="py-3 px-4 text-right font-black text-lmred-400">-329.32</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Jacksonville Jarheads</td><td class="py-3 px-4 text-center text-slate-300">19</td><td class="py-3 px-4 text-center text-slate-300">21</td><td class="py-3 px-4 text-center font-bold text-slate-200">40</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">47.5%</td><td class="py-3 px-4 text-right text-slate-300">4587.80</td><td class="py-3 px-4 text-right text-slate-300">4646.64</td><td class="py-3 px-4 text-right font-black text-lmred-400">-58.84</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Men In Black</td><td class="py-3 px-4 text-center text-slate-300">6</td><td class="py-3 px-4 text-center text-slate-300">7</td><td class="py-3 px-4 text-center font-bold text-slate-200">13</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">46.2%</td><td class="py-3 px-4 text-right text-slate-300">1257.00</td><td class="py-3 px-4 text-right text-slate-300">1233.00</td><td class="py-3 px-4 text-right font-black text-emerald-400">+24.00</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Cruz Control</td><td class="py-3 px-4 text-center text-slate-300">25</td><td class="py-3 px-4 text-center text-slate-300">30</td><td class="py-3 px-4 text-center font-bold text-slate-200">55</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">45.5%</td><td class="py-3 px-4 text-right text-slate-300">5594.17</td><td class="py-3 px-4 text-right text-slate-300">5514.70</td><td class="py-3 px-4 text-right font-black text-emerald-400">+79.47</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">TX Refried BNRS BNR BOB</td><td class="py-3 px-4 text-center text-slate-300">5</td><td class="py-3 px-4 text-center text-slate-300">6</td><td class="py-3 px-4 text-center font-bold text-slate-200">11</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">45.5%</td><td class="py-3 px-4 text-right text-slate-300">1123.42</td><td class="py-3 px-4 text-right text-slate-300">1210.70</td><td class="py-3 px-4 text-right font-black text-lmred-400">-87.28</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">One GIANT Step</td><td class="py-3 px-4 text-center text-slate-300">66</td><td class="py-3 px-4 text-center text-slate-300">81</td><td class="py-3 px-4 text-center font-bold text-slate-200">147</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">44.9%</td><td class="py-3 px-4 text-right text-slate-300">15609.38</td><td class="py-3 px-4 text-right text-slate-300">16082.84</td><td class="py-3 px-4 text-right font-black text-lmred-400">-473.46</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Cowboys and Illegal Aliens</td><td class="py-3 px-4 text-center text-slate-300">66</td><td class="py-3 px-4 text-center text-slate-300">88</td><td class="py-3 px-4 text-center font-bold text-slate-200">154</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">42.9%</td><td class="py-3 px-4 text-right text-slate-300">16197.58</td><td class="py-3 px-4 text-right text-slate-300">17474.48</td><td class="py-3 px-4 text-right font-black text-lmred-400">-1276.90</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">It's Shough Time</td><td class="py-3 px-4 text-center text-slate-300">3</td><td class="py-3 px-4 text-center text-slate-300">4</td><td class="py-3 px-4 text-center font-bold text-slate-200">7</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">42.9%</td><td class="py-3 px-4 text-right text-slate-300">908.50</td><td class="py-3 px-4 text-right text-slate-300">965.74</td><td class="py-3 px-4 text-right font-black text-lmred-400">-57.24</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Sayre MustangGT5.0</td><td class="py-3 px-4 text-center text-slate-300">23</td><td class="py-3 px-4 text-center text-slate-300">32</td><td class="py-3 px-4 text-center font-bold text-slate-200">55</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">41.8%</td><td class="py-3 px-4 text-right text-slate-300">5715.28</td><td class="py-3 px-4 text-right text-slate-300">5989.78</td><td class="py-3 px-4 text-right font-black text-lmred-400">-274.50</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Secret Project #69</td><td class="py-3 px-4 text-center text-slate-300">10</td><td class="py-3 px-4 text-center text-slate-300">16</td><td class="py-3 px-4 text-center font-bold text-slate-200">26</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">38.5%</td><td class="py-3 px-4 text-right text-slate-300">2729.00</td><td class="py-3 px-4 text-right text-slate-300">2882.00</td><td class="py-3 px-4 text-right font-black text-lmred-400">-153.00</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Furious Hungry Cowboys</td><td class="py-3 px-4 text-center text-slate-300">5</td><td class="py-3 px-4 text-center text-slate-300">8</td><td class="py-3 px-4 text-center font-bold text-slate-200">13</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">38.5%</td><td class="py-3 px-4 text-right text-slate-300">1278.00</td><td class="py-3 px-4 text-right text-slate-300">1426.00</td><td class="py-3 px-4 text-right font-black text-lmred-400">-148.00</td></tr>
+                            <tr class="hover:bg-lmnavy-800/50"><td class="py-3 px-4 font-bold text-white">Japanese Ball Fondlers</td><td class="py-3 px-4 text-center text-slate-300">2</td><td class="py-3 px-4 text-center text-slate-300">9</td><td class="py-3 px-4 text-center font-bold text-slate-200">11</td><td class="py-3 px-4 text-center text-lmblue-400 font-bold">18.2%</td><td class="py-3 px-4 text-right text-slate-300">1035.50</td><td class="py-3 px-4 text-right text-slate-300">1345.72</td><td class="py-3 px-4 text-right font-black text-lmred-400">-310.22</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: HEAD-TO-HEAD -->
+        <section id="tab-h2h" class="tab-content hidden space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <div>
+                    <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center"><i class="fa-solid fa-handshake-angle text-lmblue-400 mr-2"></i> All-Time Head-to-Head Comparison Tool</h3>
+                    <p class="text-slate-400 text-sm">Select any two managers below to instantly compare their lifetime regular season matchup record.</p>
+                </div>
+
+                <!-- Interactive Selector Tool -->
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow-inner grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-2">Manager 1 (Blue Corner)</label>
+                        <select id="mgr1-select" onchange="updateH2H()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-lmblue-500">
+                            <option value="Adrian Beat His son">Adrian Beat His son</option><option value="Barely Gettin Bye">Barely Gettin Bye</option><option value="Cowboys and Illegal Aliens">Cowboys and Illegal Aliens</option><option value="Cruz Control">Cruz Control</option><option value="Fin it to win it">Fin it to win it</option><option value="Furious Hungry Cowboys">Furious Hungry Cowboys</option><option value="It's Shough Time">It's Shough Time</option><option value="JOE BUCK YOURSELF">JOE BUCK YOURSELF</option><option value="Jacksonville Jarheads">Jacksonville Jarheads</option><option value="Japanese Ball Fondlers">Japanese Ball Fondlers</option><option value="Knobgobblers">Knobgobblers</option><option value="Men In Black">Men In Black</option><option value="Moore Nuts Allen Ya Mouth">Moore Nuts Allen Ya Mouth</option><option value="One GIANT Step">One GIANT Step</option><option value="PACKER BACKERS">PACKER BACKERS</option><option value="SHHHHH THECHAMPISHERE">SHHHHH THECHAMPISHERE</option><option value="Sayre MustangGT5.0">Sayre MustangGT5.0</option><option value="Secret Project #69">Secret Project #69</option><option value="Skillz That Killz">Skillz That Killz</option><option value="TX Refried BNRS BNR BOB">TX Refried BNRS BNR BOB</option><option value="Team Beat Dat Ass">Team Beat Dat Ass</option><option value="Texas Teabaggers">Texas Teabaggers</option><option value="Zirk Squad">Zirk Squad</option>
+                        </select>
+                    </div>
+                    <div class="text-center font-black text-white uppercase italic text-lg py-2 sm:py-0">
+                        <span class="px-3 py-1 rounded-full bg-gradient-to-r from-lmblue-500 to-lmred-500 text-xs tracking-widest shadow">VS</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmred-400 mb-2">Manager 2 (Red Corner)</label>
+                        <select id="mgr2-select" onchange="updateH2H()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-lmred-500">
+                            <option value="Adrian Beat His son">Adrian Beat His son</option><option value="Barely Gettin Bye">Barely Gettin Bye</option><option value="Cowboys and Illegal Aliens">Cowboys and Illegal Aliens</option><option value="Cruz Control">Cruz Control</option><option value="Fin it to win it">Fin it to win it</option><option value="Furious Hungry Cowboys">Furious Hungry Cowboys</option><option value="It's Shough Time">It's Shough Time</option><option value="JOE BUCK YOURSELF">JOE BUCK YOURSELF</option><option value="Jacksonville Jarheads">Jacksonville Jarheads</option><option value="Japanese Ball Fondlers">Japanese Ball Fondlers</option><option value="Knobgobblers">Knobgobblers</option><option value="Men In Black">Men In Black</option><option value="Moore Nuts Allen Ya Mouth">Moore Nuts Allen Ya Mouth</option><option value="One GIANT Step">One GIANT Step</option><option value="PACKER BACKERS">PACKER BACKERS</option><option value="SHHHHH THECHAMPISHERE">SHHHHH THECHAMPISHERE</option><option value="Sayre MustangGT5.0">Sayre MustangGT5.0</option><option value="Secret Project #69">Secret Project #69</option><option value="Skillz That Killz">Skillz That Killz</option><option value="TX Refried BNRS BNR BOB">TX Refried BNRS BNR BOB</option><option value="Team Beat Dat Ass">Team Beat Dat Ass</option><option value="Texas Teabaggers">Texas Teabaggers</option><option value="Zirk Squad">Zirk Squad</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-lmblue-600/20 via-lmnavy-900 to-lmred-600/20 border border-lmblue-500/40 rounded-2xl p-6 text-center shadow-lg">
+                    <div class="text-xs uppercase font-bold tracking-widest text-slate-400 mb-1">Lifetime Matchup Record</div>
+                    <div id="h2h-score-display" class="text-4xl sm:text-5xl font-black text-white italic tracking-tight my-2">8–6</div>
+                    <div id="h2h-note-display" class="text-xs text-slate-300 font-medium">Regular Season Battles. Are You The Bitch?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: DRAFT HISTORY -->
+        <section id="tab-drafts" class="tab-content hidden space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <div>
+                    <h3 class="text-xl font-black uppercase italic text-white mb-2 flex items-center">
+                        <i class="fa-solid fa-clipboard-list text-lmblue-400 mr-2"></i> Official League Draft Vault (2011–2026)
+                    </h3>
+                    <p class="text-slate-400 text-sm">Search all 2,464 historical draft picks directly from the official league archive.</p>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Season</label>
+                        <select id="draft-year-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
+                            <option value="ALL">All Seasons</option>
+                            <option value="2026" selected>2026 Season</option>
+                            <option value="2025">2025 Season</option>
+                            <option value="2024">2024 Season</option>
+                            <option value="2023">2023 Season</option>
+                            <option value="2022">2022 Season</option>
+                            <option value="2021">2021 Season</option>
+                            <option value="2020">2020 Season</option>
+                            <option value="2019">2019 Season</option>
+                            <option value="2018">2018 Season</option>
+                            <option value="2017">2017 Season</option>
+                            <option value="2016">2016 Season</option>
+                            <option value="2015">2015 Season</option>
+                            <option value="2014">2014 Season</option>
+                            <option value="2013">2013 Season</option>
+                            <option value="2012">2012 Season</option>
+                            <option value="2011">2011 Season</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Team / Manager</label>
+                        <select id="draft-team-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
+                            <option value="ALL">All Teams</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Round</label>
+                        <select id="draft-round-select" onchange="renderDraftTable()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-lmblue-500">
+                            <option value="ALL">All Rounds</option>
+                            <option value="1">Round 1</option>
+                            <option value="2">Round 2</option>
+                            <option value="3">Round 3</option>
+                            <option value="4">Round 4</option>
+                            <option value="5">Round 5</option>
+                            <option value="6">Round 6</option>
+                            <option value="7">Round 7</option>
+                            <option value="8">Round 8</option>
+                            <option value="9">Round 9</option>
+                            <option value="10">Round 10</option>
+                            <option value="11">Round 11</option>
+                            <option value="12">Round 12</option>
+                            <option value="13">Round 13</option>
+                            <option value="14">Round 14</option>
+                            <option value="15">Round 15</option>
+                            <option value="16">Round 16</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-lmblue-400 mb-1.5">Search Player</label>
+                        <input type="text" id="draft-player-search" oninput="renderDraftTable()" placeholder="e.g. McCaffrey, Allen..." class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-lmblue-500">
+                    </div>
+                </div>
+
+                <!-- Draft Results Table -->
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider bg-lmnavy-950">
+                                <th class="py-3 px-4">Year</th>
+                                <th class="py-3 px-4">Round</th>
+                                <th class="py-3 px-4 text-center">Pick #</th>
+                                <th class="py-3 px-4">Player</th>
+                                <th class="py-3 px-4">Drafted By</th>
+                            </tr>
+                        </thead>
+                        <tbody id="draft-table-body" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: BYLAWS & UNIQUE RULES -->
+        <section id="tab-bylaws" class="tab-content hidden space-y-6">
+            <div class="bg-lmnavy-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <h3 class="text-xl font-black uppercase italic text-white mb-6 flex items-center"><i class="fa-solid fa-scale-balanced text-lmblue-400 mr-2"></i> Official League Bylaws & Special Rules</h3>
+                <div class="space-y-6 text-sm">
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">1. Draft Lottery & Scheduling Protocol</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                            <li><strong>Lottery Timing:</strong> Draft Lottery takes place by Commissioner on the 1st Sunday of August each year.</li>
+                            <li><strong>Inverse Draw Mechanics:</strong> Names are drawn by hand and in inverse order of draft picks. The 1st name drawn drafts 10th, down to the last name drawn who receives the 1st overall pick.</li>
+                            <li><strong>Draft Date & Timer:</strong> The live draft is held the last Saturday before the start of the regular season at 7:00 PM EST. Pick timer is set to 1 minute.</li>
+                            <li><strong>Pick Swapping:</strong> Team managers are officially permitted to swap draft positions.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">2. Rule Changes & Last Place Penalties</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                            <li><strong>Nomination & Voting:</strong> All rule changes for the current season must be nominated during the live Lottery drawing. Managers vote on each nomination; once the voting window closes, rules are locked until the following year.</li>
+                            <li><strong>Last Place Name Change Penalty:</strong> The last-place team from the previous regular season is subject to a mandatory team name change voted on during the live Lottery.</li>
+                            <li><strong>Last Place Exemption:</strong> If the last-place team finished with more than 100 points higher than the 9th-place team, the 9th-place team is saddled with the team name change instead.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">3. Scoring & Yardage Bonuses</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                            <li><strong>Kicking:</strong> Scored by yards (0.1 points per yard on successful kicks). No penalty for missed kicks outside of 50 yards.</li>
+                            <li><strong>Receiving & Rushing Yardage Bonuses:</strong> +5 points if player eclipses 100 yards receiving or rushing but not a combination of both; an additional +5 points if they eclipse 200 yards (Max +10 bonus points for each).</li>
+                            <li><strong>Quarterback Bonuses:</strong> +5 points at 300 passing yards; an additional +5 points at 400 passing yards (Max +10 bonus points).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">4. League Integrity & Etiquette</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                            <li><strong>Draft Attendance:</strong> Team managers will be removed from the league if they fail to show up to the draft and their team is auto-selected.</li>
+                            <li><strong>Engagement Requirement:</strong> Team managers will be removed at the conclusion of the season if they do not engage with other league members (ensuring the right cultural fit).</li>
+                            <li><strong>Lineup Neglect Penalty:</strong> Any manager failing to set their lineup will be removed from the league. Co-Commissioners will manually set their lineup for the rest of the season based on projected points. No refund will be given to removed team manager.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow">
+                        <h4 class="text-lmblue-400 font-extrabold text-base mb-3 uppercase tracking-wider">5. Acquisitions & Trades</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                            <li><strong>Acquisition Limits:</strong> Each team is allowed a maximum of 40 acquisitions per season.</li>
+                            <li><strong>Waiver Restriction:</strong> Once a team is mathematically eliminated from playoff contention, they are not permitted to submit waiver claims for the remainder of the season. Free Agent acquisitions are permitted once the waiver period has ended.</li>
+                            <li><strong>Trade Veto:</strong> All trades are subject to veto with 6 votes against the trade. If a trade has achieved the required number of votes to pass or veto, the trade will not be pushed through by a commissioner and must wait for system clearance.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: PLAYOFF SCENARIO FINDER -->
+        <section id="tab-playoffs" class="tab-content hidden space-y-8">
+            <div class="bg-lmnavy-900 border border-lmblue-500/20 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-md space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-lmblue-500/30 pb-6">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-lmblue-400 flex items-center gap-3">
+                            <span>🏆</span> Team Playoff Paths & Magic Numbers
+                        </h2>
+                        <p class="text-slate-400 text-sm mt-1">Select any team below to see their playoff odds, required win record, and clean clinching paths for remaining weeks.</p>
+                    </div>
+                </div>
+
+                <!-- Team Selector Dropdown -->
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-6 shadow-inner space-y-4">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-lmblue-400">Select Team to Analyze</label>
+                    <select id="team-scenario-select" onchange="analyzeTeamScenarios()" class="w-full bg-lmnavy-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-lmblue-500 shadow-md">
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+
+                <!-- Summary Stats & Odds Cards -->
+                <div id="scenario-summary" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+
+                <!-- Clean Summary Paths List -->
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-5 shadow-inner space-y-4">
+                    <h3 class="text-lg font-bold text-lmblue-400 flex items-center gap-2">
+                        <span>📋</span> Required Paths & Clinching Scenarios
+                    </h3>
+                    <div id="scenarios-list-container" class="space-y-3 max-h-[500px] overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-lmnavy-950 border-t border-slate-800 py-8 mt-12 text-center text-xs text-slate-500">
+        <p class="font-bold text-slate-400">© 2011–2026 League of Extraordinary Sh!t Talkers</p>
+    </footer>
+
+    <!-- Side-by-Side Live Matchup Boxscore Modal Overlay -->
+    <div id="matchupModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+        <div class="bg-lmnavy-900 border-2 border-lmblue-500/50 rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Top Bar -->
+            <div class="bg-lmnavy-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between shrink-0">
+                <div class="flex items-center space-x-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-espngreen-600 animate-ping"></span>
+                    <h3 id="matchupModalTitle" class="text-sm sm:text-base font-black uppercase italic text-white tracking-wider">Live Matchup Boxscore</h3>
+                </div>
+                <button onclick="closeMatchupModal()" class="text-slate-400 hover:text-white text-sm font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-lmnavy-900 border border-slate-800 transition">
+                    <i class="fa-solid fa-xmark"></i> Close
+                </button>
+            </div>
+
+            <!-- Modal Content: Independent Side-by-Side Team Columns -->
+            <div id="matchupModalBody" class="p-4 sm:p-6 overflow-y-auto flex-1">
+                <!-- Injected via openMatchupModal(idx) -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Brag Card Modal Overlay -->
+    <div id="bragCardModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="relative flex flex-col items-center max-w-sm w-full">
+            <!-- Close Button -->
+            <button onclick="closeBragModal()" class="absolute -top-10 right-0 text-slate-400 hover:text-white text-sm font-bold flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-xmark"></i> Close
+            </button>
+
+            <!-- RENDER TARGET: The Brag Card -->
+            <div id="bragCardTarget" class="w-full bg-gradient-to-b from-lmnavy-800 via-lmnavy-900 to-lmnavy-950 border-2 border-lmblue-500/60 rounded-2xl p-6 shadow-2xl relative overflow-hidden text-slate-100 font-sans">
+                <!-- Top Accent Bar -->
+                <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-lmblue-500 via-lmturf-500 to-lmred-500"></div>
+                
+                <!-- Decorative Glows -->
+                <div class="absolute -top-16 -right-16 w-36 h-36 bg-lmblue-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-lmred-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+                <!-- Card Header -->
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4 mt-1">
+                    <div>
+                        <span id="cardSeasonYear" class="text-xs text-slate-400 font-semibold">Historic Record</span>
+                    </div>
+                    <span id="cardBadge" class="text-[10px] font-black uppercase tracking-wider bg-lmblue-500/20 text-lmblue-400 border border-lmblue-500/40 px-2.5 py-0.5 rounded-full">
+                        League Record
+                    </span>
+                </div>
+
+                <!-- Hero Visual -->
+                <div class="flex flex-col items-center my-4">
+                    <div class="w-24 h-24 rounded-full border-2 border-lmblue-400/80 p-1 bg-lmnavy-950 shadow-inner flex items-center justify-center relative overflow-hidden">
+                        <img id="cardImage" src="logo.png" alt="Record Holder" 
+                             onerror="if(!this.dataset.try){this.dataset.try=1;this.src='logo.jpg';}else if(this.dataset.try==1){this.dataset.try=2;this.src='Logo.png';}else if(this.dataset.try==2){this.dataset.try=3;this.src='23013.jpg';}"
+                             class="w-full h-full object-cover rounded-full bg-lmnavy-800" />
+                    </div>
+                    <h3 id="cardEntityName" class="text-xl font-black text-white mt-3 text-center tracking-tight uppercase italic">Player / Team</h3>
+                    <p id="cardFranchise" class="text-xs text-lmblue-400 font-bold tracking-wide mt-0.5">Franchise Name</p>
+                </div>
+
+                <!-- Main Metric Box -->
+                <div class="bg-lmnavy-950/90 border border-slate-800 rounded-xl p-4 text-center my-4 shadow-inner">
+                    <div class="text-[10px] uppercase tracking-widest text-slate-400 font-bold" id="cardMetricLabel">Record Stat</div>
+                    <div class="text-3xl sm:text-4xl font-black text-white my-1 tracking-tight" id="cardMetricValue">0.00</div>
+                    <div class="text-xs text-emerald-400 font-semibold" id="cardSubContext">Context</div>
+                </div>
+
+                <!-- Flexible Dynamic Stat Breakdown Grid (Populated for Players) -->
+                <div id="cardStatsGrid" class="hidden flex flex-wrap justify-center gap-1.5 w-full mb-4"></div>
+
+                <!-- Card Footer -->
+                <div class="flex items-center justify-center pt-2 border-t border-slate-800/80 text-[10px] text-slate-400">
+                    <span class="font-bold uppercase tracking-wider text-slate-500">League of Extraordinary Sh!t Talkers</span>
+                </div>
+            </div>
+
+            <!-- Export Button -->
+            <button id="downloadCardBtn" onclick="exportBragCard()" class="mt-5 w-full py-3 px-4 rounded-xl font-black uppercase tracking-wider text-xs bg-lmblue-500 hover:bg-lmblue-600 text-white shadow-lg shadow-lmblue-500/30 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-download"></i> Save Image to Share
+            </button>
+        </div>
+    </div>
+
+    <!-- JS EXTERNAL DATA IMPORT -->
+    <script src="league-data.js"></script>
+
+    <!-- UI Interaction Scripts -->
+    <script>
+        // HASH ROUTING & TAB SWITCHING
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                window.location.hash = tabId; 
+            }
+
+            if (tabId === 'playoffs') initScenarioDropdown();
+            if (tabId === 'drafts' && Object.keys(masterDraftData).length === 0) fetchExcelDraftData();
+            if (tabId === 'top30' && top30PlayersCache.length === 0) fetchTop30Players();
+
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.className = "tab-btn px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white whitespace-nowrap");
+            document.querySelectorAll('[id^="m-btn-"]').forEach(btn => btn.className = "whitespace-nowrap px-3 py-1.5 rounded font-bold text-slate-400");
+            
+            if (document.getElementById('btn-' + tabId)) document.getElementById('btn-' + tabId).className = "tab-btn px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all bg-lmblue-500 text-white shadow whitespace-nowrap";
+            if (document.getElementById('m-btn-' + tabId)) document.getElementById('m-btn-' + tabId).className = "whitespace-nowrap px-3 py-1.5 rounded font-black bg-lmblue-500 text-white";
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateH2H();
+            initPlayerCards();
+            fetchLiveScores();
+            setInterval(fetchLiveScores, 30000);
+            
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById('tab-' + hash)) {
+                switchTab(hash);
+            } else {
+                switchTab('overview');
+            }
+        });
+
+        // ESPN LIVE SCORING, PROJECTIONS, INJURIES, STANDINGS & TOP 30 INTEGRATION (League ID: 140046)
+        const ESPN_LEAGUE_ID = '140046';
+        const ESPN_SEASON = 2026;
+        const ESPN_API_URL = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${ESPN_SEASON}/segments/0/leagues/${ESPN_LEAGUE_ID}?view=mMatchupScore&view=mScoreboard&view=mTeam&view=mBoxscore&view=mRoster&view=mStandings`;
+
+        let liveMatchupsCache = [];
+        let liveTeamsMap = {};
+        let currentScoringWeek = 1;
+        let top30PlayersCache = [];
+        let currentTop30Pos = 'QB';
+        let currentTop30Displayed = [];
+        let expandedStandingTeamIds = new Set();
+
+        const SLOT_MAP = {
+            0: { label: 'QB', order: 1 },
+            2: { label: 'RB', order: 2 },
+            4: { label: 'WR', order: 3 },
+            6: { label: 'TE', order: 4 },
+            23: { label: 'FLEX', order: 5 },
+            16: { label: 'D/ST', order: 6 },
+            17: { label: 'K', order: 7 },
+            20: { label: 'BENCH', order: 99 },
+            21: { label: 'IR', order: 100 }
+        };
+
+        const POS_MAP = { 1: 'QB', 2: 'RB', 3: 'WR', 4: 'TE', 5: 'K', 16: 'D/ST' };
+
+        const NFL_PRO_TEAMS = {
+            0: 'FA', 1: 'ATL', 2: 'BUF', 3: 'CHI', 4: 'CIN', 5: 'CLE', 6: 'DAL', 7: 'DEN', 8: 'DET',
+            9: 'GB', 10: 'TEN', 11: 'IND', 12: 'KC', 13: 'LV', 14: 'LAR', 15: 'MIA', 16: 'MIN',
+            17: 'NE', 18: 'NO', 19: 'NYG', 20: 'NYJ', 21: 'PHI', 22: 'ARI', 23: 'PIT', 24: 'LAC',
+            25: 'SF', 26: 'SEA', 27: 'TB', 28: 'WSH', 29: 'CAR', 30: 'JAX', 33: 'BAL', 34: 'HOU'
+        };
+
+        function getInjuryBadgeHTML(status) {
+            if (!status || status === 'ACTIVE' || status === 'NORMAL') return '';
+            const map = {
+                'QUESTIONABLE': { short: 'Q', cls: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
+                'DOUBTFUL': { short: 'D', cls: 'bg-orange-500/20 text-orange-400 border-orange-500/40' },
+                'OUT': { short: 'O', cls: 'bg-lmred-500/20 text-lmred-400 border-lmred-500/40' },
+                'INJURY_RESERVE': { short: 'IR', cls: 'bg-lmred-500/30 text-lmred-300 border-lmred-500/50' },
+                'SUSPENSION': { short: 'SUSP', cls: 'bg-purple-500/20 text-purple-300 border-purple-500/40' },
+                'PROBABLE': { short: 'P', cls: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' }
+            };
+            const item = map[status] || { short: status.substring(0, 3).toUpperCase(), cls: 'bg-slate-700 text-slate-300 border-slate-600' };
+            return `<span class="ml-1.5 px-1.5 py-0.2 rounded text-[9px] font-black uppercase border ${item.cls}" title="Injury Status: ${status}">${item.short}</span>`;
+        }
+
+        function extractPlayerWeekStats(entry, playerObj, weekNum) {
+            const statsArr = entry?.playerPoolEntry?.player?.stats || playerObj?.stats || [];
+            let actual = entry?.playerPoolEntry?.appliedStatTotal;
+            let projected = null;
+
+            statsArr.forEach(s => {
+                if (s.scoringPeriodId === weekNum) {
+                    if (s.statSourceId === 0 && actual === undefined && s.appliedTotal !== undefined) {
+                        actual = s.appliedTotal;
+                    }
+                    if (s.statSourceId === 1 && s.appliedTotal !== undefined) {
+                        projected = s.appliedTotal;
+                    }
+                }
+            });
+
+            return {
+                actual: (actual ?? 0).toFixed(2),
+                projected: projected !== null ? projected.toFixed(1) : '0.0'
+            };
+        }
+
+        function calculateTeamProjectedTotal(matchupSide, teamInfo) {
+            if (matchupSide?.totalProjectedPointsLive !== undefined) {
+                return matchupSide.totalProjectedPointsLive.toFixed(2);
+            }
+            const rawEntries = matchupSide?.rosterForCurrentScoringPeriod?.entries || teamInfo?.rosterEntries || [];
+            let projSum = 0;
+            rawEntries.forEach(e => {
+                const slotId = e.lineupSlotId;
+                if (slotId !== 20 && slotId !== 21) {
+                    const playerObj = e.playerPoolEntry?.player || e.player || {};
+                    const st = extractPlayerWeekStats(e, playerObj, currentScoringWeek);
+                    projSum += parseFloat(st.projected) || 0;
+                }
+            });
+            return projSum > 0 ? projSum.toFixed(2) : null;
+        }
+
+        async function fetchLiveScores() {
+            const grid = document.getElementById('live-matchups-grid');
+            const weekBadge = document.getElementById('live-week-badge');
+            const updatedText = document.getElementById('live-last-updated');
+            if (!grid) return;
+
+            try {
+                const res = await fetch(ESPN_API_URL);
+                if (!res.ok) throw new Error('League may be private or unreachable.');
+                const data = await res.json();
+
+                currentScoringWeek = data.scoringPeriodId || data.status?.currentMatchupPeriod || 1;
+                weekBadge.textContent = `Week ${currentScoringWeek}`;
+
+                liveTeamsMap = {};
+                (data.teams || []).forEach(t => {
+                    const overall = t.record?.overall || {};
+                    liveTeamsMap[t.id] = {
+                        id: t.id,
+                        name: t.name || `${t.location || ''} ${t.nickname || ''}`.trim() || `Team ${t.id}`,
+                        logo: t.logo || 'logo.png',
+                        wins: overall.wins ?? 0,
+                        losses: overall.losses ?? 0,
+                        ties: overall.ties ?? 0,
+                        pf: overall.pointsFor ?? 0,
+                        pa: overall.pointsAgainst ?? 0,
+                        streakType: overall.streakType || '',
+                        streakLength: overall.streakLength || 0,
+                        playoffSeed: t.playoffSeed || t.rankCalculatedFinal || 99,
+                        record: overall.wins !== undefined ? `${overall.wins}-${overall.losses}${overall.ties ? '-' + overall.ties : ''}` : '',
+                        rosterEntries: t.roster?.entries || []
+                    };
+                });
+
+                liveMatchupsCache = (data.schedule || []).filter(m => m.matchupPeriodId === currentScoringWeek);
+
+                // Render Current Season Standings Table (uses liveMatchupsCache for weekly projections)
+                renderCurrentStandings();
+
+                if (liveMatchupsCache.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full py-6 text-center text-slate-400 text-sm">No active matchups found for Week ${currentScoringWeek}.</div>`;
+                    return;
+                }
+
+                grid.innerHTML = liveMatchupsCache.map((m, idx) => {
+                    const away = liveTeamsMap[m.away?.teamId] || { name: 'TBD', logo: 'logo.png', record: '' };
+                    const home = liveTeamsMap[m.home?.teamId] || { name: 'BYE / TBD', logo: 'logo.png', record: '' };
+
+                    const awayScore = (m.away?.totalPointsLive ?? m.away?.totalPoints ?? 0).toFixed(2);
+                    const homeScore = (m.home?.totalPointsLive ?? m.home?.totalPoints ?? 0).toFixed(2);
+
+                    const awayProj = calculateTeamProjectedTotal(m.away, away);
+                    const homeProj = calculateTeamProjectedTotal(m.home, home);
+
+                    const awayWinning = parseFloat(awayScore) > parseFloat(homeScore);
+                    const homeWinning = parseFloat(homeScore) > parseFloat(awayScore);
+
+                    return `
+                        <div onclick="openMatchupModal(${idx})" class="bg-lmnavy-950 border border-slate-800 hover:border-lmblue-500/60 rounded-2xl p-4 shadow-inner transition-all space-y-3 cursor-pointer group" title="Click to view side-by-side player boxscore">
+                            <!-- Away Team -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3 min-w-0">
+                                    <img src="${away.logo}" onerror="this.src='logo.png'" class="w-9 h-9 rounded-full bg-lmnavy-900 object-cover border border-slate-700 shrink-0">
+                                    <div class="truncate">
+                                        <div class="text-sm font-bold ${awayWinning ? 'text-white' : 'text-slate-300'} group-hover:text-lmblue-400 transition-colors truncate">${away.name}</div>
+                                        <div class="text-[10px] text-slate-500 font-semibold">${away.record}</div>
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0 ml-2">
+                                    <div class="text-lg font-black font-mono leading-tight ${awayWinning ? 'text-emerald-400' : 'text-slate-200'}">${awayScore}</div>
+                                    ${awayProj ? `<div class="text-[10px] font-mono text-slate-400">Proj: ${awayProj}</div>` : ''}
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-800/80"></div>
+
+                            <!-- Home Team -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3 min-w-0">
+                                    <img src="${home.logo}" onerror="this.src='logo.png'" class="w-9 h-9 rounded-full bg-lmnavy-900 object-cover border border-slate-700 shrink-0">
+                                    <div class="truncate">
+                                        <div class="text-sm font-bold ${homeWinning ? 'text-white' : 'text-slate-300'} group-hover:text-lmblue-400 transition-colors truncate">${home.name}</div>
+                                        <div class="text-[10px] text-slate-500 font-semibold">${home.record}</div>
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0 ml-2">
+                                    <div class="text-lg font-black font-mono leading-tight ${homeWinning ? 'text-emerald-400' : 'text-slate-200'}">${homeScore}</div>
+                                    ${homeProj ? `<div class="text-[10px] font-mono text-slate-400">Proj: ${homeProj}</div>` : ''}
+                                </div>
+                            </div>
+
+                            <div class="pt-1 flex items-center justify-end text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-lmblue-400 transition-colors">
+                                <span>Side-by-Side Lineups & Projections <i class="fa-solid fa-table-columns ml-1.5 text-[9px]"></i></span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const now = new Date();
+                updatedText.textContent = `Updated ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+            } catch (err) {
+                console.error('ESPN Live Score Error:', err);
+                grid.innerHTML = `
+                    <div class="col-span-full bg-lmred-500/10 border border-lmred-500/30 rounded-xl p-4 text-center text-xs text-lmred-400">
+                        Could not load live ESPN scores for League #140046. Ensure your league is set to <strong>Make League Viewable to Public = Yes</strong> in ESPN LM Settings, or connect a proxy URL.
+                    </div>`;
+            }
+        }
+
+        // TOGGLE EXPANDABLE STANDINGS ROW
+        function toggleStandingRoster(teamId) {
+            if (expandedStandingTeamIds.has(teamId)) {
+                expandedStandingTeamIds.delete(teamId);
+            } else {
+                expandedStandingTeamIds.add(teamId);
+            }
+            renderCurrentStandings();
+        }
+
+        // RENDER 2026 CURRENT SEASON STANDINGS (Expandable with Rosters, Projections & Visible Overall Record)
+        function renderCurrentStandings() {
+            const tbody = document.getElementById('current-standings-tbody');
+            if (!tbody) return;
+            const teamsList = Object.values(liveTeamsMap);
+            if (teamsList.length === 0) return;
+
+            teamsList.sort((a, b) => {
+                if (a.playoffSeed !== b.playoffSeed) return a.playoffSeed - b.playoffSeed;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return b.pf - a.pf;
+            });
+
+            tbody.innerHTML = teamsList.map((t, index) => {
+                const rank = index + 1;
+                const totalGames = t.wins + t.losses + t.ties;
+                const winPct = totalGames > 0 ? ((t.wins / totalGames) * 100).toFixed(1) + '%' : '0.0%';
+                const diff = t.pf - t.pa;
+                const diffFormatted = (diff >= 0 ? '+' : '') + diff.toFixed(2);
+                const streakStr = t.streakLength > 0 ? `${t.streakType === 'WIN' ? 'W' : t.streakType === 'LOSS' ? 'L' : 'T'}${t.streakLength}` : '—';
+
+                const seedBadgeCls = rank <= 2
+                    ? 'bg-lmblue-500/20 text-lmblue-400 border border-lmblue-500/40'
+                    : rank <= 6
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                    : 'bg-lmnavy-950 text-slate-400 border border-slate-800';
+
+                const isExpanded = expandedStandingTeamIds.has(t.id);
+
+                // Find active matchup side if available for current week's live points & projections
+                let activeMatchupSide = null;
+                liveMatchupsCache.forEach(m => {
+                    if (m.away?.teamId === t.id) activeMatchupSide = m.away;
+                    if (m.home?.teamId === t.id) activeMatchupSide = m.home;
+                });
+
+                const teamRoster = parseTeamRoster(activeMatchupSide, t);
+                const weekLiveScore = (activeMatchupSide?.totalPointsLive ?? activeMatchupSide?.totalPoints ?? teamRoster.starters.reduce((sum, p) => sum + (parseFloat(p.pts) || 0), 0)).toFixed(2);
+                const weekProjScore = calculateTeamProjectedTotal(activeMatchupSide, t) || teamRoster.starters.reduce((sum, p) => sum + (parseFloat(p.proj) || 0), 0).toFixed(2);
+
+                const renderExpandedPlayerList = (list) => {
+                    if (!list || list.length === 0) {
+                        return `<div class="text-xs text-slate-500 italic py-2 text-center">No players in this group.</div>`;
+                    }
+                    return list.map(p => `
+                        <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-lmnavy-900/90 border border-slate-800">
+                            <div class="flex items-center space-x-2.5 min-w-0">
+                                <span class="w-10 text-center text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-lmblue-500/15 text-lmblue-400 border border-lmblue-500/30 shrink-0">${p.slot}</span>
+                                <img src="${p.headshot}" onerror="this.src='logo.png'" class="w-7 h-7 rounded-full bg-lmnavy-950 object-cover border border-slate-700 shrink-0">
+                                <div class="truncate">
+                                    <div class="text-xs font-bold text-white truncate flex items-center">
+                                        <span class="truncate">${p.name}</span>
+                                        ${getInjuryBadgeHTML(p.injuryStatus)}
+                                    </div>
+                                    <div class="text-[9px] text-slate-400 font-semibold">${p.pos}${p.nflTeam ? ' · ' + p.nflTeam : ''}</div>
+                                </div>
+                            </div>
+                            <div class="text-right ml-2 shrink-0">
+                                <div class="text-xs font-mono font-black text-emerald-400 leading-tight">${p.pts}</div>
+                                <div class="text-[9px] font-mono text-slate-400">Proj: ${p.proj}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                };
+
+                return `
+                    <tr onclick="toggleStandingRoster(${t.id})" class="hover:bg-lmnavy-800/50 transition-colors cursor-pointer group ${rank === 6 && !isExpanded ? 'border-b-2 border-emerald-500/40' : ''} ${isExpanded ? 'bg-lmnavy-800/40' : ''}" title="Click to expand team roster & projections">
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="px-2 py-0.5 rounded-full text-xs font-black ${seedBadgeCls}">#${rank}</span>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <img src="${t.logo}" onerror="this.src='logo.png'" class="w-8 h-8 rounded-full bg-lmnavy-950 object-cover border border-slate-700 shrink-0">
+                                    <span class="font-bold text-white group-hover:text-lmblue-400 transition-colors">${t.name}</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-${isExpanded ? 'up' : 'down'} text-xs text-slate-500 group-hover:text-lmblue-400 transition-colors ml-2"></i>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-center font-bold text-slate-200">${t.wins}</td>
+                        <td class="py-3.5 px-4 text-center font-bold text-slate-200">${t.losses}</td>
+                        <td class="py-3.5 px-4 text-center text-slate-400">${t.ties}</td>
+                        <td class="py-3.5 px-4 text-center font-bold text-lmblue-400">${winPct}</td>
+                        <td class="py-3.5 px-4 text-right font-mono text-slate-200">${t.pf.toFixed(2)}</td>
+                        <td class="py-3.5 px-4 text-right font-mono text-slate-300">${t.pa.toFixed(2)}</td>
+                        <td class="py-3.5 px-4 text-right font-mono font-black ${diff >= 0 ? 'text-emerald-400' : 'text-lmred-400'}">${diffFormatted}</td>
+                        <td class="py-3.5 px-4 text-center text-xs font-bold ${t.streakType === 'WIN' ? 'text-emerald-400' : t.streakType === 'LOSS' ? 'text-lmred-400' : 'text-slate-400'}">${streakStr}</td>
+                    </tr>
+                    <tr id="standing-expand-${t.id}" class="${isExpanded ? '' : 'hidden'} bg-lmnavy-950/90 ${rank === 6 ? 'border-b-2 border-emerald-500/40' : ''}">
+                        <td colspan="10" class="p-4 sm:p-6">
+                            <div class="bg-lmnavy-900/70 border border-lmblue-500/30 rounded-2xl p-4 sm:p-5 space-y-5 shadow-inner">
+                                <!-- Visible Overall Record & Week Projections Summary Bar -->
+                                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="${t.logo}" onerror="this.src='logo.png'" class="w-10 h-10 rounded-full object-cover border border-lmblue-500/50">
+                                        <div>
+                                            <div class="text-sm sm:text-base font-black text-white uppercase italic">${t.name} — Week ${currentScoringWeek} Roster</div>
+                                            <div class="text-xs text-slate-300 font-bold">
+                                                Overall Record: <span class="text-lmblue-400">${t.wins}-${t.losses}${t.ties ? '-' + t.ties : ''} (${winPct})</span> • Seed #${rank} • PF: ${t.pf.toFixed(2)} | PA: ${t.pa.toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 bg-lmnavy-950 px-4 py-2 rounded-xl border border-slate-800">
+                                        <div class="text-right">
+                                            <div class="text-[10px] uppercase font-bold text-slate-400">Week ${currentScoringWeek} Live</div>
+                                            <div class="text-lg font-black font-mono text-emerald-400">${weekLiveScore}</div>
+                                        </div>
+                                        <div class="h-7 w-px bg-slate-800"></div>
+                                        <div class="text-right">
+                                            <div class="text-[10px] uppercase font-bold text-slate-400">Week ${currentScoringWeek} Proj</div>
+                                            <div class="text-lg font-black font-mono text-lmblue-400">${weekProjScore}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Starters & Bench Columns -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <div class="text-[10px] font-black uppercase tracking-widest text-lmblue-400 mb-2.5 flex items-center">
+                                            <i class="fa-solid fa-bolt mr-1.5"></i> Starting Lineup (${teamRoster.starters.length})
+                                        </div>
+                                        <div class="space-y-1.5">${renderExpandedPlayerList(teamRoster.starters)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2.5 flex items-center">
+                                            <i class="fa-solid fa-chair mr-1.5"></i> Bench / Reserve (${teamRoster.bench.length})
+                                        </div>
+                                        <div class="space-y-1.5 opacity-85">${renderExpandedPlayerList(teamRoster.bench)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // FETCH & RENDER TOP 30 POSITIONAL PLAYERS FOR CURRENT SEASON
+        async function fetchTop30Players() {
+            const tbody = document.getElementById('top30-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="7" class="py-8 px-4 text-center text-slate-300 font-bold uppercase tracking-wider"><i class="fa-solid fa-spinner fa-spin text-lmblue-400 mr-2"></i> Fetching 2026 Positional Leaders from ESPN...</td></tr>`;
+
+            const filterHeader = JSON.stringify({
+                players: {
+                    limit: 500,
+                    sortAppliedStatTotal: {
+                        sortAsc: false,
+                        sortPriority: 1,
+                        value: `00${ESPN_SEASON}`
+                    }
+                }
+            });
+
+            const url = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/${ESPN_SEASON}/segments/0/leagues/${ESPN_LEAGUE_ID}?view=kona_player_info`;
+
+            try {
+                const res = await fetch(url, {
+                    headers: { 'X-Fantasy-Filter': filterHeader }
+                });
+                if (!res.ok) throw new Error('Could not fetch kona_player_info');
+                const data = await res.json();
+
+                const rawPlayers = data.players || [];
+                top30PlayersCache = rawPlayers.map(item => {
+                    const p = item.player || {};
+                    const pos = POS_MAP[p.defaultPositionId] || 'OTHER';
+                    const nflTeam = NFL_PRO_TEAMS[p.proTeamId] || 'FA';
+                    const injuryStatus = p.injuryStatus || (p.injured ? 'INJURED' : 'ACTIVE');
+                    const onTeamId = item.onTeamId || 0;
+
+                    // Extract 2026 Season Total Points (statSourceId === 0, statSplitTypeId === 0)
+                    let seasonTotal = item.ratings?.['0']?.totalRating;
+                    const statsList = p.stats || [];
+                    const seasonStat = statsList.find(s => s.statSourceId === 0 && s.statSplitTypeId === 0 && s.id === `00${ESPN_SEASON}`);
+                    if (seasonStat && seasonStat.appliedTotal !== undefined) {
+                        seasonTotal = seasonStat.appliedTotal;
+                    }
+                    seasonTotal = seasonTotal ?? 0;
+
+                    const gamesPlayed = Math.max(1, currentScoringWeek);
+                    const avgPpg = seasonTotal / gamesPlayed;
+
+                    const headshot = p.defaultPositionId === 16
+                        ? `https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/${nflTeam.toLowerCase()}.png&w=96&h=96`
+                        : `https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/${p.id}.png&w=96&h=70&cb=1`;
+
+                    // Extract detailed ESPN football stats for Shareable Cards
+                    const sMap = seasonStat ? seasonStat.stats || {} : {};
+                    const getVal = (id) => sMap[id] !== undefined ? Math.round(sMap[id]) : 0;
+                    
+                    let pStats = [];
+                    if (pos === 'QB') {
+                        pStats = [
+                            { label: 'PYds', value: getVal('3') },
+                            { label: 'PTDs', value: getVal('4') },
+                            { label: 'RuYds', value: getVal('24') },
+                            { label: 'RuTDs', value: getVal('25') },
+                            { label: 'Ints', value: getVal('20') }
+                        ];
+                    } else if (pos === 'RB') {
+                        pStats = [
+                            { label: 'RuAtmp', value: getVal('23') },
+                            { label: 'RuYds', value: getVal('24') },
+                            { label: 'RuTDs', value: getVal('25') },
+                            { label: 'Recs', value: getVal('53') },
+                            { label: 'RcYds', value: getVal('42') },
+                            { label: 'RcTDs', value: getVal('43') }
+                        ];
+                    } else if (pos === 'WR' || pos === 'TE') {
+                        pStats = [
+                            { label: 'Recs', value: getVal('53') },
+                            { label: 'RcYds', value: getVal('42') },
+                            { label: 'RcTDs', value: getVal('43') },
+                            { label: 'RuAtmp', value: getVal('23') },
+                            { label: 'RuYds', value: getVal('24') },
+                            { label: 'RuTDs', value: getVal('25') }
+                        ];
+                    } else if (pos === 'D/ST') {
+                        pStats = [
+                            { label: 'Sacks', value: getVal('93') },
+                            { label: 'Ints', value: getVal('95') },
+                            { label: 'FR', value: getVal('96') },
+                            { label: 'TDs', value: (getVal('103') + getVal('104') + getVal('105')) }
+                        ];
+                    } else if (pos === 'K') {
+                        pStats = [
+                            { label: 'FGA', value: getVal('84') },
+                            { label: 'FGM', value: getVal('83') },
+                            { label: 'XPs', value: getVal('86') }
+                        ];
+                    }
+
+                    return {
+                        id: p.id,
+                        name: p.fullName || 'Unknown Player',
+                        pos: pos,
+                        nflTeam: nflTeam,
+                        injuryStatus: injuryStatus,
+                        onTeamId: onTeamId,
+                        totalPts: seasonTotal,
+                        avgPpg: avgPpg,
+                        headshot: headshot,
+                        detailedStats: pStats
+                    };
+                });
+
+                renderTop30Table();
+            } catch (err) {
+                console.error('Top 30 Fetch Error:', err);
+                // Fallback: build positional leaders from all currently rostered players if CORS blocks custom X-Fantasy-Filter header
+                buildTop30FromRostersFallback();
+            }
+        }
+
+        function buildTop30FromRostersFallback() {
+            const seen = new Set();
+            const fallbackList = [];
+            Object.values(liveTeamsMap).forEach(team => {
+                (team.rosterEntries || []).forEach(e => {
+                    const p = e.playerPoolEntry?.player || e.player || {};
+                    if (!p.id || seen.has(p.id)) return;
+                    seen.add(p.id);
+                    const pos = POS_MAP[p.defaultPositionId] || 'OTHER';
+                    const nflTeam = NFL_PRO_TEAMS[p.proTeamId] || 'FA';
+                    const statsList = p.stats || [];
+                    const seasonStat = statsList.find(s => s.statSourceId === 0 && s.statSplitTypeId === 0);
+                    const totalPts = seasonStat?.appliedTotal ?? e.playerPoolEntry?.appliedStatTotal ?? 0;
+                    const headshot = p.defaultPositionId === 16
+                        ? 'logo.png'
+                        : `https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/${p.id}.png&w=96&h=70&cb=1`;
+
+                    const sMap = seasonStat ? seasonStat.stats || {} : {};
+                    const getVal = (id) => sMap[id] !== undefined ? Math.round(sMap[id]) : 0;
+                    
+                    let pStats = [];
+                    if (pos === 'QB') {
+                        pStats = [{ label: 'PYds', value: getVal('3') }, { label: 'PTDs', value: getVal('4') }, { label: 'RuYds', value: getVal('24') }, { label: 'RuTDs', value: getVal('25') }, { label: 'Ints', value: getVal('20') }];
+                    } else if (pos === 'RB') {
+                        pStats = [{ label: 'RuAtmp', value: getVal('23') }, { label: 'RuYds', value: getVal('24') }, { label: 'RuTDs', value: getVal('25') }, { label: 'Recs', value: getVal('53') }, { label: 'RcYds', value: getVal('42') }, { label: 'RcTDs', value: getVal('43') }];
+                    } else if (pos === 'WR' || pos === 'TE') {
+                        pStats = [{ label: 'Recs', value: getVal('53') }, { label: 'RcYds', value: getVal('42') }, { label: 'RcTDs', value: getVal('43') }, { label: 'RuAtmp', value: getVal('23') }, { label: 'RuYds', value: getVal('24') }, { label: 'RuTDs', value: getVal('25') }];
+                    } else if (pos === 'D/ST') {
+                        pStats = [{ label: 'Sacks', value: getVal('93') }, { label: 'Ints', value: getVal('95') }, { label: 'FR', value: getVal('96') }, { label: 'TDs', value: (getVal('103') + getVal('104') + getVal('105')) }];
+                    } else if (pos === 'K') {
+                        pStats = [{ label: 'FGA', value: getVal('84') }, { label: 'FGM', value: getVal('83') }, { label: 'XPs', value: getVal('86') }];
+                    }
+
+                    fallbackList.push({
+                        id: p.id,
+                        name: p.fullName || 'Unknown Player',
+                        pos: pos,
+                        nflTeam: nflTeam,
+                        injuryStatus: p.injuryStatus || 'ACTIVE',
+                        onTeamId: team.id,
+                        totalPts: totalPts,
+                        avgPpg: totalPts / Math.max(1, currentScoringWeek),
+                        headshot: headshot,
+                        detailedStats: pStats
+                    });
+                });
+            });
+            top30PlayersCache = fallbackList;
+            renderTop30Table();
+        }
+
+        function selectTop30Pos(pos) {
+            currentTop30Pos = pos;
+            document.querySelectorAll('.pos-filter-btn').forEach(btn => {
+                btn.className = "pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition";
+            });
+            const btnId = pos === 'D/ST' ? 'pos-btn-DST' : `pos-btn-${pos}`;
+            const activeBtn = document.getElementById(btnId);
+            if (activeBtn) {
+                activeBtn.className = "pos-filter-btn px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider bg-lmblue-500 text-white shadow transition";
+            }
+            renderTop30Table();
+        }
+
+        function openTop30BragCard(index) {
+            const p = currentTop30Displayed[index];
+            if (!p) return;
+            const rank = index + 1;
+            const ownerTeam = liveTeamsMap[p.onTeamId];
+            const ownerName = ownerTeam ? ownerTeam.name : 'Free Agent';
+
+            // Uses dynamic football stats if successfully pulled from API, otherwise uses basic fallback stats
+            const cardStats = p.detailedStats && p.detailedStats.length > 0 ? p.detailedStats : [
+                { label: 'POS RANK', value: `#${rank}` },
+                { label: 'NFL TEAM', value: p.nflTeam },
+                { label: 'AVG PPG', value: p.avgPpg.toFixed(1) },
+                { label: 'STATUS', value: (!p.injuryStatus || p.injuryStatus === 'ACTIVE' || p.injuryStatus === 'NORMAL') ? 'Healthy' : p.injuryStatus.substring(0, 4) }
+            ];
+
+            openBragCard({
+                name: p.name,
+                franchise: 'Rostered By: ' + ownerName,
+                metricLabel: `${ESPN_SEASON} Total Fantasy Points`,
+                score: `${p.totalPts.toFixed(2)} pts`,
+                context: `${p.nflTeam} · ${p.pos} #${rank} (${p.avgPpg.toFixed(1)} PPG)`,
+                year: `${ESPN_SEASON} Season`,
+                badge: `Top 30 ${p.pos} (#${rank})`,
+                imgUrl: p.headshot,
+                stats: cardStats
+            });
+        }
+
+        function renderTop30Table() {
+            const tbody = document.getElementById('top30-tbody');
+            if (!tbody) return;
+
+            const filtered = top30PlayersCache
+                .filter(p => p.pos === currentTop30Pos)
+                .sort((a, b) => b.totalPts - a.totalPts)
+                .slice(0, 30);
+
+            currentTop30Displayed = filtered;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-8 px-4 text-center text-slate-400 text-sm">No player stats available yet for ${currentTop30Pos} in the ${ESPN_SEASON} season.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map((p, idx) => {
+                const ownerTeam = liveTeamsMap[p.onTeamId];
+                const ownerLabel = ownerTeam
+                    ? `<span class="text-slate-200 font-semibold">${ownerTeam.name}</span>`
+                    : `<span class="text-xs px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">Free Agent</span>`;
+
+                const injuryBadge = getInjuryBadgeHTML(p.injuryStatus);
+                const fullInjuryText = (!p.injuryStatus || p.injuryStatus === 'ACTIVE' || p.injuryStatus === 'NORMAL')
+                    ? `<span class="text-xs text-emerald-400 font-semibold">Healthy</span>`
+                    : `<span class="text-xs font-bold text-amber-400">${p.injuryStatus.replace('_', ' ')}</span>`;
+
+                return `
+                    <tr onclick="openTop30BragCard(${idx})" class="hover:bg-lmnavy-800/50 transition-colors cursor-pointer group" title="Tap to generate Shareable Brag Card">
+                        <td class="py-3 px-4 text-center font-black text-lmblue-400">#${idx + 1}</td>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="${p.headshot}" onerror="this.src='logo.png'" class="w-9 h-9 rounded-full bg-lmnavy-950 object-cover border border-slate-700 shrink-0">
+                                <div>
+                                    <div class="font-bold text-white group-hover:text-lmblue-400 transition-colors flex items-center">
+                                        ${p.name} ${injuryBadge}
+                                        <i class="fa-solid fa-share-nodes text-[10px] text-slate-500 group-hover:text-lmblue-400 ml-2"></i>
+                                    </div>
+                                    <div class="text-[10px] text-slate-400 font-bold uppercase">${p.pos}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-center font-bold text-slate-300">${p.nflTeam}</td>
+                        <td class="py-3 px-4 text-center">${fullInjuryText}</td>
+                        <td class="py-3 px-4">${ownerLabel}</td>
+                        <td class="py-3 px-4 text-right font-mono font-black text-emerald-400 text-base">${p.totalPts.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-right font-mono text-slate-300">${p.avgPpg.toFixed(1)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function parseTeamRoster(matchupSide, teamInfo) {
+            const rawEntries = matchupSide?.rosterForCurrentScoringPeriod?.entries || teamInfo?.rosterEntries || [];
+            const players = rawEntries.map(e => {
+                const playerObj = e.playerPoolEntry?.player || e.player || {};
+                const slotId = e.lineupSlotId;
+                const slotMeta = SLOT_MAP[slotId] || { label: 'FLEX', order: 50 };
+                const posName = POS_MAP[playerObj.defaultPositionId] || '';
+                const nflTeam = NFL_PRO_TEAMS[playerObj.proTeamId] || '';
+
+                const weekStats = extractPlayerWeekStats(e, playerObj, currentScoringWeek);
+                const injuryStatus = playerObj.injuryStatus || (playerObj.injured ? 'INJURED' : 'ACTIVE');
+
+                const headshot = playerObj.defaultPositionId === 16
+                    ? 'logo.png'
+                    : `https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/${playerObj.id}.png&w=96&h=70&cb=1`;
+
+                return {
+                    name: playerObj.fullName || 'Unknown Player',
+                    slot: slotMeta.label,
+                    order: slotMeta.order,
+                    isStarter: slotId !== 20 && slotId !== 21,
+                    pos: posName,
+                    nflTeam: nflTeam,
+                    pts: weekStats.actual,
+                    proj: weekStats.projected,
+                    injuryStatus: injuryStatus,
+                    headshot: headshot
+                };
+            });
+
+            players.sort((a, b) => a.order - b.order);
+            return {
+                starters: players.filter(p => p.isStarter),
+                bench: players.filter(p => !p.isStarter)
+            };
+        }
+
+        function renderTeamColumnRoster(teamRoster) {
+            const renderRows = (list) => {
+                if (!list || list.length === 0) {
+                    return `<div class="text-[11px] text-slate-500 italic py-2 text-center">No players in this slot group.</div>`;
+                }
+                return list.map(p => `
+                    <div class="flex items-center justify-between py-2 px-2.5 rounded-xl bg-lmnavy-950/80 border border-slate-800 hover:border-slate-700 transition">
+                        <div class="flex items-center space-x-2.5 min-w-0">
+                            <span class="w-10 text-center text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-lmblue-500/15 text-lmblue-400 border border-lmblue-500/30 shrink-0">${p.slot}</span>
+                            <img src="${p.headshot}" onerror="this.src='logo.png'" class="w-7 h-7 rounded-full bg-lmnavy-900 object-cover border border-slate-700 shrink-0">
+                            <div class="truncate">
+                                <div class="text-xs font-bold text-white truncate leading-tight flex items-center">
+                                    <span class="truncate">${p.name}</span>
+                                    ${getInjuryBadgeHTML(p.injuryStatus)}
+                                </div>
+                                <div class="text-[9px] text-slate-400 font-semibold">${p.pos}${p.nflTeam ? ' · ' + p.nflTeam : ''}</div>
+                            </div>
+                        </div>
+                        <div class="text-right ml-2 shrink-0">
+                            <div class="text-xs font-mono font-black text-emerald-400 leading-tight">${p.pts}</div>
+                            <div class="text-[9px] font-mono text-slate-400">Proj: ${p.proj}</div>
+                        </div>
+                    </div>
+                `).join('');
+            };
+
+            return `
+                <div class="space-y-4">
+                    <div>
+                        <div class="text-[10px] font-black uppercase tracking-widest text-lmblue-400 mb-2 flex items-center">
+                            <i class="fa-solid fa-bolt mr-1.5 text-[9px]"></i> Starting Lineup
+                        </div>
+                        <div class="space-y-1.5">${renderRows(teamRoster.starters)}</div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-800">
+                        <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center">
+                            <i class="fa-solid fa-chair mr-1.5 text-[9px]"></i> Bench
+                        </div>
+                        <div class="space-y-1.5 opacity-80">${renderRows(teamRoster.bench)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openMatchupModal(index) {
+            const m = liveMatchupsCache[index];
+            if (!m) return;
+
+            const awayInfo = liveTeamsMap[m.away?.teamId] || { name: 'Away Team', logo: 'logo.png', record: '' };
+            const homeInfo = liveTeamsMap[m.home?.teamId] || { name: 'Home Team', logo: 'logo.png', record: '' };
+
+            const awayScore = (m.away?.totalPointsLive ?? m.away?.totalPoints ?? 0).toFixed(2);
+            const homeScore = (m.home?.totalPointsLive ?? m.home?.totalPoints ?? 0).toFixed(2);
+
+            const awayProj = calculateTeamProjectedTotal(m.away, awayInfo);
+            const homeProj = calculateTeamProjectedTotal(m.home, homeInfo);
+
+            const awayWinning = parseFloat(awayScore) > parseFloat(homeScore);
+            const homeWinning = parseFloat(homeScore) > parseFloat(awayScore);
+
+            const awayRoster = parseTeamRoster(m.away, awayInfo);
+            const homeRoster = parseTeamRoster(m.home, homeInfo);
+
+            document.getElementById('matchupModalTitle').textContent = `Week ${currentScoringWeek} Boxscore — ${awayInfo.name} vs. ${homeInfo.name}`;
+
+            document.getElementById('matchupModalBody').innerHTML = `
+                <!-- True Side-by-Side Dual Column Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- COLUMN 1: AWAY TEAM -->
+                    <div class="bg-lmnavy-950/60 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col space-y-4">
+                        <!-- Away Team Header Card -->
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-800 bg-lmnavy-900/60 p-3.5 rounded-xl border border-slate-800">
+                            <div class="flex items-center space-x-3 min-w-0">
+                                <img src="${awayInfo.logo}" onerror="this.src='logo.png'" class="w-11 h-11 rounded-full object-cover border-2 border-lmblue-500/50 shrink-0">
+                                <div class="truncate">
+                                    <div class="text-sm sm:text-base font-black text-white truncate">${awayInfo.name}</div>
+                                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${awayInfo.record}</div>
+                                </div>
+                            </div>
+                            <div class="text-right ml-3 shrink-0">
+                                <div class="text-2xl sm:text-3xl font-black font-mono leading-tight ${awayWinning ? 'text-emerald-400' : 'text-slate-200'}">${awayScore}</div>
+                                ${awayProj ? `<div class="text-[11px] font-mono text-lmblue-400 font-bold">Proj: ${awayProj}</div>` : ''}
+                            </div>
+                        </div>
+                        <!-- Away Team Dedicated Lineup -->
+                        <div class="flex-1">
+                            ${renderTeamColumnRoster(awayRoster)}
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 2: HOME TEAM -->
+                    <div class="bg-lmnavy-950/60 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col space-y-4">
+                        <!-- Home Team Header Card -->
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-800 bg-lmnavy-900/60 p-3.5 rounded-xl border border-slate-800">
+                            <div class="flex items-center space-x-3 min-w-0">
+                                <img src="${homeInfo.logo}" onerror="this.src='logo.png'" class="w-11 h-11 rounded-full object-cover border-2 border-lmred-500/50 shrink-0">
+                                <div class="truncate">
+                                    <div class="text-sm sm:text-base font-black text-white truncate">${homeInfo.name}</div>
+                                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${homeInfo.record}</div>
+                                </div>
+                            </div>
+                            <div class="text-right ml-3 shrink-0">
+                                <div class="text-2xl sm:text-3xl font-black font-mono leading-tight ${homeWinning ? 'text-emerald-400' : 'text-slate-200'}">${homeScore}</div>
+                                ${homeProj ? `<div class="text-[11px] font-mono text-lmred-400 font-bold">Proj: ${homeProj}</div>` : ''}
+                            </div>
+                        </div>
+                        <!-- Home Team Dedicated Lineup -->
+                        <div class="flex-1">
+                            ${renderTeamColumnRoster(homeRoster)}
+                        </div>
+                    </div>
+
+                </div>
+            `;
+
+            document.getElementById('matchupModal').classList.remove('hidden');
+        }
+
+        function closeMatchupModal() {
+            document.getElementById('matchupModal').classList.add('hidden');
+        }
+
+        // H2H LOGIC
+        function updateH2H() {
+            const m1 = document.getElementById('mgr1-select').value;
+            const m2 = document.getElementById('mgr2-select').value;
+            const display = document.getElementById('h2h-score-display');
+            const note = document.getElementById('h2h-note-display');
+
+            if (m1 === m2) {
+                display.innerText = "—"; note.innerText = "Cannot compare a manager against themselves.";
+            } else if (typeof h2hRecords !== 'undefined' && h2hRecords[m1] && h2hRecords[m1][m2]) {
+                display.innerText = h2hRecords[m1][m2]; note.innerText = m1 + " vs " + m2 + " — Regular Season Battles. Are You The Bitch?";
+            } else {
+                display.innerText = "0–0"; note.innerText = "No recorded head-to-head matchups between " + m1 + " and " + m2;
+            }
+        }
+
+        // PLAYER CARDS LOGIC
+        function initPlayerCards() {
+            const grid = document.getElementById('player-records-grid');
+            if (!grid || typeof playerRecords === 'undefined') return;
+
+            grid.innerHTML = playerRecords.map((p, idx) => `
+                <article onclick="openPlayerBragCard(${idx})" class="player-card cursor-pointer group relative overflow-hidden rounded-xl border border-lmblue-500/30 shadow-xl shadow-black/40" title="Tap to generate Shareable Brag Card">
+                    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-lmblue-500 via-lmturf-500 to-lmred-500 opacity-90"></div>
+                    <div class="relative flex items-start gap-4 p-4 pb-3">
+                        <div class="relative shrink-0"><img src="${p.headshot}" class="h-20 w-20 rounded-lg object-cover object-top ring-2 ring-lmblue-500/40 shadow-lg bg-lmnavy-800" loading="lazy" /></div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2">
+                                <h3 class="truncate text-lg font-bold tracking-tight text-white">${p.name}</h3>
+                                <span class="shrink-0 rounded bg-lmblue-500/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-lmblue-400 border border-lmblue-500/30">${p.position}</span>
+                            </div>
+                            <p class="mt-0.5 text-sm text-slate-400">${p.team} · ${p.number}</p>
+                            <div class="mt-2 flex flex-wrap gap-1.5">
+                                <span class="rounded-full bg-lmnavy-800 border border-slate-700 px-2 py-0.5 text-xs text-slate-300">${p.week}</span>
+                                <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-xs font-medium text-emerald-400">${p.fpts}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-px border-t border-slate-800 bg-slate-800/50">
+                        ${p.stats.map(s => `<div class="bg-lmnavy-900/90 px-2 py-2.5 text-center"><div class="text-[10px] uppercase text-slate-400 truncate">${s.label}</div><div class="mt-0.5 text-sm font-semibold text-white">${s.value}</div></div>`).join('')}
+                    </div>
+                    <div class="flex items-center justify-between border-t border-slate-800 px-4 py-2.5 bg-lmnavy-950/60">
+                        <span class="text-xs text-slate-400">Manager: <span class="text-slate-200 font-medium">${p.owner}</span></span>
+                        <span class="text-xs font-medium text-lmblue-400 group-hover:text-lmblue-300 transition flex items-center gap-1">League Record ✓ <i class="fa-solid fa-share-nodes text-[10px]"></i></span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // BRAG CARD MODAL & EXPORT LOGIC
+        function openPlayerBragCard(index) {
+            if (typeof playerRecords === 'undefined' || !playerRecords[index]) return;
+            const p = playerRecords[index];
+            openBragCard({
+                name: p.name,
+                franchise: 'Manager: ' + p.owner,
+                metricLabel: p.position + ' Single-Game Record',
+                score: p.fpts,
+                context: p.team + ' · ' + p.number,
+                year: p.week,
+                badge: p.position + ' Record',
+                imgUrl: p.headshot,
+                stats: p.stats
+            });
+        }
+
+        function openBragCard(data) {
+            document.getElementById('cardSeasonYear').textContent = data.year || 'Historic Record';
+            document.getElementById('cardBadge').textContent = data.badge || 'League Record';
+            document.getElementById('cardEntityName').textContent = data.name || 'Record Holder';
+            document.getElementById('cardFranchise').textContent = data.franchise || 'League Franchise';
+            document.getElementById('cardMetricLabel').textContent = data.metricLabel || 'Fantasy Points';
+            document.getElementById('cardMetricValue').textContent = data.score || '0.00';
+            document.getElementById('cardSubContext').textContent = data.context || '';
+
+            const imgElement = document.getElementById('cardImage');
+            delete imgElement.dataset.try;
+            imgElement.src = data.imgUrl || 'logo.png';
+
+            const statsGrid = document.getElementById('cardStatsGrid');
+            if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
+                statsGrid.innerHTML = data.stats.map(s => `
+                    <div class="bg-lmnavy-950/80 border border-slate-800 rounded-lg py-1.5 px-2 text-center flex-1 min-w-[50px]">
+                        <div class="text-[9px] uppercase text-slate-400 truncate">${s.label}</div>
+                        <div class="text-xs font-bold text-white mt-0.5">${s.value}</div>
+                    </div>
+                `).join('');
+                statsGrid.classList.remove('hidden');
+                statsGrid.classList.add('flex');
+            } else {
+                statsGrid.innerHTML = '';
+                statsGrid.classList.add('hidden');
+                statsGrid.classList.remove('flex');
+            }
+
+            document.getElementById('bragCardModal').classList.remove('hidden');
+        }
+
+        function closeBragModal() {
+            document.getElementById('bragCardModal').classList.add('hidden');
+        }
+
+        function exportBragCard() {
+            const cardElement = document.getElementById('bragCardTarget');
+            const btn = document.getElementById('downloadCardBtn');
+            const originalHTML = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating Image...';
+            btn.disabled = true;
+
+            html2canvas(cardElement, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#050811'
+            }).then((canvas) => {
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                const rawName = document.getElementById('cardEntityName').textContent || 'record';
+                const filename = `record-${rawName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-card.png`;
+
+                link.download = filename;
+                link.href = image;
+                link.click();
+
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }).catch((err) => {
+                console.error('Failed to generate brag card:', err);
+                btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Export Failed';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }, 2000);
+            });
+        }
+
+        // DRAFT VAULT LOGIC (Directly Reads the Excel File!)
+        let masterDraftData = {};
+
+        async function fetchExcelDraftData() {
+            const tbody = document.getElementById('draft-table-body');
+            tbody.innerHTML = `<tr><td colspan="5" class="py-8 px-4 text-center text-slate-300 font-bold tracking-widest uppercase"><i class="fa-solid fa-spinner fa-spin mr-3 text-lmblue-400"></i> Accessing League Archive Server...</td></tr>`;
+            
+            try {
+                const response = await fetch('Fantasy_Football_Draft_History_2026_2011_Updated.xlsx');
+                if (!response.ok) throw new Error("Excel file not found on server.");
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, {type: 'array'});
+                
+                workbook.SheetNames.forEach(sheetName => {
+                    const rowData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+                    masterDraftData[sheetName] = rowData.map(row => ({
+                        round: row['Round'] ? (String(row['Round']).startsWith('Round') ? String(row['Round']) : 'Round ' + row['Round']) : 'Unknown',
+                        pick: row['Pick No.'] || 0,
+                        player: row['Player'] || 'Unknown',
+                        team: row['Team'] || 'Unknown'
+                    }));
+                });
+                populateDraftDropdowns();
+                renderDraftTable();
+            } catch (error) {
+                console.error("Draft Load Error:", error);
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 px-4 text-center text-lmred-400">Error: Could not locate 'Fantasy_Football_Draft_History_2026_2011_Updated.xlsx'. Ensure it is uploaded to your GitHub repository.</td></tr>`;
+            }
+        }
+
+        function populateDraftDropdowns() {
+            const teamSelect = document.getElementById('draft-team-select');
+            let teams = new Set();
+            Object.values(masterDraftData).forEach(seasonList => seasonList.forEach(p => teams.add(p.team)));
+            Array.from(teams).sort().forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t; opt.textContent = t; teamSelect.appendChild(opt);
+            });
+        }
+
+        function renderDraftTable() {
+            const yearVal = document.getElementById('draft-year-select').value;
+            const teamVal = document.getElementById('draft-team-select').value;
+            const roundVal = document.getElementById('draft-round-select').value;
+            const searchVal = document.getElementById('draft-player-search').value.toLowerCase().trim();
+            const tbody = document.getElementById('draft-table-body');
+            
+            if (!tbody || Object.keys(masterDraftData).length === 0) return;
+
+            let matches = [];
+            const yearsToQuery = yearVal === 'ALL' ? Object.keys(masterDraftData).sort((a,b)=>b-a) : [yearVal];
+
+            yearsToQuery.forEach(y => {
+                if (masterDraftData[y]) {
+                    masterDraftData[y].forEach(p => {
+                        if (teamVal !== 'ALL' && p.team !== teamVal) return;
+                        if (roundVal !== 'ALL' && p.round !== 'Round ' + roundVal) return;
+
+                        if (searchVal !== '' && !p.player.toLowerCase().includes(searchVal)) return;
+                        matches.push({...p, year: y});
+                    });
+                }
+            });
+
+            if (matches.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 px-4 text-center text-slate-400 text-sm">No draft picks found matching your filters.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = matches.slice(0, 100).map(m => `
+                <tr class="hover:bg-lmnavy-800/50 transition-colors">
+                    <td class="py-3 px-4 font-bold text-amber-400">${m.year}</td>
+                    <td class="py-3 px-4 text-slate-300">${m.round}</td>
+                    <td class="py-3 px-4 text-center font-black text-white">#${m.pick}</td>
+                    <td class="py-3 px-4 font-bold text-white">${m.player}</td>
+                    <td class="py-3 px-4 text-slate-300">${m.team}</td>
+                </tr>
+            `).join('') + (matches.length > 100 ? `<tr><td colspan="5" class="py-3 px-4 text-center text-xs text-slate-500 italic">Showing first 100 matches of ${matches.length}. Refine search to see specific picks.</td></tr>` : '');
+        }
+
+        // PLAYOFF SCENARIOS LOGIC
+        function initScenarioDropdown() {
+            const select = document.getElementById('team-scenario-select');
+            
+            // Fail gracefully if baseTeams or remainingMatchups are undefined in league-data.js to prevent crash
+            if (!select || typeof baseTeams === 'undefined' || !Array.isArray(baseTeams) || typeof remainingMatchups === 'undefined') {
+                const summary = document.getElementById('scenario-summary');
+                if(summary) summary.innerHTML = '<div class="col-span-3 text-center text-lmred-400 font-bold p-4 bg-lmnavy-950 rounded-xl border border-lmred-500/30">Playoff Calculator Error: "baseTeams" and "remainingMatchups" data not found or incorrectly formatted in league-data.js.</div>';
+                return;
+            }
+            
+            select.innerHTML = '';
+            baseTeams.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id; 
+                opt.textContent = `${t.name} (${t.wins}-${t.losses})`;
+                opt.style.backgroundColor = '#0a1124'; 
+                opt.style.color = '#ffffff';
+                select.appendChild(opt);
+            });
+            analyzeTeamScenarios();
+        }
+
+        function analyzeTeamScenarios() {
+            const select = document.getElementById('team-scenario-select');
+            if (!select || typeof baseTeams === 'undefined' || !Array.isArray(baseTeams) || typeof remainingMatchups === 'undefined') return;
+            
+            const targetTeamId = select.value;
+            // String comparison to handle if IDs are accidentally parsed as strings
+            const targetTeamObj = baseTeams.find(t => String(t.id) === String(targetTeamId));
+            
+            // Prevent silent JS crash if team is not found
+            if (!targetTeamObj) return;
+
+            const totalScenarios = 1 << remainingMatchups.length;
+            let playoffCount = 0, byeCount = 0, recordGroups = {};
+
+            // Dynamically calculate how many games THIS specific team has left in remainingMatchups array
+            const teamRemainingGames = remainingMatchups.filter(m => String(m.awayId) === String(targetTeamId) || String(m.homeId) === String(targetTeamId)).length;
+
+            for (let i = 0; i < totalScenarios; i++) {
+                let simMap = {};
+                baseTeams.forEach(t => {
+                    simMap[t.id] = { wins: t.wins, losses: t.losses, pf: t.pf, name: t.name, id: t.id };
+                });
+
+                let targetWinsAdded = 0;
+                for (let m = 0; m < remainingMatchups.length; m++) {
+                    const match = remainingMatchups[m];
+                    const winnerId = (i & (1 << m)) ? match.homeId : match.awayId;
+                    const loserId = (winnerId === match.homeId) ? match.awayId : match.homeId;
+                    
+                    if (simMap[winnerId]) simMap[winnerId].wins++;
+                    if (simMap[loserId]) simMap[loserId].losses++;
+                    
+                    if ((String(match.awayId) === String(targetTeamId) || String(match.homeId) === String(targetTeamId)) && String(winnerId) === String(targetTeamId)) {
+                        targetWinsAdded++;
+                    }
+                }
+
+                let standings = Object.values(simMap).sort((a, b) => b.wins !== a.wins ? b.wins - a.wins : b.pf - a.pf);
+                const rank = standings.findIndex(t => String(t.id) === String(targetTeamId)) + 1;
+                
+                if (rank > 0 && rank <= 6) {
+                    playoffCount++;
+                    const targetLossesAdded = teamRemainingGames - targetWinsAdded;
+                    const finalRec = `${targetTeamObj.wins + targetWinsAdded}-${targetTeamObj.losses + targetLossesAdded}`;
+                    
+                    if (!recordGroups[finalRec]) recordGroups[finalRec] = { count: 0, winsNeeded: targetWinsAdded, minRank: rank, maxRank: rank };
+                    recordGroups[finalRec].count++;
+                    recordGroups[finalRec].minRank = Math.min(recordGroups[finalRec].minRank, rank);
+                    recordGroups[finalRec].maxRank = Math.max(recordGroups[finalRec].maxRank, rank);
+                }
+                if (rank > 0 && rank <= 2) byeCount++;
+            }
+
+            const playoffPct = ((playoffCount / totalScenarios) * 100).toFixed(1);
+            document.getElementById('scenario-summary').innerHTML = `
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner"><div class="text-xs font-bold uppercase tracking-wider text-slate-400">Playoff Probability</div><div class="text-3xl font-black text-emerald-400 mt-1">${playoffPct}%</div><div class="text-[11px] text-slate-500 mt-0.5">Top 6 Qualification</div></div>
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner"><div class="text-xs font-bold uppercase tracking-wider text-slate-400">First-Round Bye Odds</div><div class="text-3xl font-black text-lmblue-400 mt-1">${((byeCount / totalScenarios) * 100).toFixed(1)}%</div><div class="text-[11px] text-slate-500 mt-0.5">Top 2 Seed Finish</div></div>
+                <div class="bg-lmnavy-950 border border-slate-800 rounded-2xl p-4 text-center shadow-inner"><div class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Record</div><div class="text-3xl font-black text-white mt-1">${targetTeamObj.wins}-${targetTeamObj.losses}</div><div class="text-[11px] text-slate-500 mt-0.5">PF: ${targetTeamObj.pf.toFixed(1)}</div></div>
+            `;
+
+            const listContainer = document.getElementById('scenarios-list-container');
+            if (playoffCount === 0) {
+                listContainer.innerHTML = `<div class="text-slate-400 text-xs p-4 text-center">Mathematically eliminated from top-6 playoff contention in remaining simulations.</div>`; 
+                return;
+            }
+
+            let html = playoffPct === "100.0" ? `<div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-emerald-300 text-xs space-y-1"><div class="font-bold flex items-center gap-2"><span>🟢</span> CLINCHED / CONTROL OWN DESTINY (100% Odds)</div></div>` :
+                       playoffPct > 50.0 ? `<div class="bg-lmblue-500/10 border border-lmblue-500/30 rounded-xl p-4 text-lmblue-400 text-xs space-y-1"><div class="font-bold flex items-center gap-2"><span>🔵</span> STRONG PLAYOFF POSITION (${playoffPct}% Odds)</div></div>` :
+                       `<div class="bg-lmred-500/10 border border-lmred-500/30 rounded-xl p-4 text-lmred-400 text-xs space-y-1"><div class="font-bold flex items-center gap-2"><span>🔴</span> BUBBLE / NEEDS HELP (${playoffPct}% Odds)</div></div>`;
+
+            Object.keys(recordGroups).sort((a, b) => parseInt(b.split('-')[0]) - parseInt(a.split('-')[0])).forEach(rec => {
+                const group = recordGroups[rec];
+                
+                let scenarioLabel = "";
+                if (group.winsNeeded === teamRemainingGames) {
+                    scenarioLabel = `Needs to Win Out (${teamRemainingGames}–0)`;
+                } else if (group.winsNeeded === 0) {
+                    scenarioLabel = `Finishes winless (0–${teamRemainingGames})`;
+                } else {
+                    scenarioLabel = `Needs ${group.winsNeeded} Win${group.winsNeeded > 1 ? 's' : ''} (${group.winsNeeded}–${teamRemainingGames - group.winsNeeded})`;
+                }
+
+                html += `
+                    <div class="bg-lmnavy-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-3">
+                        <div class="space-y-1">
+                            <div class="font-bold text-lmblue-400 text-sm"><span>🎯 Finishes ${rec}:</span> <span class="text-slate-200 text-xs font-normal">${scenarioLabel}</span></div>
+                            <div class="text-slate-400 text-xs">Valid playoff path in <strong>${group.count}</strong> simulation outcomes (Projected Seed Range: #${group.minRank}–#${group.maxRank}).</div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-[11px] font-bold border border-emerald-500/40 bg-emerald-500/15 text-emerald-400 uppercase tracking-wider shrink-0">Closes ${group.count} Scenarios</span>
+                    </div>`;
+            });
+            listContainer.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
